@@ -38,8 +38,8 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Aligned content container - more centered with narrower max width */}
-      <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
+      {/* Aligned content container - wider so text sits clearly to the left of the figure */}
+      <div className="relative z-10 h-full max-w-6xl mx-auto px-6 md:px-10 pt-24 md:pt-28">
         <div className="relative h-full">
           {/* Right: large figure anchored to bottom-right of the inner container */}
           <img
@@ -50,11 +50,12 @@ const Hero = () => {
             draggable={false}
           />
 
-          {/* Left: title + presenter + play button, vertically centered */}
-          <div className="relative z-10 h-full flex flex-col justify-center max-w-[52%]">
+          {/* Left: title + presenter + play button — constrained width so it never overlaps the face.
+              Long titles will wrap to multiple lines. */}
+          <div className="relative z-10 h-full flex flex-col justify-center" style={{ maxWidth: '420px' }}>
             <h1
-              className="text-white font-black tracking-tight leading-[0.95] whitespace-nowrap"
-              style={{ fontSize: 'clamp(2.25rem, 5vw, 4.75rem)' }}
+              className="text-white font-black tracking-tight leading-[0.95] break-words"
+              style={{ fontSize: 'clamp(2.25rem, 4.5vw, 4.25rem)' }}
             >
               {nowShow.title}
             </h1>
@@ -65,7 +66,7 @@ const Hero = () => {
             <button
               onClick={toggle}
               aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-              className="relative mt-6 md:mt-8 w-18 h-18 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
+              className="relative mt-6 md:mt-8 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
               style={{ width: '5rem', height: '5rem' }}
             >
               <span className="absolute inset-0 rounded-full bg-white animate-ping opacity-20" aria-hidden="true"></span>
