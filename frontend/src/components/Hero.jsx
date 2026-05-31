@@ -38,47 +38,43 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Large figure positioned to the right - fills from below header to bottom */}
-      <img
-        src={heroPersonImg}
-        alt={nowShow.host}
-        className="absolute right-0 md:right-[4%] lg:right-[8%] bottom-0 z-10 w-auto select-none pointer-events-none drop-shadow-2xl hidden sm:block"
-        style={{ height: 'calc(100% - 88px)', maxHeight: 'calc(100% - 88px)', objectFit: 'contain', objectPosition: 'bottom right' }}
-        draggable={false}
-      />
+      {/* Aligned content container with equal left/right padding */}
+      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 md:px-10 lg:px-12 pt-24 md:pt-28">
+        <div className="relative h-full">
+          {/* Right: large figure anchored to bottom-right of the container */}
+          <img
+            src={heroPersonImg}
+            alt={nowShow.host}
+            className="absolute right-0 bottom-0 w-auto select-none pointer-events-none drop-shadow-2xl hidden sm:block"
+            style={{ height: '100%', maxHeight: '100%', objectFit: 'contain', objectPosition: 'bottom right' }}
+            draggable={false}
+          />
 
-      {/* Left-aligned text + play button */}
-      <div className="relative z-20 max-w-7xl mx-auto h-full px-6 lg:px-12 pt-24 md:pt-28 pb-10 md:pb-14 flex flex-col justify-center">
-        <div className="max-w-xl">
-          <h1
-            className="text-white font-black tracking-tight leading-[0.95]"
-            style={{
-              fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
-              textShadow: '0 4px 24px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.35)',
-            }}
-          >
-            {nowShow.title}
-          </h1>
-          <p
-            className="text-white/90 text-base md:text-xl mt-3 md:mt-4 font-medium"
-            style={{ textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}
-          >
-            met {nowShow.host}
-          </p>
+          {/* Left: title + presenter + play button */}
+          <div className="relative z-10 h-full flex flex-col justify-center pb-10 md:pb-14 max-w-[58%]">
+            <h1
+              className="text-white font-black tracking-tight leading-[0.95]"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
+            >
+              {nowShow.title}
+            </h1>
+            <p className="text-white/90 text-base md:text-xl mt-3 md:mt-4 font-medium">
+              met {nowShow.host}
+            </p>
 
-          {/* Standalone play button - aligned to the left, under the title */}
-          <button
-            onClick={toggle}
-            aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-            className="relative mt-8 md:mt-10 w-20 h-20 md:w-24 md:h-24 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
-          >
-            <span className="absolute inset-0 rounded-full bg-white animate-ping opacity-20" aria-hidden="true"></span>
-            {playing ? (
-              <Pause size={36} className="relative text-[#062a4a]" fill="#062a4a" />
-            ) : (
-              <Play size={36} className="relative text-[#062a4a] ml-1" fill="#062a4a" />
-            )}
-          </button>
+            <button
+              onClick={toggle}
+              aria-label={playing ? 'Pauzeren' : 'Afspelen'}
+              className="relative mt-8 md:mt-10 w-20 h-20 md:w-24 md:h-24 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
+            >
+              <span className="absolute inset-0 rounded-full bg-white animate-ping opacity-20" aria-hidden="true"></span>
+              {playing ? (
+                <Pause size={36} className="relative text-[#062a4a]" fill="#062a4a" />
+              ) : (
+                <Play size={36} className="relative text-[#062a4a] ml-1" fill="#062a4a" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </section>
