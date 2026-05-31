@@ -60,7 +60,7 @@ const Header = () => {
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-5 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
-          <img src="/assets/grk-logo.png" alt="GRK" className="h-14 w-14 md:h-16 md:w-16 object-contain" />
+          <img src="/assets/grk-logo.png" alt="GRK" className="h-16 w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 object-contain" />
         </Link>
         <nav className="hidden md:flex items-center gap-10 lg:gap-14">
           {navItems.map((item) => (
