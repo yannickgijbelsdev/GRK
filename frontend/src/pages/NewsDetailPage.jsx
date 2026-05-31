@@ -30,7 +30,7 @@ const NewsDetailPage = () => {
 
         <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
           <Link to="/nieuws" className="inline-flex items-center gap-2 text-white/85 hover:text-white mb-6 font-medium text-sm">
-            <ArrowLeft size={16} /> Terug naar nieuws
+            <ArrowLeft size={16} /> Terug
           </Link>
 
           <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">

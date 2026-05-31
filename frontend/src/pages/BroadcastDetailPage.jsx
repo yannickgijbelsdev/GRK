@@ -23,7 +23,7 @@ const BroadcastDetailPage = () => {
         </div>
         <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
           <Link to="/programmering" className="inline-flex items-center gap-2 text-white/90 hover:text-white mb-6 font-medium">
-            <ArrowLeft size={18} /> Terug naar Programmering
+            <ArrowLeft size={18} /> Terug
           </Link>
           <span className="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-white/15 text-white tracking-wide mb-4">{item.network}</span>
           <h1 className="text-white text-3xl md:text-5xl font-black leading-tight">{item.title}</h1>
