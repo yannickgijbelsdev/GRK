@@ -31,9 +31,8 @@ const Header = () => {
           <img
             src="/assets/grk-logo.png"
             alt="GRK"
-            className="h-10 w-10 md:h-11 md:w-11 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/40 transition"
+            className="h-14 w-14 md:h-16 md:w-16 object-contain"
           />
-          <span className="text-white text-2xl font-black tracking-tight hidden sm:inline">grk</span>
         </Link>
         <nav className="hidden md:flex items-center gap-10">
           {navItems.map((item) => (

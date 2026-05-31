@@ -11,9 +11,8 @@ const Footer = () => {
             <img
               src="/assets/grk-logo.png"
               alt="GRK"
-              className="h-12 w-12 rounded-full object-cover ring-2 ring-white/20"
+              className="h-16 w-16 object-contain"
             />
-            <span className="text-white text-2xl font-black tracking-tight">grk</span>
           </div>
           <div className="flex items-center gap-5">
             <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Instagram size={18}/></a>
