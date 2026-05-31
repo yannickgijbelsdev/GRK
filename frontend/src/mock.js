@@ -86,6 +86,8 @@ export const fragments = [
     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80',
     excerpt: 'Twee winnaars van de Jaimys Jamz-actie wonnen kaarten voor het concert van Ne-Yo en Akon.',
     duration: '4:32',
+    audio: 'https://www.soundjay.com/buttons/sounds/beep-07a.mp3',
+    audioDuration: 272,
     body: [
       'Wat een avond! Ne-Yo en Akon stonden samen op het podium van een uitverkochte Ziggo Dome.',
       'Onze twee winnaars Karin en Jamal mochten erbij zijn en deelden hun ervaring live in de show.',
@@ -99,6 +101,8 @@ export const fragments = [
     image: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=1200&q=80',
     excerpt: 'Het duo Mar & Khallil over hun groei van Instagram naar de Spotify top 10.',
     duration: '12:08',
+    audio: 'https://www.soundjay.com/buttons/sounds/beep-07a.mp3',
+    audioDuration: 728,
     body: [
       'Mar en Khallil begonnen vier jaar geleden met korte sketches op Instagram.',
       'Inmiddels staan ze met hun podcast \u201cTwee Werelden\u201d wekenlang in de Spotify top 10.',
