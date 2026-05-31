@@ -7,8 +7,8 @@ const StickyPlayer = () => {
 
   useEffect(() => {
     const onScroll = () => {
-      // Show floating player after the hero (where the main player sits)
-      setShow(window.scrollY > 700);
+      // Show floating player as soon as user starts scrolling past the play button
+      setShow(window.scrollY > 300);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
