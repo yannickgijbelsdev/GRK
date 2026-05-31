@@ -9,43 +9,42 @@
   mix-blend-mode: soft-light;
 }
 
-/* Static ring opacity flash — fades up/down with sphere rhythm (no scale = no sideways artefacts) */
-@keyframes blendRingFlash {
-  0%, 100% { opacity: 0.25; }
-  22%, 35% { opacity: 1; }
-  70%      { opacity: 0.5; }
-}
-.blend-ring-flash {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  border-radius: 9999px;
-  border: 2px solid rgba(255,255,255,0.4);
-  pointer-events: none;
-  mix-blend-mode: soft-light;
-  animation: blendRingFlash 11s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-}
-
-/* Brutal explosion sphere — fast burst out, slow fade. Never fully disappears. */
-@keyframes blendSphere {
-  0%   { transform: translate(-50%, -50%) scale(0.35); opacity: 0.30; }
-  8%   { transform: translate(-50%, -50%) scale(0.5);  opacity: 0.7; }
-  22%  { transform: translate(-50%, -50%) scale(0.95); opacity: 1; }
-  35%  { transform: translate(-50%, -50%) scale(1.05); opacity: 0.9; }
-  70%  { transform: translate(-50%, -50%) scale(0.6);  opacity: 0.4; }
-  100% { transform: translate(-50%, -50%) scale(0.35); opacity: 0.30; }
-}
-
+/* Static dark sphere — sits at full size, no animation, just a deep dark presence */
 .blend-sphere {
   position: absolute;
   left: 50%;
   top: 50%;
   width: 820px;
   height: 820px;
+  margin-left: -410px;
+  margin-top: -410px;
   border-radius: 9999px;
   background: radial-gradient(circle, #03182b 0%, #062a4a 65%, rgba(6,42,74,0.55) 88%, transparent 100%);
   pointer-events: none;
-  animation: blendSphere 11s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  opacity: 1;
+}
+
+/* Outer rings opacity rhythm — calm → heavy burst → very calm, slowly repeating */
+@keyframes blendRingFlash {
+  0%   { opacity: 0.20; }   /* very calm */
+  15%  { opacity: 0.35; }   /* gentle pulse */
+  25%  { opacity: 0.25; }
+  40%  { opacity: 1.00; }   /* heavy burst */
+  50%  { opacity: 0.85; }
+  60%  { opacity: 0.55; }   /* coming down */
+  75%  { opacity: 0.12; }   /* very calm */
+  90%  { opacity: 0.18; }
+  100% { opacity: 0.20; }
+}
+.blend-ring-flash {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 9999px;
+  border: 2px solid rgba(255,255,255,0.5);
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  animation: blendRingFlash 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Legacy ring (kept for page-header circles) */
