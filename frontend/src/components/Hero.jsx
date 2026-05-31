@@ -14,8 +14,8 @@ const Hero = () => {
       className="relative overflow-hidden"
       style={{
         background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 45%,#1f5499 80%,#2c6db8 100%)',
-        height: '88vh',
-        minHeight: '820px',
+        height: '78vh',
+        minHeight: '720px',
       }}
     >
       {/* Concentric circles backdrop */}
@@ -38,45 +38,47 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto h-full px-6 lg:px-10 pt-24 md:pt-28 pb-10 md:pb-14 flex flex-col items-center">
-        {/* Full-figure photo of the host - anchored to bottom */}
-        <div className="relative flex items-end justify-center w-full flex-1 min-h-0">
-          <img
-            src={heroPersonImg}
-            alt={nowShow.host}
-            className="relative z-10 block w-auto h-full max-h-full object-contain object-bottom select-none pointer-events-none drop-shadow-2xl"
-            draggable={false}
-          />
-        </div>
+      {/* Large figure - fills from just under the header to the bottom of the banner */}
+      <img
+        src={heroPersonImg}
+        alt={nowShow.host}
+        className="absolute left-1/2 bottom-0 -translate-x-1/2 z-10 w-auto select-none pointer-events-none drop-shadow-2xl"
+        style={{ height: 'calc(100% - 88px)', maxHeight: 'calc(100% - 88px)', objectFit: 'contain', objectPosition: 'bottom' }}
+        draggable={false}
+      />
 
-        {/* Program name + presenter name centered below */}
-        <div className="relative z-20 text-center mt-4 md:mt-6">
-          <div className="inline-flex items-center gap-2 text-white/80 text-xs md:text-sm uppercase tracking-[0.2em] mb-2">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-            Nu op de radio
-          </div>
-          <h1 className="text-white text-3xl md:text-5xl font-black tracking-tight leading-tight">
-            {nowShow.title}
-          </h1>
-          <p className="text-white/80 text-base md:text-lg mt-2">
-            met {nowShow.host}
-          </p>
-        </div>
-
-        {/* Standalone play button - loose on the banner */}
-        <button
-          onClick={toggle}
-          aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-          className="relative z-20 mt-6 md:mt-8 group w-20 h-20 md:w-24 md:h-24 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
+      {/* Title overlaid on the figure with soft shadow for legibility on lighter areas */}
+      <div className="absolute inset-x-0 bottom-32 md:bottom-40 z-20 px-6 flex flex-col items-center text-center pointer-events-none">
+        <h1
+          className="text-white font-black tracking-tight leading-[0.95]"
+          style={{
+            fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
+            textShadow: '0 4px 24px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.35)',
+          }}
         >
-          <span className="absolute inset-0 rounded-full bg-white animate-ping opacity-20" aria-hidden="true"></span>
-          {playing ? (
-            <Pause size={36} className="relative text-[#062a4a]" fill="#062a4a" />
-          ) : (
-            <Play size={36} className="relative text-[#062a4a] ml-1" fill="#062a4a" />
-          )}
-        </button>
+          {nowShow.title}
+        </h1>
+        <p
+          className="text-white/90 text-base md:text-xl mt-2 md:mt-3 font-medium"
+          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}
+        >
+          met {nowShow.host}
+        </p>
       </div>
+
+      {/* Standalone play button - loose on the banner, bottom area */}
+      <button
+        onClick={toggle}
+        aria-label={playing ? 'Pauzeren' : 'Afspelen'}
+        className="absolute left-1/2 -translate-x-1/2 bottom-8 md:bottom-10 z-30 w-20 h-20 md:w-24 md:h-24 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
+      >
+        <span className="absolute inset-0 rounded-full bg-white animate-ping opacity-20" aria-hidden="true"></span>
+        {playing ? (
+          <Pause size={36} className="relative text-[#062a4a]" fill="#062a4a" />
+        ) : (
+          <Play size={36} className="relative text-[#062a4a] ml-1" fill="#062a4a" />
+        )}
+      </button>
     </section>
   );
 };
