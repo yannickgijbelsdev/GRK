@@ -19,7 +19,7 @@ const BroadcastsSection = ({ limit = 3, showHeader = true, showMore = true }) =>
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-[#062a4a] text-xl font-bold leading-snug mb-4 group-hover:underline decoration-[#2a5d99] decoration-2 underline-offset-4">
+                <h3 className="text-[#062a4a] text-xl font-bold leading-snug mb-4 hover-pulse">
                   {item.title}
                 </h3>
                 <div className="flex items-center gap-2 text-[#4a6480] text-sm">

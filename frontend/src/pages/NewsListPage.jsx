@@ -17,7 +17,7 @@ const NewsListPage = () => {
                   <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
                 </div>
                 <div className="p-6 flex flex-col flex-1">
-                  <h3 className="text-[#062a4a] text-xl font-bold leading-snug mb-3 group-hover:underline decoration-[#2a5d99] decoration-2 underline-offset-4">{item.title}</h3>
+                  <h3 className="text-[#062a4a] text-xl font-bold leading-snug mb-3 hover-pulse">{item.title}</h3>
                   <p className="text-[#4a6480] text-sm leading-relaxed line-clamp-3 mb-4">{item.excerpt}</p>
                   <div className="mt-auto flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 text-[#4a6480] text-sm">

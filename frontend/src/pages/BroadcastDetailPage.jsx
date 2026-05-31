@@ -57,7 +57,7 @@ const BroadcastDetailPage = () => {
                     <img src={b.image} alt={b.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
                   </div>
                   <div className="p-5">
-                    <h3 className="text-[#062a4a] text-lg font-bold leading-snug group-hover:underline decoration-[#2a5d99] decoration-2 underline-offset-4">{b.title}</h3>
+                    <h3 className="text-[#062a4a] text-lg font-bold leading-snug hover-pulse">{b.title}</h3>
                   </div>
                 </Link>
               ))}

@@ -21,7 +21,7 @@ const FragmentsSection = ({ limit = 3, showHeader = true, showMore = true, backg
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-[#062a4a] text-lg font-bold leading-snug mb-4 group-hover:underline decoration-[#2a5d99] decoration-2 underline-offset-4 line-clamp-2 min-h-[3.5rem]">
+                <h3 className="text-[#062a4a] text-lg font-bold leading-snug mb-4 hover-pulse line-clamp-2 min-h-[3.5rem]">
                   {item.title}
                 </h3>
                 <div className="flex items-center gap-2 text-[#4a6480] text-sm">
