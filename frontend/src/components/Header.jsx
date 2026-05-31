@@ -29,7 +29,6 @@ const Header = () => {
     { label: 'Nieuws uit de buurt', to: '/nieuws' },
     { label: 'Programmering', to: '/programmering' },
     { label: 'Gedraaid', to: '/gedraaid' },
-    { label: 'Gemist', to: '/gemist' },
   ];
 
   // Animated background only when user scrolled past the banner.

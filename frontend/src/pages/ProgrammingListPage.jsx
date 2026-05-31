@@ -23,7 +23,7 @@ const ProgrammingListPage = () => {
 
   return (
     <>
-      <PageHeader title="Programmering" subtitle="Bekijk wat er deze week op GRK te horen is." />
+      <PageHeader title="Programmering" subtitle="Hier vind je de hele programmatie terug." />
       <section className="py-12 md:py-16 page-pad-bottom bg-white">
         <div className="max-w-5xl mx-auto px-6 lg:px-10">
           {/* Day tabs */}

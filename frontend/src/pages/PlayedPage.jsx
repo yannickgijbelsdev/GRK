@@ -12,7 +12,7 @@ const PlayedPage = () => {
 
   return (
     <>
-      <PageHeader title="Gedraaid" subtitle="Alles wat we op BLEND hebben gedraaid. Zoek en luister terug." />
+      <PageHeader title="Gedraaid" subtitle="Welk nummer was dat daarstraks weer? Je vindt het hier terug!" />
       <section className="py-12 md:py-16 page-pad-bottom">
         <div className="max-w-4xl mx-auto px-6 lg:px-10">
           <div className="relative mb-8">

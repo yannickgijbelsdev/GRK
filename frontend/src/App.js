@@ -16,7 +16,6 @@ import FragmentDetailPage from './pages/FragmentDetailPage';
 import ProgrammingListPage from './pages/ProgrammingListPage';
 import BroadcastDetailPage from './pages/BroadcastDetailPage';
 import PlayedPage from './pages/PlayedPage';
-import MissedPage from './pages/MissedPage';
 import AboutPage from './pages/AboutPage';
 
 function App() {
@@ -36,7 +35,6 @@ function App() {
               <Route path="/programmering" element={<ProgrammingListPage />} />
               <Route path="/programmering/:id" element={<BroadcastDetailPage />} />
               <Route path="/gedraaid" element={<PlayedPage />} />
-              <Route path="/gemist" element={<MissedPage />} />
               <Route path="/over" element={<AboutPage />} />
             </Routes>
           </main>
