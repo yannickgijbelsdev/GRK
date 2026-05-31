@@ -6,7 +6,6 @@ import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import StickyPlayer from './components/StickyPlayer';
 import ScrollToTop from './components/ScrollToTop';
-import BackgroundLayer from './components/BackgroundLayer';
 import { PlayerProvider } from './context/PlayerContext';
 
 import HomePage from './pages/HomePage';
@@ -22,8 +21,7 @@ import AboutPage from './pages/AboutPage';
 
 function App() {
   return (
-    <div className="App min-h-screen">
-      <BackgroundLayer />
+    <div className="App min-h-screen bg-white">
       <PlayerProvider>
         <BrowserRouter>
           <ScrollToTop />

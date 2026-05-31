@@ -6,7 +6,7 @@ import { playlist } from '../mock';
 const PlaylistSection = ({ limit = 3, showHeader = true, showMore = true, background = true }) => {
   const items = playlist.slice(0, limit);
   return (
-    <section id="gedraaid" className="py-16 md:py-20">
+    <section id="gedraaid" className={`py-16 md:py-20 ${background ? 'bg-[#f0f4fa]' : ''}`}>
       <div className="max-w-4xl mx-auto px-6 lg:px-10">
         {showHeader && <h2 className="text-white text-3xl md:text-4xl font-black mb-10">Playlist</h2>}
         <div className="space-y-5">
@@ -35,7 +35,7 @@ const PlaylistSection = ({ limit = 3, showHeader = true, showMore = true, backgr
         </div>
         {showMore && (
           <div className="flex justify-end mt-8">
-            <Link to="/gedraaid" className="inline-flex items-center gap-2 text-white font-semibold hover:gap-3 transition-all">
+            <Link to="/gedraaid" className="inline-flex items-center gap-2 text-[#062a4a] font-semibold hover:gap-3 transition-all">
               Bekijk eerder gedraaid
               <span className="w-8 h-8 rounded-full flex items-center justify-center" style={{background:'linear-gradient(135deg,#2a5d99,#4b8fcc)'}}>
                 <ArrowRight size={16} className="text-white"/>

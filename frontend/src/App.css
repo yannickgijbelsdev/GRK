@@ -95,34 +95,14 @@
   to { transform: scaleY(1); }
 }
 
-/* Page-wide animated background — visible when scrolling past the hero */
-.app-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(180deg, #062a4a 0%, #0a3a6b 40%, #1f5499 100%);
-  overflow: hidden;
-}
-.app-bg::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 1600px;
-  height: 1600px;
-  margin-left: -800px;
-  margin-top: -800px;
-  border-radius: 9999px;
-  background: #051a30;
-  pointer-events: none;
-}
-.app-bg-ring {
+/* Header ring animation — concentric flashing circles inside the sticky header */
+.header-ring {
   position: absolute;
   left: 50%;
   top: 50%;
   border-radius: 9999px;
   border: 2px solid rgba(255,255,255,0.18);
+  pointer-events: none;
   mix-blend-mode: soft-light;
   animation: blendRingFlash 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -131,7 +111,7 @@
 .App {
   min-height: 100vh;
   font-family: 'Product Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: transparent;
+  background: #ffffff;
   color: #1a2a3a;
 }
 
