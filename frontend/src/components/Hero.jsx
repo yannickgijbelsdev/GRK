@@ -18,19 +18,20 @@ const Hero = () => {
         minHeight: '600px',
       }}
     >
-      {/* Solid dark sphere + ripple rings emerging from its edge — continuous wave outward */}
+      {/* Solid dark sphere + full-width flashing rings with calm → heavy → calm rhythm */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         {/* Solid dark sphere — like the logo */}
         <div className="blend-sphere" />
-        {/* Ripple rings: each starts at sphere edge and expands outward, staggered for continuous waves */}
-        {[0, 1.25, 2.5, 3.75].map((delay, i) => (
+        {/* Full-width flashing rings around the sphere — synced rhythm */}
+        {[600, 900, 1200, 1500, 1800].map((size, i) => (
           <div
-            key={`rp-${i}`}
-            className="blend-ripple"
+            key={`f-${i}`}
+            className="blend-ring-flash"
             style={{
-              marginLeft: '-410px',
-              marginTop: '-410px',
-              animationDelay: `${delay}s`,
+              width: `${size}px`,
+              height: `${size}px`,
+              marginLeft: `-${size / 2}px`,
+              marginTop: `-${size / 2}px`,
             }}
           />
         ))}
