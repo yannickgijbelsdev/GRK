@@ -12,7 +12,7 @@ const NewsDetailPage = () => {
 
   return (
     <>
-      <section className="relative overflow-hidden pt-28 pb-10 md:pt-32 md:pb-14" style={{background: 'linear-gradient(180deg,#7a1042 0%,#a52254 100%)'}}>
+      <section className="relative overflow-hidden pt-28 pb-10 md:pt-32 md:pb-14" style={{background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 100%)'}}>
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {[600, 1000, 1400].map((size, i) => (
@@ -41,12 +41,12 @@ const NewsDetailPage = () => {
           <div className="rounded-2xl overflow-hidden mb-10 shadow-xl">
             <img src={article.image} alt={article.title} className="w-full h-auto"/>
           </div>
-          <p className="text-[#5a0a2c] text-xl md:text-2xl font-medium leading-relaxed mb-8">{article.excerpt}</p>
-          <div className="prose max-w-none text-[#3a2530] text-lg leading-relaxed space-y-5">
+          <p className="text-[#062a4a] text-xl md:text-2xl font-medium leading-relaxed mb-8">{article.excerpt}</p>
+          <div className="prose max-w-none text-[#2a3a4a] text-lg leading-relaxed space-y-5">
             {article.body.map((p, i) => <p key={i}>{p}</p>)}
           </div>
           <div className="mt-10 flex items-center gap-3">
-            <button className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white font-semibold hover:opacity-90 transition" style={{background:'linear-gradient(135deg,#d63384,#ff6b35)'}}>
+            <button className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white font-semibold hover:opacity-90 transition" style={{background:'linear-gradient(135deg,#2a5d99,#4b8fcc)'}}>
               <Share2 size={16}/> Deel artikel
             </button>
           </div>
@@ -54,17 +54,17 @@ const NewsDetailPage = () => {
 
         {related.length > 0 && (
           <div className="max-w-7xl mx-auto px-6 lg:px-10 mt-16">
-            <h2 className="text-[#5a0a2c] text-2xl md:text-3xl font-black mb-8">Meer nieuws</h2>
+            <h2 className="text-[#062a4a] text-2xl md:text-3xl font-black mb-8">Meer nieuws</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {related.map((item) => (
-                <Link key={item.id} to={`/nieuws/${item.id}`} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[#f0e0e8]">
+                <Link key={item.id} to={`/nieuws/${item.id}`} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[#d8e4f0]">
                   <div className="aspect-[2/1] overflow-hidden">
                     <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
                   </div>
                   <div className="p-5">
-                    <h3 className="text-[#5a0a2c] text-lg font-bold leading-snug group-hover:underline decoration-[#d63384] decoration-2 underline-offset-4 line-clamp-2">{item.title}</h3>
-                    <div className="flex items-center gap-2 text-[#7a4a64] text-sm mt-3">
-                      <Calendar size={14} className="text-[#d63384]"/>
+                    <h3 className="text-[#062a4a] text-lg font-bold leading-snug group-hover:underline decoration-[#2a5d99] decoration-2 underline-offset-4 line-clamp-2">{item.title}</h3>
+                    <div className="flex items-center gap-2 text-[#4a6480] text-sm mt-3">
+                      <Calendar size={14} className="text-[#2a5d99]"/>
                       <span>{item.date}</span>
                     </div>
                   </div>

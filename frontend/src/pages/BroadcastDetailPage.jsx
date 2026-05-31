@@ -11,7 +11,7 @@ const BroadcastDetailPage = () => {
 
   return (
     <>
-      <section className="relative overflow-hidden pt-28 pb-10 md:pt-32 md:pb-14" style={{background: 'linear-gradient(180deg,#7a1042 0%,#a52254 100%)'}}>
+      <section className="relative overflow-hidden pt-28 pb-10 md:pt-32 md:pb-14" style={{background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 100%)'}}>
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {[600, 1000, 1400].map((size, i) => (
@@ -40,25 +40,25 @@ const BroadcastDetailPage = () => {
           <div className="relative rounded-2xl overflow-hidden mb-10 shadow-xl group cursor-pointer">
             <img src={item.image} alt={item.title} className="w-full h-auto"/>
             <div className="absolute inset-0 flex items-center justify-center bg-black/15 group-hover:bg-black/30 transition-colors">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform" style={{background:'linear-gradient(135deg,#d63384,#ff6b35)'}}>
+              <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform" style={{background:'linear-gradient(135deg,#2a5d99,#4b8fcc)'}}>
                 <Play size={30} fill="white" className="text-white ml-1"/>
               </div>
             </div>
           </div>
-          <p className="text-[#3a2530] text-lg md:text-xl leading-relaxed">{item.description}</p>
+          <p className="text-[#2a3a4a] text-lg md:text-xl leading-relaxed">{item.description}</p>
         </div>
 
         {related.length > 0 && (
           <div className="max-w-7xl mx-auto px-6 lg:px-10 mt-16">
-            <h2 className="text-[#5a0a2c] text-2xl md:text-3xl font-black mb-8">Andere shows</h2>
+            <h2 className="text-[#062a4a] text-2xl md:text-3xl font-black mb-8">Andere shows</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {related.map((b) => (
-                <Link key={b.id} to={`/programmering/${b.id}`} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[#f0e0e8]">
-                  <div className="aspect-[2/1] overflow-hidden" style={{background:'linear-gradient(135deg,#5a0a2c,#a02050)'}}>
+                <Link key={b.id} to={`/programmering/${b.id}`} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[#d8e4f0]">
+                  <div className="aspect-[2/1] overflow-hidden" style={{background:'linear-gradient(135deg,#062a4a,#1f4068)'}}>
                     <img src={b.image} alt={b.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
                   </div>
                   <div className="p-5">
-                    <h3 className="text-[#5a0a2c] text-lg font-bold leading-snug group-hover:underline decoration-[#d63384] decoration-2 underline-offset-4">{b.title}</h3>
+                    <h3 className="text-[#062a4a] text-lg font-bold leading-snug group-hover:underline decoration-[#2a5d99] decoration-2 underline-offset-4">{b.title}</h3>
                   </div>
                 </Link>
               ))}

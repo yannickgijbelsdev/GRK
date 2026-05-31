@@ -2,7 +2,7 @@ import React from 'react';
 
 const PageHeader = ({ title, subtitle }) => {
   return (
-    <section className="relative overflow-hidden pt-32 pb-16 md:pt-40 md:pb-24" style={{background: 'linear-gradient(180deg,#7a1042 0%,#a52254 60%,#c84a3a 100%)'}}>
+    <section className="relative overflow-hidden pt-32 pb-16 md:pt-40 md:pb-24" style={{background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 60%,#1f5499 100%)'}}>
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           {[600, 1000, 1400].map((size, i) => (

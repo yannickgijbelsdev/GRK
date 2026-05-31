@@ -8,7 +8,7 @@ const Hero = () => {
     <section
       className="relative overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg,#7a1042 0%,#9a1c4a 35%,#c84a3a 80%,#e07238 100%)',
+        background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 35%,#1f5499 80%,#2c6db8 100%)',
         height: '78vh',
         minHeight: '720px',
       }}
@@ -49,7 +49,7 @@ const Hero = () => {
           {/* Hero person photo centered, anchored to bottom of stage */}
           <img
             src={heroPersonImg}
-            alt="NPO Blend"
+            alt="GRK"
             className="relative z-10 block w-auto h-full max-h-full object-contain object-bottom select-none pointer-events-none drop-shadow-2xl"
             draggable={false}
           />

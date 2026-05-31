@@ -10,7 +10,7 @@ const FragmentDetailPage = () => {
 
   return (
     <>
-      <section className="relative overflow-hidden pt-28 pb-10 md:pt-32 md:pb-14" style={{background: 'linear-gradient(180deg,#7a1042 0%,#a52254 100%)'}}>
+      <section className="relative overflow-hidden pt-28 pb-10 md:pt-32 md:pb-14" style={{background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 100%)'}}>
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {[600, 1000, 1400].map((size, i) => (
@@ -38,13 +38,13 @@ const FragmentDetailPage = () => {
           <div className="relative rounded-2xl overflow-hidden mb-10 shadow-xl group cursor-pointer">
             <img src={item.image} alt={item.title} className="w-full h-auto"/>
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform" style={{background:'linear-gradient(135deg,#d63384,#ff6b35)'}}>
+              <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform" style={{background:'linear-gradient(135deg,#2a5d99,#4b8fcc)'}}>
                 <Play size={30} fill="white" className="text-white ml-1"/>
               </div>
             </div>
           </div>
-          <p className="text-[#5a0a2c] text-xl font-medium leading-relaxed mb-6">{item.excerpt}</p>
-          <div className="text-[#3a2530] text-lg leading-relaxed space-y-5">
+          <p className="text-[#062a4a] text-xl font-medium leading-relaxed mb-6">{item.excerpt}</p>
+          <div className="text-[#2a3a4a] text-lg leading-relaxed space-y-5">
             {item.body.map((p, i) => <p key={i}>{p}</p>)}
           </div>
         </div>

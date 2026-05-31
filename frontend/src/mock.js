@@ -137,14 +137,14 @@ export const broadcasts = [
 ];
 
 export const playlist = [
-  { id: 1, time: '19:57', title: "Don't Matter", artist: 'Akon', gradient: 'linear-gradient(135deg, #4a8a9e 0%, #d291bc 100%)' },
-  { id: 2, time: '19:53', title: 'All My Friends (feat. Tinashe & Chance The Rapper)', artist: 'Snakehips', gradient: 'linear-gradient(135deg, #8b2a4a 0%, #ff7a3d 100%)' },
-  { id: 3, time: '19:49', title: 'I Just Might', artist: 'Bruno Mars', gradient: 'linear-gradient(135deg, #6b1a3a 0%, #c54a2a 100%)' },
-  { id: 4, time: '19:45', title: 'Sunflower', artist: 'Post Malone & Swae Lee', gradient: 'linear-gradient(135deg, #d4a44c 0%, #e07b4a 100%)' },
-  { id: 5, time: '19:41', title: 'Levitating', artist: 'Dua Lipa', gradient: 'linear-gradient(135deg, #3a5a8a 0%, #d291bc 100%)' },
-  { id: 6, time: '19:37', title: 'Peaches', artist: 'Justin Bieber', gradient: 'linear-gradient(135deg, #c47a2a 0%, #e0c266 100%)' },
-  { id: 7, time: '19:33', title: 'Blinding Lights', artist: 'The Weeknd', gradient: 'linear-gradient(135deg, #2a3a5a 0%, #d63384 100%)' },
-  { id: 8, time: '19:29', title: 'Stay', artist: 'The Kid LAROI & Justin Bieber', gradient: 'linear-gradient(135deg, #6a3a9a 0%, #ff6b35 100%)' },
+  { id: 1, time: '19:57', title: "Don't Matter", artist: 'Akon', gradient: 'linear-gradient(135deg, #2a5d99 0%, #4b8fcc 100%)' },
+  { id: 2, time: '19:53', title: 'All My Friends (feat. Tinashe & Chance The Rapper)', artist: 'Snakehips', gradient: 'linear-gradient(135deg, #0a3a6b 0%, #4b8fcc 100%)' },
+  { id: 3, time: '19:49', title: 'I Just Might', artist: 'Bruno Mars', gradient: 'linear-gradient(135deg, #062a4a 0%, #1f5499 100%)' },
+  { id: 4, time: '19:45', title: 'Sunflower', artist: 'Post Malone & Swae Lee', gradient: 'linear-gradient(135deg, #2a5d99 0%, #4b8fcc 100%)' },
+  { id: 5, time: '19:41', title: 'Levitating', artist: 'Dua Lipa', gradient: 'linear-gradient(135deg, #062a4a 0%, #4b8fcc 100%)' },
+  { id: 6, time: '19:37', title: 'Peaches', artist: 'Justin Bieber', gradient: 'linear-gradient(135deg, #1f5499 0%, #4b8fcc 100%)' },
+  { id: 7, time: '19:33', title: 'Blinding Lights', artist: 'The Weeknd', gradient: 'linear-gradient(135deg, #062a4a 0%, #2a5d99 100%)' },
+  { id: 8, time: '19:29', title: 'Stay', artist: 'The Kid LAROI & Justin Bieber', gradient: 'linear-gradient(135deg, #0a3a6b 0%, #4b8fcc 100%)' },
 ];
 
 export const currentShow = {
