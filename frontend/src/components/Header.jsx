@@ -67,10 +67,9 @@ const Header = () => {
             <Link
               key={item.label}
               to={item.to}
-              className="text-white text-lg lg:text-xl font-medium relative group"
+              className={`hover-pulse text-white text-lg lg:text-xl font-medium ${location.pathname.startsWith(item.to) ? 'is-active' : ''}`}
             >
               {item.label}
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${location.pathname.startsWith(item.to) ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
             </Link>
           ))}
         </nav>

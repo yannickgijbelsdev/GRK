@@ -4,15 +4,27 @@ import { Instagram, Facebook, Music2 } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#062a4a] text-white">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+    <footer className="relative overflow-hidden text-white" style={{ background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 100%)' }}>
+      {/* Animated rings — same effect as the header */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {[300, 500, 700, 900, 1100, 1300, 1500].map((size, i) => (
+          <div
+            key={`fr-${i}`}
+            className="footer-ring"
+            style={{
+              width: `${size}px`,
+              height: `${size}px`,
+              marginLeft: `-${size / 2}px`,
+              marginTop: `-${size / 2}px`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <img
-              src="/assets/grk-logo.png"
-              alt="GRK"
-              className="h-16 w-16 object-contain"
-            />
+            <img src="/assets/grk-logo.png" alt="GRK" className="h-16 w-16 object-contain" />
           </div>
           <div className="flex items-center gap-5">
             <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Instagram size={18}/></a>
@@ -22,18 +34,18 @@ const Footer = () => {
         </div>
         <div className="md:text-right space-y-4">
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3">
-            <Link to="/" className="text-white hover:underline underline-offset-4">grk.nl</Link>
-            <Link to="/nieuws" className="text-white hover:underline underline-offset-4">Nieuws uit de buurt</Link>
-            <Link to="/programmering" className="text-white hover:underline underline-offset-4">Programmering</Link>
-            <Link to="/over" className="text-white hover:underline underline-offset-4">Over GRK</Link>
+            <Link to="/" className="hover-pulse text-white">grk.nl</Link>
+            <Link to="/nieuws" className="hover-pulse text-white">Nieuws uit de buurt</Link>
+            <Link to="/programmering" className="hover-pulse text-white">Programmering</Link>
+            <Link to="/over" className="hover-pulse text-white">Over GRK</Link>
           </div>
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3 text-white/80 text-sm pt-2">
-            <a href="#" className="hover:underline underline-offset-4">Algemene voorwaarden &amp; Privacybeleid</a>
-            <a href="#" className="hover:underline underline-offset-4">Cookies op npo.nl</a>
+            <a href="#" className="hover-pulse">Algemene voorwaarden &amp; Privacybeleid</a>
+            <a href="#" className="hover-pulse">Cookies op grk.nl</a>
           </div>
         </div>
       </div>
-      <div className="border-t border-white/10">
+      <div className="relative border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 text-xs text-white/60">
           &copy; {new Date().getFullYear()} GRK &mdash; Design replica voor educatieve doeleinden.
         </div>
