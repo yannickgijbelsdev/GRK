@@ -53,7 +53,7 @@ const Hero = () => {
           {/* Left: title + presenter + play button, vertically centered */}
           <div className="relative z-10 h-full flex flex-col justify-center max-w-[52%]">
             <h1
-              className="text-white font-black tracking-tight leading-[0.95]"
+              className="text-white font-black tracking-tight leading-[0.95] whitespace-nowrap"
               style={{ fontSize: 'clamp(2.25rem, 5vw, 4.75rem)' }}
             >
               {nowShow.title}
