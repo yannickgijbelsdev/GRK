@@ -33,18 +33,9 @@ const NewsDetailPage = () => {
             <ArrowLeft size={16} /> Terug naar nieuws
           </Link>
 
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-white/15 text-white tracking-wide mb-4">
-            <Tag size={12} /> {article.category}
-          </span>
-
           <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
             {article.title}
           </h1>
-
-          <div className="flex items-center gap-3 text-white/85 mt-5">
-            <Calendar size={16} />
-            <span>{article.date}</span>
-          </div>
         </div>
 
         {/* Spacer so the colored banner extends down behind the overlapping image */}
@@ -112,13 +103,6 @@ const NewsDetailPage = () => {
                       <h3 className="text-[#062a4a] text-lg font-bold leading-snug hover-pulse line-clamp-2 min-h-[3.25rem]">
                         {item.title}
                       </h3>
-                      <div className="flex items-center justify-between gap-3 mt-3">
-                        <div className="flex items-center gap-2 text-[#4a6480] text-sm">
-                          <Calendar size={14} className="text-[#2a5d99]" />
-                          <span>{item.date}</span>
-                        </div>
-                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#d8e4f0] text-[#062a4a]">{item.category}</span>
-                      </div>
                     </div>
                   </Link>
                 ))}
