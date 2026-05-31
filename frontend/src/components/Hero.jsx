@@ -18,10 +18,10 @@ const Hero = () => {
         minHeight: '600px',
       }}
     >
-      {/* Full-width flashing rings + centered explosion sphere. Rings span the whole banner
-          but only flash opacity (no scaling) to avoid sideways artefacts. */}
+      {/* Full-width flashing rings + centered explosion sphere. Rings flash opacity in sync
+          with the sphere — no scaling so they never produce sideways artefacts. */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Flashing rings — span the whole banner, no scale movement */}
+        {/* Flashing rings — span the whole banner, all synced with the sphere */}
         {[600, 900, 1200, 1500, 1800].map((size, i) => (
           <div
             key={`f-${i}`}
@@ -31,7 +31,6 @@ const Hero = () => {
               height: `${size}px`,
               marginLeft: `-${size / 2}px`,
               marginTop: `-${size / 2}px`,
-              animationDelay: `${i * 0.15}s`,
             }}
           />
         ))}

@@ -43,7 +43,7 @@
   width: 820px;
   height: 820px;
   border-radius: 9999px;
-  background: radial-gradient(circle, #062a4a 0%, #062a4a 55%, rgba(6,42,74,0.45) 85%, transparent 100%);
+  background: radial-gradient(circle, #03182b 0%, #062a4a 65%, rgba(6,42,74,0.55) 88%, transparent 100%);
   pointer-events: none;
   animation: blendSphere 11s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }

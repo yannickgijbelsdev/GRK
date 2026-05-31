@@ -11,6 +11,15 @@ const FragmentDetailPage = () => {
   return (
     <>
       <section className="relative overflow-hidden pt-28 pb-10 md:pt-32 md:pb-14" style={{background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 100%)'}}>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          {[500, 800, 1100, 1400, 1700].map((size, i) => (
+            <div
+              key={`f-${i}`}
+              className="blend-ring-flash"
+              style={{ width: `${size}px`, height: `${size}px`, marginLeft: `-${size / 2}px`, marginTop: `-${size / 2}px` }}
+            />
+          ))}
+        </div>
         <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
           <Link to="/fragmenten" className="inline-flex items-center gap-2 text-white/90 hover:text-white mb-6 font-medium">
             <ArrowLeft size={18} /> Terug naar Fragmenten

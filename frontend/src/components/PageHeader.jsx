@@ -6,6 +6,21 @@ const PageHeader = ({ title, subtitle }) => {
       className="relative overflow-hidden pt-32 pb-16 md:pt-40 md:pb-24"
       style={{ background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 60%,#1f5499 100%)' }}
     >
+      {/* Full-width flashing rings — same rhythm as the home page */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {[500, 800, 1100, 1400, 1700].map((size, i) => (
+          <div
+            key={`f-${i}`}
+            className="blend-ring-flash"
+            style={{
+              width: `${size}px`,
+              height: `${size}px`,
+              marginLeft: `-${size / 2}px`,
+              marginTop: `-${size / 2}px`,
+            }}
+          />
+        ))}
+      </div>
       <div className="relative max-w-7xl mx-auto px-6 lg:px-10">
         <h1 className="text-white text-4xl md:text-6xl font-black tracking-tight">{title}</h1>
         {subtitle && <p className="text-white/85 text-lg md:text-xl mt-4 max-w-2xl">{subtitle}</p>}
