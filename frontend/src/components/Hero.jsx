@@ -18,23 +18,22 @@ const Hero = () => {
         minHeight: '600px',
       }}
     >
-      {/* Explosion ring animation — alternating dark-navy filled bands that pulse outward */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden" aria-hidden="true">
-        <div className="blend-explosion">
-          <span className="blend-explosion-layer" style={{ animationDelay: '0s' }} />
-          <span className="blend-explosion-layer" style={{ animationDelay: '-1.6s' }} />
-          <span className="blend-explosion-layer" style={{ animationDelay: '-3.2s' }} />
-        </div>
-        {/* Static thin guide rings on top (very subtle) */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          {[700, 1100, 1500].map((size, i) => (
-            <div
-              key={`g-${i}`}
-              className="blend-ring-static"
-              style={{ width: `${size}px`, height: `${size}px`, marginLeft: `-${size / 2}px`, marginTop: `-${size / 2}px` }}
-            />
-          ))}
-        </div>
+      {/* Centered "heartbeat" sphere + concentric rings that pulse together — slow & subtle */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {/* Solid sphere that fills, pulses, contracts */}
+        <div className="blend-sphere" />
+        {/* Concentric rings that ride the same rhythm with staggered delay */}
+        {[600, 900, 1200, 1500].map((size, i) => (
+          <div
+            key={`r-${i}`}
+            className="blend-ring-pulse"
+            style={{
+              width: `${size}px`,
+              height: `${size}px`,
+              animationDelay: `${i * 0.25}s`,
+            }}
+          />
+        ))}
       </div>
 
       <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
