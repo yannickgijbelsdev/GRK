@@ -1,13 +1,39 @@
+/* Persistent ring animations */
+@keyframes blendRing {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  20% { opacity: 0.35; }
+  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+}
+
+.blend-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(255,255,255,0.28);
+  animation: blendRing 7s ease-out infinite;
+}
+
+@keyframes blendFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.blend-float {
+  animation: blendFloat 6s ease-in-out infinite;
+}
+
+/* Bar bouncing for now playing indicator */
+@keyframes bar {
+  from { transform: scaleY(0.3); }
+  to { transform: scaleY(1); }
+}
+
+/* App container */
 .App {
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: #ffffff;
   color: #2a1a24;
-}
-
-@keyframes bar {
-  from { transform: scaleY(0.3); }
-  to { transform: scaleY(1); }
 }
 
 .line-clamp-2 {
@@ -16,12 +42,16 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-/* Smooth scrolling */
 html { scroll-behavior: smooth; }
 
-/* Selection */
-::selection {
-  background: #d63384;
-  color: white;
-}
+::selection { background: #d63384; color: white; }
+
+/* Page container padding for sticky player breathing room */
+.page-pad-bottom { padding-bottom: 140px; }

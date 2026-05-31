@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Music2 } from 'lucide-react';
 
 const Footer = () => {
@@ -13,23 +14,17 @@ const Footer = () => {
             </span>
           </div>
           <div className="flex items-center gap-5">
-            <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors">
-              <Instagram size={18}/>
-            </a>
-            <a href="#" aria-label="Facebook" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors">
-              <Facebook size={18}/>
-            </a>
-            <a href="#" aria-label="Spotify" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors">
-              <Music2 size={18}/>
-            </a>
+            <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Instagram size={18}/></a>
+            <a href="#" aria-label="Facebook" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Facebook size={18}/></a>
+            <a href="#" aria-label="Spotify" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Music2 size={18}/></a>
           </div>
         </div>
         <div className="md:text-right space-y-4">
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3">
-            <a href="#" className="text-white hover:underline underline-offset-4">NPO Luister</a>
-            <a href="#nieuws" className="text-white hover:underline underline-offset-4">Nieuws</a>
-            <a href="#programmering" className="text-white hover:underline underline-offset-4">Programmering</a>
-            <a href="#" className="text-white hover:underline underline-offset-4">Over NPO Blend</a>
+            <Link to="/" className="text-white hover:underline underline-offset-4">NPO Luister</Link>
+            <Link to="/nieuws" className="text-white hover:underline underline-offset-4">Nieuws</Link>
+            <Link to="/programmering" className="text-white hover:underline underline-offset-4">Programmering</Link>
+            <Link to="/over" className="text-white hover:underline underline-offset-4">Over NPO Blend</Link>
           </div>
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3 text-white/80 text-sm pt-2">
             <a href="#" className="hover:underline underline-offset-4">Algemene voorwaarden &amp; Privacybeleid</a>
@@ -39,7 +34,7 @@ const Footer = () => {
       </div>
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 text-xs text-white/60">
-          &copy; {new Date().getFullYear()} NPO Blend &mdash; This is a design replica for educational purposes.
+          &copy; {new Date().getFullYear()} NPO Blend &mdash; Design replica voor educatieve doeleinden.
         </div>
       </div>
     </footer>
