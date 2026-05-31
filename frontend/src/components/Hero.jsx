@@ -18,38 +18,32 @@ const Hero = () => {
         <div className="relative flex items-end justify-center w-full flex-1 min-h-0">
           {/* Static concentric circles, always visible (no flicker on load) */}
           <div className="absolute left-1/2 bottom-0 -translate-x-1/2 pointer-events-none" aria-hidden="true">
-            {Array.from({ length: 6 }).map((_, i) => {
-              const size = 320 + i * 110;
-              return (
-                <div
-                  key={`s-${i}`}
-                  className="blend-ring-static"
-                  style={{
-                    width: `${size}px`,
-                    height: `${size}px`,
-                    marginLeft: `-${size / 2}px`,
-                    marginTop: `-${size / 2}px`,
-                  }}
-                />
-              );
-            })}
+            {[600, 900, 1200, 1500, 1850].map((size, i) => (
+              <div
+                key={`s-${i}`}
+                className="blend-ring-static"
+                style={{
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  marginLeft: `-${size / 2}px`,
+                  marginTop: `-${size / 2}px`,
+                }}
+              />
+            ))}
             {/* Subtle pulsing accent rings on top */}
-            {Array.from({ length: 3 }).map((_, i) => {
-              const size = 380 + i * 200;
-              return (
-                <div
-                  key={`p-${i}`}
-                  className="blend-ring-pulse"
-                  style={{
-                    width: `${size}px`,
-                    height: `${size}px`,
-                    marginLeft: `-${size / 2}px`,
-                    marginTop: `-${size / 2}px`,
-                    animationDelay: `${-2 + i * 1.5}s`,
-                  }}
-                />
-              );
-            })}
+            {[750, 1100, 1400].map((size, i) => (
+              <div
+                key={`p-${i}`}
+                className="blend-ring-pulse"
+                style={{
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  marginLeft: `-${size / 2}px`,
+                  marginTop: `-${size / 2}px`,
+                  animationDelay: `${-2 + i * 1.6}s`,
+                }}
+              />
+            ))}
           </div>
 
           {/* Hero person photo centered, anchored to bottom of stage */}
