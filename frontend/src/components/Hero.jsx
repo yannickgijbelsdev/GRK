@@ -18,30 +18,25 @@ const Hero = () => {
         minHeight: '600px',
       }}
     >
-      {/* Centered explosion: solid sphere bursts outward, rings shockwave with it.
-          Wrapped in a circular mask so rings never bleed into straight side-lines. */}
-      <div
-        className="absolute inset-0 pointer-events-none overflow-hidden"
-        aria-hidden="true"
-        style={{
-          WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 0%, black 36%, transparent 62%)',
-          maskImage: 'radial-gradient(circle at 50% 50%, black 0%, black 36%, transparent 62%)',
-        }}
-      >
-        {/* Solid sphere that fills then explodes outward */}
-        <div className="blend-sphere" />
-        {/* Concentric rings that explode outward from the sphere */}
-        {[420, 580, 740, 900].map((size, i) => (
+      {/* Full-width flashing rings + centered explosion sphere. Rings span the whole banner
+          but only flash opacity (no scaling) to avoid sideways artefacts. */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {/* Flashing rings — span the whole banner, no scale movement */}
+        {[600, 900, 1200, 1500, 1800].map((size, i) => (
           <div
-            key={`r-${i}`}
-            className="blend-ring-pulse"
+            key={`f-${i}`}
+            className="blend-ring-flash"
             style={{
               width: `${size}px`,
               height: `${size}px`,
-              animationDelay: `${i * 0.18}s`,
+              marginLeft: `-${size / 2}px`,
+              marginTop: `-${size / 2}px`,
+              animationDelay: `${i * 0.15}s`,
             }}
           />
         ))}
+        {/* Centered explosion sphere */}
+        <div className="blend-sphere" />
       </div>
 
       <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">

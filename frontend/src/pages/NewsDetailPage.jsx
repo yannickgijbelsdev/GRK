@@ -17,19 +17,6 @@ const NewsDetailPage = () => {
         className="relative overflow-hidden pt-28 md:pt-32"
         style={{ background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 60%,#1f5499 100%)' }}
       >
-        {/* Subtle concentric ring decoration */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            {[600, 1000, 1400].map((size, i) => (
-              <div
-                key={`s-${i}`}
-                className="blend-ring-static"
-                style={{ width: `${size}px`, height: `${size}px`, marginLeft: `-${size / 2}px`, marginTop: `-${size / 2}px` }}
-              />
-            ))}
-          </div>
-        </div>
-
         <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
           <Link to="/nieuws" className="inline-flex items-center gap-2 text-white/85 hover:text-white mb-6 font-medium text-sm">
             <ArrowLeft size={16} /> Terug naar nieuws

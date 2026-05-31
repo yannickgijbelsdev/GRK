@@ -11,16 +11,6 @@ const FragmentDetailPage = () => {
   return (
     <>
       <section className="relative overflow-hidden pt-28 pb-10 md:pt-32 md:pb-14" style={{background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 100%)'}}>
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            {[600, 1000, 1400].map((size, i) => (
-              <div key={`s-${i}`} className="blend-ring-static" style={{ width: `${size}px`, height: `${size}px`, marginLeft: `-${size / 2}px`, marginTop: `-${size / 2}px` }} />
-            ))}
-            {[800, 1200].map((size, i) => (
-              <div key={`p-${i}`} className="blend-ring-pulse" style={{ width: `${size}px`, height: `${size}px`, marginLeft: `-${size / 2}px`, marginTop: `-${size / 2}px`, animationDelay: `${-2 + i * 1.6}s` }} />
-            ))}
-          </div>
-        </div>
         <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
           <Link to="/fragmenten" className="inline-flex items-center gap-2 text-white/90 hover:text-white mb-6 font-medium">
             <ArrowLeft size={18} /> Terug naar Fragmenten
