@@ -39,7 +39,7 @@ const NewsDetailPage = () => {
         </div>
 
         {/* Spacer so the colored banner extends down behind the overlapping image */}
-        <div className="h-32 md:h-40" aria-hidden="true"></div>
+        <div className="h-48 md:h-56" aria-hidden="true"></div>
       </section>
 
       {/* Overlapping image card */}
