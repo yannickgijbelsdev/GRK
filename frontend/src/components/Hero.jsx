@@ -39,7 +39,7 @@ const Hero = () => {
       </div>
 
       {/* Aligned content container - more centered with narrower max width */}
-      <div className="relative z-10 h-full max-w-5xl mx-auto px-6 md:px-10 pt-24 md:pt-28">
+      <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
         <div className="relative h-full">
           {/* Right: large figure anchored to bottom-right of the inner container */}
           <img
