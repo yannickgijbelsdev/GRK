@@ -12,37 +12,61 @@ const NewsDetailPage = () => {
 
   return (
     <>
-      {/* Full-width hero image with slim navy band on top for navbar spacing */}
-      <div className="relative w-full bg-[#062a4a] pt-24 md:pt-28">
-        <div className="relative w-full aspect-[16/7] md:aspect-[16/6] overflow-hidden bg-[#062a4a]">
-          <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+      {/* Colored banner with title — image card sits on top and overlaps into white content below */}
+      <section
+        className="relative overflow-hidden pt-28 md:pt-32"
+        style={{ background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 60%,#1f5499 100%)' }}
+      >
+        {/* Subtle concentric ring decoration */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            {[600, 1000, 1400].map((size, i) => (
+              <div
+                key={`s-${i}`}
+                className="blend-ring-static"
+                style={{ width: `${size}px`, height: `${size}px`, marginLeft: `-${size / 2}px`, marginTop: `-${size / 2}px` }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
+          <Link to="/nieuws" className="inline-flex items-center gap-2 text-white/85 hover:text-white mb-6 font-medium text-sm">
+            <ArrowLeft size={16} /> Terug naar nieuws
+          </Link>
+
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-white/15 text-white tracking-wide mb-4">
+            <Tag size={12} /> {article.category}
+          </span>
+
+          <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
+            {article.title}
+          </h1>
+
+          <div className="flex items-center gap-3 text-white/85 mt-5">
+            <Calendar size={16} />
+            <span>{article.date}</span>
+          </div>
+        </div>
+
+        {/* Spacer so the colored banner extends down behind the overlapping image */}
+        <div className="h-32 md:h-40" aria-hidden="true"></div>
+      </section>
+
+      {/* Overlapping image card */}
+      <div className="relative -mt-32 md:-mt-40 z-10">
+        <div className="max-w-4xl mx-auto px-6 lg:px-10">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[16/9] bg-[#062a4a]">
+            <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+          </div>
         </div>
       </div>
 
       {/* Article body */}
       <article className="bg-white page-pad-bottom">
-        <div className="max-w-3xl mx-auto px-6 lg:px-8 py-10 md:py-14">
-          <Link to="/nieuws" className="inline-flex items-center gap-2 text-[#2a5d99] hover:text-[#062a4a] mb-6 font-medium text-sm">
-            <ArrowLeft size={16} /> Terug naar nieuws
-          </Link>
-
-          <h1 className="text-[#062a4a] text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
-            {article.title}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-3 mt-5 text-sm">
-            <span className="inline-flex items-center gap-2 text-[#4a6480]">
-              <Calendar size={16} className="text-[#2a5d99]" />
-              {article.date}
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-[#d8e4f0] text-[#062a4a]">
-              <Tag size={12} /> {article.category}
-            </span>
-          </div>
-
+        <div className="max-w-3xl mx-auto px-6 lg:px-8 pt-10 md:pt-14">
           {article.lead && (
-            <p className="mt-8 md:mt-10 text-[#062a4a] text-xl md:text-2xl font-bold leading-snug">
+            <p className="text-[#062a4a] text-xl md:text-2xl font-bold leading-snug">
               {article.lead}
             </p>
           )}
@@ -77,7 +101,7 @@ const NewsDetailPage = () => {
         </div>
 
         {related.length > 0 && (
-          <div className="bg-[#f0f4fa] py-12 md:py-16">
+          <div className="bg-[#f0f4fa] py-12 md:py-16 mt-12 md:mt-16">
             <div className="max-w-7xl mx-auto px-6 lg:px-10">
               <h2 className="text-[#062a4a] text-2xl md:text-3xl font-black mb-8">Ander nieuws</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">

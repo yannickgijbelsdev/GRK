@@ -4,7 +4,7 @@ import { usePlayer } from '../context/PlayerContext';
 import { broadcasts } from '../mock';
 
 const heroPersonImg = '/assets/hero-presenter.png';
-const nowShow = broadcasts[2]; // Jaimy's Jamz with Jaimy de Ruijter
+const nowShow = broadcasts[2];
 
 const Hero = () => {
   const { playing, toggle } = usePlayer();
@@ -18,30 +18,27 @@ const Hero = () => {
         minHeight: '600px',
       }}
     >
-      {/* Concentric circles backdrop */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+      {/* Explosion ring animation — alternating dark-navy filled bands that pulse outward */}
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden" aria-hidden="true">
+        <div className="blend-explosion">
+          <span className="blend-explosion-layer" style={{ animationDelay: '0s' }} />
+          <span className="blend-explosion-layer" style={{ animationDelay: '-1.6s' }} />
+          <span className="blend-explosion-layer" style={{ animationDelay: '-3.2s' }} />
+        </div>
+        {/* Static thin guide rings on top (very subtle) */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           {[700, 1100, 1500].map((size, i) => (
             <div
-              key={`s-${i}`}
+              key={`g-${i}`}
               className="blend-ring-static"
               style={{ width: `${size}px`, height: `${size}px`, marginLeft: `-${size / 2}px`, marginTop: `-${size / 2}px` }}
-            />
-          ))}
-          {[900, 1300].map((size, i) => (
-            <div
-              key={`p-${i}`}
-              className="blend-ring-pulse"
-              style={{ width: `${size}px`, height: `${size}px`, marginLeft: `-${size / 2}px`, marginTop: `-${size / 2}px`, animationDelay: `${-2 + i * 1.6}s` }}
             />
           ))}
         </div>
       </div>
 
-      {/* Aligned content container - wider so text sits clearly to the left of the figure */}
-      <div className="relative z-10 h-full max-w-6xl mx-auto px-6 md:px-10 pt-24 md:pt-28">
+      <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
         <div className="relative h-full">
-          {/* Right: large figure anchored to bottom-right of the inner container */}
           <img
             src={heroPersonImg}
             alt={nowShow.host}
@@ -50,8 +47,6 @@ const Hero = () => {
             draggable={false}
           />
 
-          {/* Left: title + presenter + play button — constrained width so it never overlaps the face.
-              Long titles will wrap to multiple lines. */}
           <div className="relative z-10 h-full flex flex-col justify-center" style={{ maxWidth: '420px' }}>
             <h1
               className="text-white font-black tracking-tight leading-[0.95] break-words"

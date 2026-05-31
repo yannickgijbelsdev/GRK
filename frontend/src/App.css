@@ -4,26 +4,52 @@
   left: 50%;
   top: 50%;
   border-radius: 9999px;
-  border: 3px solid rgba(255,255,255,0.22);
+  border: 2px solid rgba(255,255,255,0.10);
   pointer-events: none;
   mix-blend-mode: soft-light;
 }
 
-/* Subtle breathing pulse animation - starts with negative delay so already in motion on load */
-@keyframes blendPulse {
-  0%   { transform: scale(0.94); opacity: 0.08; }
-  50%  { transform: scale(1.04); opacity: 0.28; }
-  100% { transform: scale(0.94); opacity: 0.08; }
+/* Explosion animation — radial bands of dark navy that pulse outward and contract */
+@keyframes blendExplosion {
+  0%   { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  20%  { opacity: 0.85; }
+  70%  { opacity: 0.35; }
+  100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
 }
-.blend-ring-pulse {
+
+.blend-explosion {
   position: absolute;
   left: 50%;
   top: 50%;
-  border-radius: 9999px;
-  border: 3px solid rgba(255,255,255,0.32);
+  width: 0;
+  height: 0;
   pointer-events: none;
-  mix-blend-mode: soft-light;
-  animation: blendPulse 5s ease-in-out infinite;
+}
+
+.blend-explosion-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1600px;
+  height: 1600px;
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: blendExplosion 4.8s ease-out infinite;
+  background: radial-gradient(circle,
+    transparent 0%,
+    transparent 18%,
+    rgba(6, 42, 74, 0.85) 19%,
+    rgba(6, 42, 74, 0.85) 22%,
+    transparent 23%,
+    transparent 33%,
+    rgba(6, 42, 74, 0.7) 34%,
+    rgba(6, 42, 74, 0.7) 37%,
+    transparent 38%,
+    transparent 48%,
+    rgba(6, 42, 74, 0.55) 49%,
+    rgba(6, 42, 74, 0.55) 52%,
+    transparent 53%
+  );
 }
 
 /* Legacy ring (kept for page-header circles) */
