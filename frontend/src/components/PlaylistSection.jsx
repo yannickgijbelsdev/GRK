@@ -1,0 +1,47 @@
+import React from 'react';
+import { ArrowRight, Clock } from 'lucide-react';
+import { playlist } from '../mock';
+
+const PlaylistSection = () => {
+  return (
+    <section id="gedraaid" className="py-16 md:py-20 bg-[#f9f1f4]">
+      <div className="max-w-4xl mx-auto px-6 lg:px-10">
+        <h2 className="text-[#5a0a2c] text-3xl md:text-4xl font-black mb-10 text-center md:text-left">Playlist</h2>
+        <div className="space-y-5">
+          {playlist.slice(0,3).map((song, idx) => (
+            <div key={song.id} className="bg-white rounded-2xl p-4 md:p-5 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center gap-5 md:gap-7">
+              <div className="flex items-center gap-2 text-[#7a4a64] text-sm font-medium w-16 flex-shrink-0">
+                <Clock size={16} className="text-[#d63384]"/>
+                <span>{song.time}</span>
+              </div>
+              <div className="flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-2xl shadow-lg"
+                style={{background: song.gradient, transform: `rotate(${idx % 2 === 0 ? '-8deg' : '8deg'})`}}>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-[#5a0a2c] text-lg md:text-xl font-bold truncate">{song.title}</h3>
+                <p className="text-[#7a4a64] text-sm mt-1">{song.artist}</p>
+              </div>
+              {idx === 0 && (
+                <div className="hidden md:flex items-end gap-1 h-6">
+                  {[0.4, 0.8, 0.3, 0.9, 0.6].map((h, i) => (
+                    <span key={i} className="w-1 rounded-full" style={{height: `${h*100}%`, background: i % 2 ? '#d63384' : '#ff6b35', animation: `bar 0.8s ease-in-out ${i*0.1}s infinite alternate`}}></span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-end mt-8">
+          <a href="#" className="inline-flex items-center gap-2 text-[#5a0a2c] font-semibold hover:gap-3 transition-all">
+            Bekijk eerder gedraaid
+            <span className="w-8 h-8 rounded-full flex items-center justify-center" style={{background:'linear-gradient(135deg,#d63384,#ff6b35)'}}>
+              <ArrowRight size={16} className="text-white"/>
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default PlaylistSection;
