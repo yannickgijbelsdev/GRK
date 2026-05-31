@@ -184,3 +184,29 @@ export const missedShows = [
   { id: 'sonja-15-5', title: 'Sonja Silva', date: 'Vrijdag 15 mei', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1200&q=80', duration: '3:00' },
   { id: 'jaimy-15-5', title: "Jaimy's Jamz", date: 'Vrijdag 15 mei', image: '/assets/hero-presenter.png', duration: '3:00' },
 ];
+
+// Weekly programming schedule
+const baseSchedule = [
+  { time: '00:00 - 07:00', title: 'Non-stop', host: 'Doorlopende muziek', image: '/assets/grk-logo.png', nonstop: true },
+  { time: '07:00 - 10:00', title: 'The Morning Show', host: 'Q-Bah & Jasmine Sendar', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80' },
+  { time: '10:00 - 13:00', title: "Jaimy's Jamz", host: 'Jaimy de Ruijter', image: '/assets/hero-presenter.png' },
+  { time: '13:00 - 16:00', title: 'Sonja Silva', host: 'Sonja Silva', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80' },
+  { time: '16:00 - 18:00', title: 'De Wat Een Week Show', host: 'Shay Kreuger', image: 'https://images.unsplash.com/photo-1488376739360-cdad29b3b072?w=600&q=80' },
+  { time: '18:00 - 22:00', title: 'De GRK Avondmix', host: 'Wisselende DJs', image: 'https://images.unsplash.com/photo-1581841064838-a470c740e8ee?w=600&q=80' },
+  { time: '22:00 - 00:00', title: 'Late Night Sessions', host: 'Boaz Big B', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&q=80' },
+];
+
+export const weekdays = [
+  { id: 'maandag', label: 'maandag', long: 'MAANDAG' },
+  { id: 'dinsdag', label: 'dinsdag', long: 'DINSDAG' },
+  { id: 'woensdag', label: 'woensdag', long: 'WOENSDAG' },
+  { id: 'donderdag', label: 'donderdag', long: 'DONDERDAG' },
+  { id: 'vrijdag', label: 'vrijdag', long: 'VRIJDAG' },
+  { id: 'zaterdag', label: 'zaterdag', long: 'ZATERDAG' },
+  { id: 'zondag', label: 'zondag', long: 'ZONDAG' },
+];
+
+export const schedule = weekdays.reduce((acc, day) => {
+  acc[day.id] = baseSchedule.map((s, i) => ({ ...s, id: `${day.id}-${i}` }));
+  return acc;
+}, {});

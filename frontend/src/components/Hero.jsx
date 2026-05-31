@@ -83,14 +83,14 @@ const Hero = () => {
             )}
           </button>
           <div className="min-w-0 pr-3">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#062a4a]">
-              <Volume2 size={13} className="text-[#2a5d99]" />
-              <span>{currentShow.time}</span>
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#2a5d99] animate-pulse"></span>
-              <span className="uppercase tracking-wider text-[10px] text-[#2a5d99]">Nu speelt</span>
+            <div className="text-[10px] uppercase tracking-wider font-semibold text-[#2a5d99]">
+              Nu speelt &middot; sinds {nowTrack.time}
             </div>
-            <div className="text-[#062a4a] text-base md:text-lg font-bold leading-tight truncate max-w-[300px] mt-0.5">
-              {nowTrack.artist} — {nowTrack.title.length > 32 ? nowTrack.title.slice(0, 32) + '…' : nowTrack.title}
+            <div className="text-[#062a4a] text-base md:text-lg font-bold leading-tight truncate max-w-[280px] mt-0.5">
+              {nowTrack.title}
+            </div>
+            <div className="text-[#4a6480] text-xs md:text-sm leading-tight truncate max-w-[280px]">
+              {nowTrack.artist}
             </div>
           </div>
         </div>

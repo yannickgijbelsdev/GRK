@@ -138,5 +138,26 @@ html { scroll-behavior: smooth; }
   animation: heroRotate 0.6s ease-out;
 }
 
+/* Mega menu animated rings — gentle slow expansion */
+@keyframes megaMenuRing {
+  0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  30%  { opacity: 0.35; }
+  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+}
+.mega-menu-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 9999px;
+  border: 2px solid rgba(255,255,255,0.25);
+  animation: megaMenuRing 8s ease-out infinite;
+  mix-blend-mode: soft-light;
+}
+
+@keyframes megaItemIn {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 /* Page container padding for sticky player breathing room */
 .page-pad-bottom { padding-bottom: 140px; }
