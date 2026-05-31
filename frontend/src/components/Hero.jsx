@@ -10,10 +10,10 @@ const Hero = () => {
       style={{
         background: 'linear-gradient(180deg,#7a1042 0%,#9a1c4a 35%,#c84a3a 80%,#e07238 100%)',
         height: '75vh',
-        minHeight: '640px',
+        minHeight: '680px',
       }}
     >
-      <div className="relative max-w-7xl mx-auto h-full px-6 lg:px-10 pt-24 md:pt-28 pb-0 flex flex-col items-center justify-end">
+      <div className="relative max-w-7xl mx-auto h-full px-6 lg:px-10 pt-24 md:pt-28 pb-16 md:pb-20 flex flex-col items-center">
         {/* Visual stage with rings centered behind the figure */}
         <div className="relative flex items-end justify-center w-full flex-1 min-h-0">
           {/* Static concentric circles, always visible (no flicker on load) */}
@@ -52,7 +52,7 @@ const Hero = () => {
             })}
           </div>
 
-          {/* Hero person photo centered, anchored to bottom */}
+          {/* Hero person photo centered, anchored to bottom of stage */}
           <img
             src={heroPersonImg}
             alt="NPO Blend"
@@ -61,8 +61,8 @@ const Hero = () => {
           />
         </div>
 
-        {/* Player Bar centered, directly touching the figure (no gap) */}
-        <div className="relative z-20 w-full -mt-2">
+        {/* Player Bar centered, with breathing room above and below so banner & rings remain visible around it */}
+        <div className="relative z-20 w-full mt-6 md:mt-8">
           <PersistentPlayer />
         </div>
       </div>
