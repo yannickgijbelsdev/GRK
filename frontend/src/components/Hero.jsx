@@ -1,12 +1,7 @@
 import React from 'react';
 import PersistentPlayer from './PersistentPlayer';
 
-const artistImages = [
-  'https://images.unsplash.com/photo-1581841064838-a470c740e8ee?w=600&q=80',
-  'https://images.pexels.com/photos/6124236/pexels-photo-6124236.jpeg?w=600',
-  'https://images.unsplash.com/photo-1717248320480-513d02b13ddc?w=600&q=80',
-  'https://images.pexels.com/photos/8412290/pexels-photo-8412290.jpeg?w=600',
-];
+const heroPersonImg = 'https://customer-assets.emergentagent.com/job_blend-launch/artifacts/9mj6qqov_2024_Nico_Kanakaris-2048x1151%20%281%29.png';
 
 const Hero = () => {
   return (
@@ -28,40 +23,18 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Center circle artist collage */}
-      <div className="relative pt-36 pb-16 flex flex-col items-center justify-center">
-        <div className="relative w-[520px] h-[520px] max-w-[88vw] max-h-[88vw]">
-          {/* Outer halo */}
-          <div className="absolute inset-0 rounded-full" style={{background: 'radial-gradient(circle at 50% 50%, rgba(255,180,200,0.18), transparent 65%)'}} />
-
-          {/* Center large circle */}
-          <div className="absolute left-1/2 top-1/2 w-[40%] h-[40%] -translate-x-1/2 -translate-y-1/2 rounded-full overflow-hidden shadow-2xl z-30 ring-4 ring-white/20 blend-float">
-            <img src={artistImages[1]} alt="Artist" className="w-full h-full object-cover"/>
-          </div>
-
-          {/* Left circle */}
-          <div className="absolute left-[2%] top-1/2 w-[32%] h-[32%] -translate-y-1/2 rounded-full overflow-hidden shadow-xl z-20 ring-2 ring-white/15 blend-float" style={{animationDelay: '0.4s'}}>
-            <img src={artistImages[0]} alt="Artist" className="w-full h-full object-cover"/>
-          </div>
-
-          {/* Right circle */}
-          <div className="absolute right-[2%] top-1/2 w-[32%] h-[32%] -translate-y-1/2 rounded-full overflow-hidden shadow-xl z-20 ring-2 ring-white/15 blend-float" style={{animationDelay: '0.8s'}}>
-            <img src={artistImages[2]} alt="Artist" className="w-full h-full object-cover"/>
-          </div>
-
-          {/* Top small circle */}
-          <div className="absolute left-1/2 top-[4%] w-[22%] h-[22%] -translate-x-1/2 rounded-full overflow-hidden shadow-lg z-10 ring-2 ring-white/15 blend-float" style={{animationDelay: '1.2s'}}>
-            <img src={artistImages[3]} alt="Artist" className="w-full h-full object-cover"/>
-          </div>
-
-          {/* Bottom small circle with gradient */}
-          <div className="absolute left-1/2 bottom-[4%] w-[22%] h-[22%] -translate-x-1/2 rounded-full shadow-lg z-10 ring-2 ring-white/20 blend-float" style={{transform: 'translateX(-50%)', background: 'linear-gradient(135deg,#ff8a4d,#d63384)', animationDelay: '1.6s'}}>
-          </div>
-        </div>
+      {/* Hero person photo, full size, anchored to the bottom of the banner */}
+      <div className="relative pt-28 md:pt-32 flex items-end justify-center min-h-[640px] md:min-h-[760px]">
+        <img
+          src={heroPersonImg}
+          alt="NPO Blend"
+          className="relative z-10 block w-auto h-[520px] md:h-[680px] lg:h-[760px] object-contain object-bottom select-none pointer-events-none drop-shadow-2xl"
+          draggable={false}
+        />
       </div>
 
       {/* Player Bar (in hero) */}
-      <div className="relative pb-12 -mt-2">
+      <div className="relative pb-12 -mt-2 z-20">
         <PersistentPlayer />
       </div>
     </section>
