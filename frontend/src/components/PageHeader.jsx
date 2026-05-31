@@ -3,13 +3,31 @@ import React from 'react';
 const PageHeader = ({ title, subtitle }) => {
   return (
     <section className="relative overflow-hidden pt-32 pb-16 md:pt-40 md:pb-24" style={{background: 'linear-gradient(180deg,#7a1042 0%,#a52254 60%,#c84a3a 100%)'}}>
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          {Array.from({length: 5}).map((_, i) => (
+          {[600, 1000, 1400].map((size, i) => (
             <div
-              key={i}
-              className="blend-ring"
-              style={{ width: `${260 + i * 140}px`, height: `${260 + i * 140}px`, animationDelay: `${i * 0.6}s` }}
+              key={`s-${i}`}
+              className="blend-ring-static"
+              style={{
+                width: `${size}px`,
+                height: `${size}px`,
+                marginLeft: `-${size / 2}px`,
+                marginTop: `-${size / 2}px`,
+              }}
+            />
+          ))}
+          {[800, 1200].map((size, i) => (
+            <div
+              key={`p-${i}`}
+              className="blend-ring-pulse"
+              style={{
+                width: `${size}px`,
+                height: `${size}px`,
+                marginLeft: `-${size / 2}px`,
+                marginTop: `-${size / 2}px`,
+                animationDelay: `${-2 + i * 1.6}s`,
+              }}
             />
           ))}
         </div>

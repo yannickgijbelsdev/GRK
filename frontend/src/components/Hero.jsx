@@ -18,7 +18,7 @@ const Hero = () => {
         <div className="relative flex items-end justify-center w-full flex-1 min-h-0">
           {/* Static concentric circles, always visible (no flicker on load) */}
           <div className="absolute left-1/2 bottom-0 -translate-x-1/2 pointer-events-none" aria-hidden="true">
-            {[600, 900, 1200, 1500, 1850].map((size, i) => (
+            {[700, 1100, 1500].map((size, i) => (
               <div
                 key={`s-${i}`}
                 className="blend-ring-static"
@@ -30,8 +30,8 @@ const Hero = () => {
                 }}
               />
             ))}
-            {/* Subtle pulsing accent rings on top */}
-            {[750, 1100, 1400].map((size, i) => (
+            {/* Subtle pulsing accent ring */}
+            {[900, 1300].map((size, i) => (
               <div
                 key={`p-${i}`}
                 className="blend-ring-pulse"
