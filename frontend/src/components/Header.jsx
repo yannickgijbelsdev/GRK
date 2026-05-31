@@ -29,7 +29,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
           <img
-            src="https://customer-assets.emergentagent.com/job_blend-launch/artifacts/nkl7t6i8_GRK24_1%20%282%29.png"
+            src="/assets/grk-logo.png"
             alt="GRK"
             className="h-10 w-10 md:h-11 md:w-11 rounded-full object-cover ring-2 ring-white/20 group-hover:ring-white/40 transition"
           />

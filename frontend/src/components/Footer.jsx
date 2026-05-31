@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <img
-              src="https://customer-assets.emergentagent.com/job_blend-launch/artifacts/nkl7t6i8_GRK24_1%20%282%29.png"
+              src="/assets/grk-logo.png"
               alt="GRK"
               className="h-12 w-12 rounded-full object-cover ring-2 ring-white/20"
             />

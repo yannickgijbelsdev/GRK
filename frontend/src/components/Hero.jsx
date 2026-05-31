@@ -3,7 +3,7 @@ import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { broadcasts } from '../mock';
 
-const heroPersonImg = 'https://customer-assets.emergentagent.com/job_blend-launch/artifacts/9mj6qqov_2024_Nico_Kanakaris-2048x1151%20%281%29.png';
+const heroPersonImg = '/assets/hero-presenter.png';
 const nowShow = broadcasts[2]; // Jaimy's Jamz with Jaimy de Ruijter
 
 const Hero = () => {
