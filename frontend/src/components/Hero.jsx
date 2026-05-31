@@ -18,24 +18,22 @@ const Hero = () => {
         minHeight: '600px',
       }}
     >
-      {/* Full-width flashing rings + centered explosion sphere. Rings flash opacity in sync
-          with the sphere — no scaling so they never produce sideways artefacts. */}
+      {/* Solid dark sphere + ripple rings emerging from its edge — continuous wave outward */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Flashing rings — span the whole banner, all synced with the sphere */}
-        {[600, 900, 1200, 1500, 1800].map((size, i) => (
+        {/* Solid dark sphere — like the logo */}
+        <div className="blend-sphere" />
+        {/* Ripple rings: each starts at sphere edge and expands outward, staggered for continuous waves */}
+        {[0, 1.25, 2.5, 3.75].map((delay, i) => (
           <div
-            key={`f-${i}`}
-            className="blend-ring-flash"
+            key={`rp-${i}`}
+            className="blend-ripple"
             style={{
-              width: `${size}px`,
-              height: `${size}px`,
-              marginLeft: `-${size / 2}px`,
-              marginTop: `-${size / 2}px`,
+              marginLeft: '-410px',
+              marginTop: '-410px',
+              animationDelay: `${delay}s`,
             }}
           />
         ))}
-        {/* Centered explosion sphere */}
-        <div className="blend-sphere" />
       </div>
 
       <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">

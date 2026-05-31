@@ -9,7 +9,7 @@
   mix-blend-mode: soft-light;
 }
 
-/* Static dark sphere — sits at full size, no animation, just a deep dark presence */
+/* Solid dark sphere — same flat navy as the logo, no glow, no animation */
 .blend-sphere {
   position: absolute;
   left: 50%;
@@ -19,20 +19,38 @@
   margin-left: -410px;
   margin-top: -410px;
   border-radius: 9999px;
-  background: radial-gradient(circle, #03182b 0%, #062a4a 65%, rgba(6,42,74,0.55) 88%, transparent 100%);
+  background: #051a30;
   pointer-events: none;
   opacity: 1;
 }
 
-/* Outer rings opacity rhythm — calm → heavy burst → very calm, slowly repeating */
+/* Ripple rings that emerge from the sphere edge and expand outward, fading out */
+@keyframes blendRipple {
+  0%   { transform: translate(-50%, -50%) scale(1);    opacity: 0.85; border-width: 3px; }
+  60%  { opacity: 0.45; border-width: 2px; }
+  100% { transform: translate(-50%, -50%) scale(2.2);  opacity: 0; border-width: 1px; }
+}
+.blend-ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 820px;
+  height: 820px;
+  border-radius: 9999px;
+  border: 3px solid rgba(255,255,255,0.7);
+  pointer-events: none;
+  animation: blendRipple 5s ease-out infinite;
+}
+
+/* Flash rings for the secondary page banners (no sphere) — calm → heavy → calm rhythm */
 @keyframes blendRingFlash {
-  0%   { opacity: 0.20; }   /* very calm */
-  15%  { opacity: 0.35; }   /* gentle pulse */
+  0%   { opacity: 0.20; }
+  15%  { opacity: 0.35; }
   25%  { opacity: 0.25; }
-  40%  { opacity: 1.00; }   /* heavy burst */
+  40%  { opacity: 1.00; }
   50%  { opacity: 0.85; }
-  60%  { opacity: 0.55; }   /* coming down */
-  75%  { opacity: 0.12; }   /* very calm */
+  60%  { opacity: 0.55; }
+  75%  { opacity: 0.12; }
   90%  { opacity: 0.18; }
   100% { opacity: 0.20; }
 }
