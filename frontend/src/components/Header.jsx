@@ -7,7 +7,7 @@ const Header = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 320);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -22,7 +22,9 @@ const Header = () => {
     { label: 'Gemist', to: '/gemist' },
   ];
 
-  const solid = scrolled || !isHome;
+  // Animated background only when user scrolled past the banner.
+  // All pages have banners (home hero or PageHeader), so we always start transparent.
+  const solid = scrolled;
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${solid ? 'shadow-lg' : ''}`}>
