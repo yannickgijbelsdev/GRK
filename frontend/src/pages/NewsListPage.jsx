@@ -7,7 +7,7 @@ import { newsItems } from '../mock';
 const NewsListPage = () => {
   return (
     <>
-      <PageHeader title="Nieuws" subtitle="Het laatste nieuws uit de wereld van R&B en hiphop." />
+      <PageHeader title="Nieuws uit de buurt" subtitle="Het laatste nieuws uit de wereld van R&B en hiphop." />
       <section className="py-12 md:py-16 page-pad-bottom">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

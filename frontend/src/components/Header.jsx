@@ -26,7 +26,7 @@ const Header = () => {
 
   const isHome = location.pathname === '/';
   const navItems = [
-    { label: 'Nieuws', to: '/nieuws' },
+    { label: 'Nieuws uit de buurt', to: '/nieuws' },
     { label: 'Programmering', to: '/programmering' },
     { label: 'Gedraaid', to: '/gedraaid' },
     { label: 'Gemist', to: '/gemist' },

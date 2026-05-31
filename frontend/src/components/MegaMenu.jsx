@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
 
 const navItems = [
-  { label: 'Nieuws', to: '/nieuws' },
+  { label: 'Nieuws uit de buurt', to: '/nieuws' },
   { label: 'Programmering', to: '/programmering' },
   { label: 'Gedraaid', to: '/gedraaid' },
   { label: 'Gemist', to: '/gemist' },

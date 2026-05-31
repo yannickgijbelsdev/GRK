@@ -23,7 +23,7 @@ const Footer = () => {
         <div className="md:text-right space-y-4">
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3">
             <Link to="/" className="text-white hover:underline underline-offset-4">grk.nl</Link>
-            <Link to="/nieuws" className="text-white hover:underline underline-offset-4">Nieuws</Link>
+            <Link to="/nieuws" className="text-white hover:underline underline-offset-4">Nieuws uit de buurt</Link>
             <Link to="/programmering" className="text-white hover:underline underline-offset-4">Programmering</Link>
             <Link to="/over" className="text-white hover:underline underline-offset-4">Over GRK</Link>
           </div>
