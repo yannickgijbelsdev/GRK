@@ -9,34 +9,37 @@
   mix-blend-mode: soft-light;
 }
 
-/* Slow centered "heartbeat" sphere — fills from center, expands, contracts, repeats */
+/* Brutal explosion sphere — fast burst out, slow fade back in. Repeats. */
 @keyframes blendSphere {
-  0%   { transform: translate(-50%, -50%) scale(0.05); opacity: 0; }
-  20%  { transform: translate(-50%, -50%) scale(0.45); opacity: 0.85; }
-  50%  { transform: translate(-50%, -50%) scale(1);    opacity: 0.55; }
-  80%  { transform: translate(-50%, -50%) scale(0.45); opacity: 0.30; }
-  100% { transform: translate(-50%, -50%) scale(0.05); opacity: 0; }
+  0%   { transform: translate(-50%, -50%) scale(0);    opacity: 0; }
+  8%   { transform: translate(-50%, -50%) scale(0.15); opacity: 0.6; }
+  22%  { transform: translate(-50%, -50%) scale(0.95); opacity: 1; }
+  35%  { transform: translate(-50%, -50%) scale(1.05); opacity: 0.85; }
+  70%  { transform: translate(-50%, -50%) scale(0.6);  opacity: 0.25; }
+  100% { transform: translate(-50%, -50%) scale(0);    opacity: 0; }
 }
 
 .blend-sphere {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 900px;
-  height: 900px;
+  width: 820px;
+  height: 820px;
   border-radius: 9999px;
-  background: radial-gradient(circle, #062a4a 0%, #062a4a 55%, rgba(6,42,74,0.4) 85%, transparent 100%);
+  background: radial-gradient(circle, #062a4a 0%, #062a4a 55%, rgba(6,42,74,0.45) 85%, transparent 100%);
   pointer-events: none;
-  animation: blendSphere 10s ease-in-out infinite;
+  animation: blendSphere 11s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
-/* Concentric rings that pulse along with the sphere — appear at peak and ride the same rhythm */
-@keyframes blendRingPulse {
-  0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
-  35%  { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
-  55%  { transform: translate(-50%, -50%) scale(1);   opacity: 0.6; }
-  75%  { transform: translate(-50%, -50%) scale(0.7); opacity: 0.25; }
-  100% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+/* Brutal concentric rings exploding outward from the sphere center.
+   Fast burst at peak, then shockwave fades out. */
+@keyframes blendRingExplosion {
+  0%   { transform: translate(-50%, -50%) scale(0);    opacity: 0; }
+  18%  { transform: translate(-50%, -50%) scale(0);    opacity: 0; }
+  28%  { transform: translate(-50%, -50%) scale(0.9);  opacity: 0.95; }
+  42%  { transform: translate(-50%, -50%) scale(1.1);  opacity: 0.7; }
+  72%  { transform: translate(-50%, -50%) scale(1.25); opacity: 0.25; }
+  100% { transform: translate(-50%, -50%) scale(1.35); opacity: 0; }
 }
 
 .blend-ring-pulse {
@@ -44,9 +47,9 @@
   left: 50%;
   top: 50%;
   border-radius: 9999px;
-  border: 2px solid rgba(255,255,255,0.55);
+  border: 3px solid rgba(255,255,255,0.7);
   pointer-events: none;
-  animation: blendRingPulse 10s ease-in-out infinite;
+  animation: blendRingExplosion 11s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 /* Legacy ring (kept for page-header circles) */

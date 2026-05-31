@@ -18,19 +18,27 @@ const Hero = () => {
         minHeight: '600px',
       }}
     >
-      {/* Centered "heartbeat" sphere + concentric rings that pulse together — slow & subtle */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Solid sphere that fills, pulses, contracts */}
+      {/* Centered explosion: solid sphere bursts outward, rings shockwave with it.
+          Wrapped in a circular mask so rings never bleed into straight side-lines. */}
+      <div
+        className="absolute inset-0 pointer-events-none overflow-hidden"
+        aria-hidden="true"
+        style={{
+          WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 0%, black 36%, transparent 62%)',
+          maskImage: 'radial-gradient(circle at 50% 50%, black 0%, black 36%, transparent 62%)',
+        }}
+      >
+        {/* Solid sphere that fills then explodes outward */}
         <div className="blend-sphere" />
-        {/* Concentric rings that ride the same rhythm with staggered delay */}
-        {[600, 900, 1200, 1500].map((size, i) => (
+        {/* Concentric rings that explode outward from the sphere */}
+        {[420, 580, 740, 900].map((size, i) => (
           <div
             key={`r-${i}`}
             className="blend-ring-pulse"
             style={{
               width: `${size}px`,
               height: `${size}px`,
-              animationDelay: `${i * 0.25}s`,
+              animationDelay: `${i * 0.18}s`,
             }}
           />
         ))}
