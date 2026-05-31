@@ -7,10 +7,20 @@ const Header = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 320);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    // Home has a tall hero (~68vh); other pages have shorter PageHeader banners (~320px)
+    const isHomePath = location.pathname === '/';
+    const onScroll = () => {
+      const threshold = isHomePath ? Math.max(window.innerHeight * 0.55, 480) : 320;
+      setScrolled(window.scrollY > threshold);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [location.pathname]);
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
