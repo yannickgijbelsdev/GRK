@@ -81,5 +81,14 @@ html { scroll-behavior: smooth; }
 
 ::selection { background: #d63384; color: white; }
 
+/* Player text rotate animation when alternating between track and show */
+@keyframes playerRotate {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.player-rotate {
+  animation: playerRotate 0.45s ease-out;
+}
+
 /* Page container padding for sticky player breathing room */
 .page-pad-bottom { padding-bottom: 140px; }
