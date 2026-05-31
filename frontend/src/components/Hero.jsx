@@ -48,11 +48,11 @@ const Hero = () => {
             draggable={false}
           />
 
-          <div className="relative z-10 h-full flex flex-col justify-center" style={{ maxWidth: '420px' }}>
-            {/* Mini now-playing player — only track info, cover + play button */}
-            <div className="inline-flex items-center gap-3 bg-white/95 backdrop-blur rounded-full pl-1 pr-4 py-1 shadow-xl mb-5 max-w-fit ring-1 ring-black/5">
+          <div className="relative z-10 h-full flex flex-col justify-center" style={{ maxWidth: '480px' }}>
+            {/* Mini player — same style as the sticky player, smaller scale, track only */}
+            <div className="bg-white rounded-xl shadow-2xl p-2 md:p-2.5 flex items-center gap-2.5 md:gap-3 ring-1 ring-black/5 mb-6 max-w-fit">
               <div
-                className="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-white font-black text-base"
+                className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-white font-black text-base"
                 style={{ background: nowTrack.gradient }}
                 aria-hidden="true"
               >
@@ -61,8 +61,8 @@ const Hero = () => {
               <button
                 onClick={toggle}
                 aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-                className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-white shadow hover:scale-105 transition-transform"
-                style={{ background: 'linear-gradient(135deg,#2a5d99,#4b8fcc)' }}
+                className="flex-shrink-0 w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white shadow hover:scale-105 transition-transform"
+                style={{ background: 'linear-gradient(135deg,#2a5d99 0%,#4b8fcc 100%)' }}
               >
                 {playing ? (
                   <Pause size={14} fill="white" />
@@ -70,13 +70,15 @@ const Hero = () => {
                   <Play size={14} fill="white" className="ml-0.5" />
                 )}
               </button>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#2a5d99]">
-                  <Volume2 size={11} />
-                  <span>Nu speelt</span>
+              <div className="min-w-0 pr-1">
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-[#062a4a]">
+                  <Volume2 size={11} className="text-[#2a5d99]" />
+                  <span>{currentShow.time}</span>
+                  <span className="inline-block w-1 h-1 rounded-full bg-[#2a5d99] animate-pulse"></span>
+                  <span className="uppercase tracking-wider text-[9px] text-[#2a5d99]">Nu speelt</span>
                 </div>
-                <div className="text-[#062a4a] text-sm font-bold leading-tight truncate max-w-[180px]">
-                  {nowTrack.artist} — {nowTrack.title.length > 20 ? nowTrack.title.slice(0, 20) + '…' : nowTrack.title}
+                <div className="text-[#062a4a] text-sm font-bold leading-tight truncate max-w-[220px]">
+                  {nowTrack.artist} — {nowTrack.title.length > 22 ? nowTrack.title.slice(0, 22) + '…' : nowTrack.title}
                 </div>
               </div>
             </div>
@@ -90,20 +92,6 @@ const Hero = () => {
             <p className="text-white/90 text-base md:text-xl mt-3 md:mt-4 font-medium">
               met {nowShow.host}
             </p>
-
-            <button
-              onClick={toggle}
-              aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-              className="relative mt-6 md:mt-8 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
-              style={{ width: '5rem', height: '5rem' }}
-            >
-              <span className="absolute inset-0 rounded-full bg-white animate-ping opacity-20" aria-hidden="true"></span>
-              {playing ? (
-                <Pause size={30} className="relative text-[#062a4a]" fill="#062a4a" />
-              ) : (
-                <Play size={30} className="relative text-[#062a4a] ml-1" fill="#062a4a" />
-              )}
-            </button>
           </div>
         </div>
       </div>
