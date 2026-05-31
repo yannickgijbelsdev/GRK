@@ -1,57 +1,80 @@
-// Mock data for NPO Blend clone
+// Mock data for GRK
 
 export const newsItems = [
   {
-    id: 'blend-top-1000',
-    title: 'Dit is de BLEND Top 1000!',
+    id: 'grk-top-1000',
+    title: 'Dit is de GRK Top 1000!',
     date: '2 mei 2026',
-    category: 'BLEND Top 1000',
-    image: 'https://assets.welkom.npo.nl/general/_twoToOne/Blend1000-website.png?v=1780202669',
-    excerpt: 'De allerbeste R&B en hiphop tracks of all time. Stem mee en luister naar de BLEND Top 1000!',
+    category: 'GRK Top 1000',
+    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600&q=80',
+    excerpt: 'De allerbeste R&B en hiphop tracks of all time. Stem mee en luister naar de GRK Top 1000!',
+    lead: 'De GRK Top 1000 is gestart en we tellen tot en met vrijdag af tot de nummer 1 in de lijst. Onderweg ga je op reis door de muziekgeschiedenis van de jaren \u201880 tot de \u201820s en maak je een bijzondere trip door memory lane.',
     body: [
-      'De BLEND Top 1000 is terug! Ook dit jaar lanceren we onze ultieme lijst met de beste R&B en hiphop nummers aller tijden, samengesteld door jullie, de luisteraars.',
-      'Van klassiekers van Tupac en Notorious B.I.G. tot de hits van vandaag van Drake, Beyoncé en Bruno Mars: alles komt voorbij in 1000 fenomenale tracks.',
-      'De lijst wordt non-stop uitgezonden van vrijdag tot zondag, met speciale interviews, anekdotes en live optredens. Mis het niet!'
-    ]
+      'De GRK Top 1000 is precies wat je ervan verwacht: 90% Hiphop en R&B, 80% uit de 90s en 00s. R&B neemt de helft van de lijst voor zijn rekening, Hiphop pakt zo\u2019n 40%, en Soul, Slow Jams en een vleugje Pop vullen de rest op. De vrouwen? Goed vertegenwoordigd \u2014 45% van alle tracks is van of m\u00e9t een vrouw.',
+      'Welke artiesten zien we vaak terugkomen in de lijst? Een handvol legendes komt in vier of vijf verschillende decennia voorbij, van de jaren 70 tot ver in de 20s. Hun invloed loopt als een rode draad door de hele Top 1000.',
+      'Het beste GRK-jaar? 1996. Precies dertig jaar geleden en nog steeds fire. Tientallen tracks uit dat jaar staan in de lijst, meer dan welk ander jaar dan ook. Dat was gewoon een fantastisch jaar voor releases en de luisteraars zijn dat niet vergeten.',
+    ],
+    sections: [
+      {
+        heading: 'Hoogtepunten uit de Top 10',
+        items: [
+          'Nederlandse hiphop is sterk vertegenwoordigd, met meerdere binnenlandse acts in de top 100.',
+          'Klassieke R&B-ballades vullen de top 5, een terugkerend patroon sinds de eerste editie.',
+          'Een posthume hommage aan een dit jaar overleden artiest haalt verrassend de top 100.',
+        ],
+      },
+      {
+        heading: 'Opvallende statistieken',
+        items: [
+          'Langste track in de lijst: ruim 7 minuten, een soulvolle slow jam uit het begin van de jaren 2000.',
+          'Kortste track: precies 2 minuten en 14 seconden, een korte maar krachtige hiphop-classic.',
+          'Aandeel vrouwelijke artiesten in de top 20: maar liefst 60%.',
+        ],
+      },
+    ],
   },
   {
     id: 'tupac-familie',
     title: 'Familie van Tupac eist schadevergoeding van vermoedelijke moordenaar',
     date: '29 april 2026',
     category: 'Nieuws',
-    image: 'https://assets.welkom.npo.nl/general/_twoToOne/Schermafbeelding-2026-04-29-om-17.03.33.png?v=1780202670',
+    image: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1600&q=80',
     excerpt: 'Bijna 30 jaar na de dood van rap-legende Tupac Shakur sleept zijn familie de vermoedelijke moordenaar voor de rechter.',
+    lead: 'De familie van rap-icoon Tupac Shakur heeft een civielrechtelijke aanklacht ingediend tegen de man die wordt verdacht van zijn moord in 1996.',
     body: [
-      'De familie van rap-icoon Tupac Shakur heeft een civielrechtelijke aanklacht ingediend tegen de man die wordt verdacht van zijn moord in 1996.',
-      'De zaak ligt al jarenlang gevoelig in de hiphop-wereld. Volgens advocaten draait het niet alleen om financiële compensatie, maar vooral om gerechtigheid.',
-      'De rechtszaak begint volgende maand in Las Vegas.'
-    ]
+      'De zaak ligt al jarenlang gevoelig in de hiphop-wereld. Volgens advocaten draait het niet alleen om financi\u00eble compensatie, maar vooral om gerechtigheid.',
+      'De rechtszaak begint volgende maand in Las Vegas. Eerdere strafrechtelijke procedures bleven jarenlang zonder resultaat.',
+      'Tupac wordt door velen nog steeds beschouwd als een van de invloedrijkste rappers aller tijden. Zijn nalatenschap reikt tot ver buiten de muziek.',
+    ],
+    sections: [],
   },
   {
     id: 'fc-basel-kanye',
     title: 'Zwitserse voetbalclub FC Basel cancelt concert van Kanye West',
     date: '20 april 2026',
     category: 'Nieuws',
-    image: 'https://assets.welkom.npo.nl/general/_twoToOne/ANP-520296425-1.jpg?v=1780202671',
+    image: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=1600&q=80',
     excerpt: 'FC Basel trekt zich terug als gastheer voor het stadionoptreden van Kanye West na publieke verontwaardiging.',
+    lead: 'FC Basel heeft besloten het aangekondigde concert van Kanye West in het St. Jakob-Park niet door te laten gaan.',
     body: [
-      'FC Basel heeft besloten het aangekondigde concert van Kanye West in het St. Jakob-Park niet door te laten gaan.',
       'De club ontving veel kritiek van fans en sponsors na recente uitspraken van de rapper.',
-      'Een nieuwe locatie voor het concert is nog niet bekend.'
-    ]
+      'Een nieuwe locatie voor het concert is nog niet bekend. Volgens de organisatie wordt onderhandeld met andere Europese steden.',
+    ],
+    sections: [],
   },
   {
     id: 'beyonce-tour',
-    title: 'Beyoncé kondigt nieuwe wereldtournee aan, ook naar Nederland',
+    title: 'Beyonc\u00e9 kondigt nieuwe wereldtournee aan, ook naar Nederland',
     date: '15 april 2026',
     category: 'Nieuws',
-    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=1600&q=80',
     excerpt: 'Queen Bey komt in 2026 naar Europa met een spectaculaire stadiontour.',
+    lead: 'Beyonc\u00e9 heeft via Instagram een wereldwijde stadiontour aangekondigd voor 2026.',
     body: [
-      'Beyoncé heeft via Instagram een wereldwijde stadiontour aangekondigd voor 2026.',
       'In Nederland staat de zangeres op 18 juli in de Johan Cruijff ArenA. Kaartverkoop start volgende week vrijdag.',
-      'Het wordt haar eerste optreden in ons land sinds 2023.'
-    ]
+      'Het wordt haar eerste optreden in ons land sinds 2023. Speciale meet-and-greet pakketten worden later aangekondigd.',
+    ],
+    sections: [],
   },
 ];
 
@@ -60,40 +83,40 @@ export const fragments = [
     id: 'neyo-akon-ziggo',
     title: "Ne-Yo en Akon zetten Ziggo Dome op de kop: Dit vonden de Jaimy's Jamz-winnaars",
     date: 'Maandag 18 mei, 11:26 uur',
-    image: 'https://radioimages.npox.nl//ANP-558389666.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98',
+    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=80',
     excerpt: 'Twee winnaars van de Jaimys Jamz-actie wonnen kaarten voor het concert van Ne-Yo en Akon.',
     duration: '4:32',
     body: [
       'Wat een avond! Ne-Yo en Akon stonden samen op het podium van een uitverkochte Ziggo Dome.',
       'Onze twee winnaars Karin en Jamal mochten erbij zijn en deelden hun ervaring live in de show.',
-      'Luister hieronder het volledige fragment terug.'
-    ]
+      'Luister hieronder het volledige fragment terug.',
+    ],
   },
   {
     id: 'mar-khallil',
     title: 'Mar & Khallil: Van virale Instagram-sketches naar de podcast-charts',
     date: 'Donderdag 14 mei, 11:15 uur',
-    image: 'https://radioimages.npox.nl//Charity%20Gala%20Event%20Fundraiser%20Non-profit%20Website%20in%20Dark%20Green%20Beige%20Style%20(7).png?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98',
+    image: 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=1200&q=80',
     excerpt: 'Het duo Mar & Khallil over hun groei van Instagram naar de Spotify top 10.',
     duration: '12:08',
     body: [
       'Mar en Khallil begonnen vier jaar geleden met korte sketches op Instagram.',
-      'Inmiddels staan ze met hun podcast "Twee Werelden" wekenlang in de Spotify top 10.',
-      'Een gesprek over identiteit, humor en groeien zonder jezelf te verliezen.'
-    ]
+      'Inmiddels staan ze met hun podcast \u201cTwee Werelden\u201d wekenlang in de Spotify top 10.',
+      'Een gesprek over identiteit, humor en groeien zonder jezelf te verliezen.',
+    ],
   },
   {
     id: 'fatbikes-vondelpark',
     title: 'Fatbikes verboden in het Vondelpark in Amsterdam',
     date: 'Dinsdag 12 mei, 14:22 uur',
-    image: 'https://radioimages.npox.nl//Charity%20Gala%20Event%20Fundraiser%20Non-profit%20Website%20in%20Dark%20Green%20Beige%20Style%20(6).png?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98',
+    image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200&q=80',
     excerpt: 'De gemeente Amsterdam heeft een verbod ingesteld op fatbikes in het Vondelpark.',
     duration: '6:17',
     body: [
       'Sinds 1 mei mogen fatbikes het Vondelpark niet meer in.',
       'Volgens de gemeente leverden de elektrische fietsen te veel onveilige situaties op.',
-      'We bespreken met experts en gebruikers wat dit betekent voor de toekomst.'
-    ]
+      'We bespreken met experts en gebruikers wat dit betekent voor de toekomst.',
+    ],
   },
 ];
 
@@ -102,8 +125,8 @@ export const broadcasts = [
     id: 'wat-een-week-shay',
     title: 'De Wat Een Week Show met Shay',
     date: 'Vrijdag 29 mei, 16:00 - 18:00 uur',
-    image: 'https://radioimages.npox.nl/BLND/image/79fc7813-8a2b-4d11-8e0d-092aff805957/Shay-Kreuger-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98',
-    network: 'BNNVARA',
+    image: 'https://images.unsplash.com/photo-1488376739360-cdad29b3b072?w=1200&q=80',
+    network: 'GRK',
     description: 'Shay Kreuger bespreekt elke vrijdag de meest besproken momenten van de week, met gasten, muziek en humor.',
     host: 'Shay Kreuger',
   },
@@ -111,8 +134,8 @@ export const broadcasts = [
     id: 'sonja-silva',
     title: 'Sonja Silva',
     date: 'Vrijdag 29 mei, 13:00 - 16:00 uur',
-    image: 'https://radioimages.npox.nl/BLND/image/523758bf-6510-4724-9961-543cbf332f41/Sonja-Silva-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98',
-    network: 'NTR',
+    image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1200&q=80',
+    network: 'GRK',
     description: 'Drie uur lang de allerbeste R&B, Soul en Hiphop met Sonja Silva. Met dagelijkse rubrieken en live gasten.',
     host: 'Sonja Silva',
   },
@@ -120,17 +143,17 @@ export const broadcasts = [
     id: 'jaimys-jamz',
     title: "Jaimy's Jamz",
     date: 'Vrijdag 29 mei, 10:00 - 13:00 uur',
-    image: 'https://radioimages.npox.nl/BLND/image/bfe1221d-2486-426d-b25a-7e27fff23510/Jaimy-de-Ruijter-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98',
-    network: 'POW',
+    image: '/assets/hero-presenter.png',
+    network: 'GRK',
     description: 'Jaimy de Ruijter neemt je elke ochtend mee met de beste tracks, interviews en aanstormend talent.',
     host: 'Jaimy de Ruijter',
   },
   {
     id: 'avond-mix',
-    title: 'De BLEND Avondmix',
+    title: 'De GRK Avondmix',
     date: 'Vrijdag 29 mei, 18:00 - 22:00 uur',
-    image: 'https://images.unsplash.com/photo-1581841064838-a470c740e8ee?w=600&q=80',
-    network: 'KRO-NCRV',
+    image: 'https://images.unsplash.com/photo-1581841064838-a470c740e8ee?w=1200&q=80',
+    network: 'GRK',
     description: 'Eindeloos de beste mixen voor de avond, samengesteld door wisselende DJs.',
     host: 'Wisselende DJs',
   },
@@ -150,14 +173,14 @@ export const playlist = [
 export const currentShow = {
   time: '12:00 - 00:00',
   title: 'Non-stop',
-  image: 'https://radioimages.npox.nl/BLND/image/b47decd9-2668-4de1-b75b-9eeed0d6ec4e/npoblend-non-stop-tekst-1920x1080.jpg?aspect_ratio=4:3&width=128&height=128&crop_gravity=center&quality=98',
+  image: '/assets/grk-logo.png',
 };
 
 export const missedShows = [
-  { id: 'shay-22-5', title: 'De Wat Een Week Show met Shay', date: 'Vrijdag 22 mei', image: 'https://radioimages.npox.nl/BLND/image/79fc7813-8a2b-4d11-8e0d-092aff805957/Shay-Kreuger-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98', duration: '2:00' },
-  { id: 'sonja-22-5', title: 'Sonja Silva', date: 'Vrijdag 22 mei', image: 'https://radioimages.npox.nl/BLND/image/523758bf-6510-4724-9961-543cbf332f41/Sonja-Silva-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98', duration: '3:00' },
-  { id: 'jaimy-22-5', title: "Jaimy's Jamz", date: 'Vrijdag 22 mei', image: 'https://radioimages.npox.nl/BLND/image/bfe1221d-2486-426d-b25a-7e27fff23510/Jaimy-de-Ruijter-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98', duration: '3:00' },
-  { id: 'shay-15-5', title: 'De Wat Een Week Show met Shay', date: 'Vrijdag 15 mei', image: 'https://radioimages.npox.nl/BLND/image/79fc7813-8a2b-4d11-8e0d-092aff805957/Shay-Kreuger-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98', duration: '2:00' },
-  { id: 'sonja-15-5', title: 'Sonja Silva', date: 'Vrijdag 15 mei', image: 'https://radioimages.npox.nl/BLND/image/523758bf-6510-4724-9961-543cbf332f41/Sonja-Silva-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98', duration: '3:00' },
-  { id: 'jaimy-15-5', title: "Jaimy's Jamz", date: 'Vrijdag 15 mei', image: 'https://radioimages.npox.nl/BLND/image/bfe1221d-2486-426d-b25a-7e27fff23510/Jaimy-de-Ruijter-Liggend-HR.jpg?aspect_ratio=2:1&width=480&height=240&crop_gravity=north&quality=98', duration: '3:00' },
+  { id: 'shay-22-5', title: 'De Wat Een Week Show met Shay', date: 'Vrijdag 22 mei', image: 'https://images.unsplash.com/photo-1488376739360-cdad29b3b072?w=1200&q=80', duration: '2:00' },
+  { id: 'sonja-22-5', title: 'Sonja Silva', date: 'Vrijdag 22 mei', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1200&q=80', duration: '3:00' },
+  { id: 'jaimy-22-5', title: "Jaimy's Jamz", date: 'Vrijdag 22 mei', image: '/assets/hero-presenter.png', duration: '3:00' },
+  { id: 'shay-15-5', title: 'De Wat Een Week Show met Shay', date: 'Vrijdag 15 mei', image: 'https://images.unsplash.com/photo-1488376739360-cdad29b3b072?w=1200&q=80', duration: '2:00' },
+  { id: 'sonja-15-5', title: 'Sonja Silva', date: 'Vrijdag 15 mei', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1200&q=80', duration: '3:00' },
+  { id: 'jaimy-15-5', title: "Jaimy's Jamz", date: 'Vrijdag 15 mei', image: '/assets/hero-presenter.png', duration: '3:00' },
 ];
