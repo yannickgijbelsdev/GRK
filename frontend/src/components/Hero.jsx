@@ -14,8 +14,8 @@ const Hero = () => {
       className="relative overflow-hidden"
       style={{
         background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 45%,#1f5499 80%,#2c6db8 100%)',
-        height: '78vh',
-        minHeight: '720px',
+        height: '68vh',
+        minHeight: '600px',
       }}
     >
       {/* Concentric circles backdrop */}
@@ -38,10 +38,10 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Aligned content container with equal left/right padding */}
-      <div className="relative z-10 h-full max-w-7xl mx-auto px-6 md:px-10 lg:px-12 pt-24 md:pt-28">
+      {/* Aligned content container - more centered with narrower max width */}
+      <div className="relative z-10 h-full max-w-5xl mx-auto px-6 md:px-10 pt-24 md:pt-28">
         <div className="relative h-full">
-          {/* Right: large figure anchored to bottom-right of the container */}
+          {/* Right: large figure anchored to bottom-right of the inner container */}
           <img
             src={heroPersonImg}
             alt={nowShow.host}
@@ -50,11 +50,11 @@ const Hero = () => {
             draggable={false}
           />
 
-          {/* Left: title + presenter + play button */}
-          <div className="relative z-10 h-full flex flex-col justify-center pb-10 md:pb-14 max-w-[58%]">
+          {/* Left: title + presenter + play button, vertically centered */}
+          <div className="relative z-10 h-full flex flex-col justify-center max-w-[52%]">
             <h1
               className="text-white font-black tracking-tight leading-[0.95]"
-              style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
+              style={{ fontSize: 'clamp(2.25rem, 5vw, 4.75rem)' }}
             >
               {nowShow.title}
             </h1>
@@ -65,13 +65,14 @@ const Hero = () => {
             <button
               onClick={toggle}
               aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-              className="relative mt-8 md:mt-10 w-20 h-20 md:w-24 md:h-24 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
+              className="relative mt-6 md:mt-8 w-18 h-18 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-200"
+              style={{ width: '5rem', height: '5rem' }}
             >
               <span className="absolute inset-0 rounded-full bg-white animate-ping opacity-20" aria-hidden="true"></span>
               {playing ? (
-                <Pause size={36} className="relative text-[#062a4a]" fill="#062a4a" />
+                <Pause size={30} className="relative text-[#062a4a]" fill="#062a4a" />
               ) : (
-                <Play size={36} className="relative text-[#062a4a] ml-1" fill="#062a4a" />
+                <Play size={30} className="relative text-[#062a4a] ml-1" fill="#062a4a" />
               )}
             </button>
           </div>
