@@ -59,7 +59,7 @@ const SelectedPage = () => {
     <>
       <PageHeader
         title="Selected"
-        subtitle="Elke zaterdag van 17u tot 19u hoor je de meest gestreamde nummers van dat moment in Limburg."
+        subtitle="Elke zaterdag van 17u tot 19u hoor je de meest gestreamde nummers van het moment in Limburg."
       />
       <section className="py-12 md:py-16 page-pad-bottom">
         <div className="max-w-4xl mx-auto px-6 lg:px-10">
