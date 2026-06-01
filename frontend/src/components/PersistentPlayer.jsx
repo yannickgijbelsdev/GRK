@@ -85,7 +85,7 @@ const PersistentPlayer = () => {
               {showName}
             </div>
             <div className="text-[#4a6480] text-[11px] md:text-sm leading-tight truncate mt-0.5">
-              met {hostName}
+              {hostName ? `met ${hostName}` : '\u00A0'}
             </div>
           </div>
         </div>
