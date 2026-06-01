@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Share2 } from 'lucide-react';
-import { useNewsArticle, useNewsArticles, extractFirstImage, articleDate } from '../hooks/useNews';
+import { ArrowLeft, Share2, Volume2 } from 'lucide-react';
+import { useNewsArticle, useNewsArticles, extractFirstImage, hasAudio as detectAudio, articleDate } from '../hooks/useNews';
 import NewsCard from '../components/NewsCard';
 import NewsBody from '../components/NewsBody';
 import CoverImage from '../components/CoverImage';
@@ -24,6 +24,7 @@ const NewsDetailPage = () => {
   }, [article]);
 
   const bodyHtml = useMemo(() => stripFirstImage(article?.body || ''), [article]);
+  const articleHasAudio = useMemo(() => detectAudio(article?.body || ''), [article]);
   const related = useMemo(
     () => allArticles.filter((a) => a.id !== id).slice(0, 3),
     [allArticles, id]
@@ -59,8 +60,11 @@ const NewsDetailPage = () => {
           ) : notFound ? (
             <h1 className="text-white text-3xl md:text-4xl font-black">Artikel niet gevonden</h1>
           ) : (
-            <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight" data-testid="news-detail-title">
-              {article?.title}
+            <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight flex items-start gap-3 md:gap-4" data-testid="news-detail-title">
+              {articleHasAudio && (
+                <Volume2 className="text-white/90 flex-shrink-0 mt-2 md:mt-3" size={32} aria-hidden="true" />
+              )}
+              <span className="min-w-0">{article?.title}</span>
             </h1>
           )}
         </div>

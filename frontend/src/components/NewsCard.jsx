@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Volume2 } from 'lucide-react';
 import CoverImage from './CoverImage';
-import { articleDate, useArticleThumbnail } from '../hooks/useNews';
+import { articleDate, useArticleMeta } from '../hooks/useNews';
 
 const NewsCard = ({ article, compact = false }) => {
   const date = articleDate(article);
-  const thumb = useArticleThumbnail(article);
+  const { thumbnail, hasAudio } = useArticleMeta(article);
+
   return (
     <Link
       to={`/nieuws/${article.id}`}
@@ -14,12 +16,26 @@ const NewsCard = ({ article, compact = false }) => {
     >
       <div className="relative aspect-[2/1] overflow-hidden bg-[#e4ecf5]">
         <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
-          <CoverImage src={thumb} alt={article.title} />
+          <CoverImage src={thumbnail} alt={article.title} />
         </div>
+        {hasAudio && (
+          <span
+            aria-label="Bevat audio"
+            title="Bevat audio"
+            data-testid="news-card-audio-badge"
+            className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 text-[#062a4a] text-xs font-bold shadow-md ring-1 ring-black/5"
+          >
+            <Volume2 size={13} className="text-[#2a5d99]" />
+            Audio
+          </span>
+        )}
       </div>
       <div className={`${compact ? 'p-5' : 'p-6'} flex flex-col flex-1`}>
-        <h3 className={`text-[#062a4a] ${compact ? 'text-lg' : 'text-xl'} font-bold leading-snug hover-pulse line-clamp-3`}>
-          {article.title}
+        <h3 className={`text-[#062a4a] ${compact ? 'text-lg' : 'text-xl'} font-bold leading-snug hover-pulse line-clamp-3 flex items-start gap-2`}>
+          {hasAudio && (
+            <Volume2 size={compact ? 16 : 18} className="text-[#2a5d99] flex-shrink-0 mt-1" aria-hidden="true" />
+          )}
+          <span className="min-w-0">{article.title}</span>
         </h3>
         {date && (
           <p className="mt-2 text-[#4a6480] text-xs font-medium tracking-wide">{date}</p>

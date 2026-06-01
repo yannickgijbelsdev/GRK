@@ -52,6 +52,11 @@ export const extractFirstImage = (html) => {
   return m ? m[1] : '';
 };
 
+export const hasAudio = (html) => {
+  if (!html || typeof html !== 'string') return false;
+  return /<audio[\s>]/i.test(html);
+};
+
 const fmtDate = (iso) => {
   if (!iso) return '';
   try {
@@ -84,29 +89,38 @@ export const useNewsArticles = () => {
 };
 
 /**
- * Returns the best thumbnail URL for an article. If `image_url` is missing,
- * fetches the article body in the background and extracts the first <img>.
+ * Returns meta info derived from the article. If the body is needed (image
+ * missing, or audio presence unknown) the detail is fetched in the background.
  */
-export const useArticleThumbnail = (article) => {
-  const directUrl = article?.image_url || '';
+export const useArticleMeta = (article) => {
   const cachedDetail = article?.id && detailCache.has(article.id) ? detailCache.get(article.id) : null;
-  const initialFromBody = cachedDetail ? extractFirstImage(cachedDetail.body) : '';
-  const [url, setUrl] = useState(directUrl || initialFromBody || '');
+  const [thumbnail, setThumbnail] = useState(
+    article?.image_url || (cachedDetail ? extractFirstImage(cachedDetail.body) : '')
+  );
+  const [audio, setAudio] = useState(cachedDetail ? hasAudio(cachedDetail.body) : false);
 
   useEffect(() => {
     if (!article) return;
-    if (article.image_url) { setUrl(article.image_url); return; }
     let cancelled = false;
+    // Always fetch the detail in the background to determine audio presence.
     fetchOne(article.id).then((data) => {
       if (cancelled || !data) return;
-      const img = extractFirstImage(data.body);
-      if (img) setUrl(img);
+      if (!article.image_url) {
+        const img = extractFirstImage(data.body);
+        if (img) setThumbnail(img);
+      }
+      setAudio(hasAudio(data.body));
     });
     return () => { cancelled = true; };
   }, [article]);
 
-  return url;
+  return { thumbnail, hasAudio: audio };
 };
+
+/**
+ * Backwards-compatible thumbnail-only hook.
+ */
+export const useArticleThumbnail = (article) => useArticleMeta(article).thumbnail;
 
 export const useNewsArticle = (id) => {
   const [article, setArticle] = useState(id && detailCache.has(id) ? detailCache.get(id) : null);
