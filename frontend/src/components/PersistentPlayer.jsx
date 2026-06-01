@@ -71,34 +71,34 @@ const PersistentPlayer = () => {
         </button>
 
         {/* Text content (cross-faded) */}
-        <div className="relative flex-1 min-w-0 overflow-hidden" style={{ minHeight: '54px' }}>
+        <div className="relative flex-1 min-w-0 overflow-hidden" style={{ minHeight: '64px' }}>
           {/* Track view */}
           <div
-            className="absolute inset-0 transition-opacity duration-500"
+            className="absolute inset-0 flex flex-col justify-center transition-opacity duration-500"
             style={{ opacity: isShowView ? 0 : 1, pointerEvents: isShowView ? 'none' : 'auto' }}
           >
-            <div className="text-[10px] md:text-[11px] uppercase tracking-wider font-semibold text-[#2a5d99]">
+            <div className="text-[10px] md:text-[11px] uppercase tracking-wider font-semibold text-[#2a5d99] leading-none">
               Nu speelt
             </div>
-            <div className="text-[#062a4a] text-base md:text-xl font-bold leading-tight truncate mt-0.5">
+            <div className="text-[#062a4a] text-sm md:text-lg font-bold leading-tight truncate mt-1">
               {trackTitle}
             </div>
-            <div className="text-[#4a6480] text-xs md:text-sm leading-tight truncate">
+            <div className="text-[#4a6480] text-[11px] md:text-sm leading-tight truncate mt-0.5">
               {trackArtist}
             </div>
           </div>
           {/* Show / presenter view */}
           <div
-            className="absolute inset-0 transition-opacity duration-500"
+            className="absolute inset-0 flex flex-col justify-center transition-opacity duration-500"
             style={{ opacity: isShowView ? 1 : 0, pointerEvents: isShowView ? 'auto' : 'none' }}
           >
-            <div className="text-[10px] md:text-[11px] uppercase tracking-wider font-semibold text-[#2a5d99]">
+            <div className="text-[10px] md:text-[11px] uppercase tracking-wider font-semibold text-[#2a5d99] leading-none">
               Nu op de radio
             </div>
-            <div className="text-[#062a4a] text-base md:text-xl font-bold leading-tight truncate mt-0.5">
+            <div className="text-[#062a4a] text-sm md:text-lg font-bold leading-tight truncate mt-1">
               {showName}
             </div>
-            <div className="text-[#4a6480] text-xs md:text-sm leading-tight truncate">
+            <div className="text-[#4a6480] text-[11px] md:text-sm leading-tight truncate mt-0.5">
               met {hostName}
             </div>
           </div>
