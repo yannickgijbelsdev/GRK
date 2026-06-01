@@ -4,6 +4,7 @@ import { usePlayer } from '../context/PlayerContext';
 import { broadcasts, playlist } from '../mock';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import { getCurrentScheduleSlot } from '../lib/schedule';
+import CoverImage from './CoverImage';
 
 const fallbackShow = broadcasts[2];
 const fallbackTrack = playlist[0];
@@ -35,8 +36,6 @@ const Hero = () => {
   const trackArtist = track.artist || fallbackTrack.artist;
   const trackTitle = track.title || fallbackTrack.title;
   const startedAt = fmtTime(track.startedAt) || fallbackTrack.time;
-  const coverInitial = (trackArtist || '?').charAt(0).toUpperCase();
-  const coverGradient = fallbackTrack.gradient;
 
   return (
     <section
@@ -92,16 +91,8 @@ const Hero = () => {
 
       <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 z-30 px-4 w-full max-w-fit">
         <div className="bg-white rounded-2xl shadow-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 ring-1 ring-black/5">
-          <div
-            className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-xl flex items-center justify-center text-white font-black text-xl overflow-hidden"
-            style={track.cover ? undefined : { background: coverGradient }}
-            aria-hidden="true"
-          >
-            {track.cover ? (
-              <img src={track.cover} alt="" className="w-full h-full object-cover" />
-            ) : (
-              coverInitial
-            )}
+          <div className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden" aria-hidden="true">
+            <CoverImage src={track.cover} alt={trackTitle} />
           </div>
           <button
             onClick={toggle}

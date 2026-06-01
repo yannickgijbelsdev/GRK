@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import PageHeader from '../components/PageHeader';
 import { Clock, Search, Music2, Radio } from 'lucide-react';
 import { useNowOnAir } from '../hooks/useNowOnAir';
+import CoverImage from '../components/CoverImage';
 import {
   Select,
   SelectContent,
@@ -9,14 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-
-const palette = [
-  'linear-gradient(135deg, #2a5d99 0%, #4b8fcc 100%)',
-  'linear-gradient(135deg, #0a3a6b 0%, #4b8fcc 100%)',
-  'linear-gradient(135deg, #062a4a 0%, #1f5499 100%)',
-  'linear-gradient(135deg, #1f5499 0%, #2c6db8 100%)',
-  'linear-gradient(135deg, #062a4a 0%, #2c6db8 100%)',
-];
 
 const TZ = 'Europe/Amsterdam';
 
@@ -144,16 +137,8 @@ const PlayedPage = () => {
                   <Clock size={16} className="text-[#2a5d99]"/>
                   <span>{fmtTime(song.time)}</span>
                 </div>
-                <div
-                  className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl shadow-lg flex items-center justify-center text-white font-black text-xl overflow-hidden"
-                  style={song.cover ? { background: '#0a3a6b' } : { background: palette[idx % palette.length] }}
-                  aria-hidden="true"
-                >
-                  {song.cover ? (
-                    <img src={song.cover} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    (song.artist || song.title || '?').charAt(0).toUpperCase()
-                  )}
+                <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl shadow-lg overflow-hidden" aria-hidden="true">
+                  <CoverImage src={song.cover} alt={song.title} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-[#062a4a] text-base md:text-xl font-bold truncate">{song.title}</h3>

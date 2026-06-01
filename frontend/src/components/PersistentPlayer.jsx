@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
-import { broadcasts, playlist } from '../mock';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import { getCurrentScheduleSlot } from '../lib/schedule';
+import { broadcasts } from '../mock';
+import CoverImage from './CoverImage';
 
 const fallbackShow = broadcasts[2];
-const fallbackTrack = playlist[0];
 
 const ROTATE_MS = 7000;
 
@@ -14,7 +14,6 @@ const PersistentPlayer = () => {
   const { playing, muted, toggle, toggleMute } = usePlayer();
   const { show, presenter, track } = useNowOnAir();
   const [view, setView] = useState('track'); // 'track' | 'show'
-  const [presenterImgFailed, setPresenterImgFailed] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -23,22 +22,13 @@ const PersistentPlayer = () => {
     return () => clearInterval(id);
   }, []);
 
-  // Reset failure state whenever presenter image URL changes (cache-buster)
-  useEffect(() => {
-    setPresenterImgFailed(false);
-  }, [presenter.image]);
-
   const slot = getCurrentScheduleSlot();
   const showName = show || slot.title || fallbackShow.title;
   const hostName = presenter.name || slot.host || fallbackShow.host;
-  const hasPresenterImg = !!presenter.image && !presenterImgFailed;
-  const trackArtist = track.artist || fallbackTrack.artist;
-  const trackTitle = track.title || fallbackTrack.title;
-  const coverInitial = (trackArtist || '?').charAt(0).toUpperCase();
+  const trackArtist = track.artist || '';
+  const trackTitle = track.title || '';
 
   const isShowView = view === 'show';
-  // When there's no presenter image, keep the track cover visible even during show view
-  const showPresenterLayer = isShowView && hasPresenterImg;
 
   return (
     <div className="relative max-w-5xl mx-auto px-4 md:px-6">
@@ -47,32 +37,18 @@ const PersistentPlayer = () => {
         <div className="relative flex-shrink-0 w-14 h-14 md:w-20 md:h-20 rounded-xl overflow-hidden">
           {/* Track cover */}
           <div
-            className="absolute inset-0 flex items-center justify-center text-white font-black text-2xl transition-opacity duration-500"
-            style={{
-              background: track.cover ? '#0a3a6b' : fallbackTrack.gradient,
-              opacity: showPresenterLayer ? 0 : 1,
-            }}
+            className="absolute inset-0 transition-opacity duration-500"
+            style={{ opacity: isShowView ? 0 : 1 }}
           >
-            {track.cover ? (
-              <img src={track.cover} alt="" className="w-full h-full object-cover" />
-            ) : (
-              coverInitial
-            )}
+            <CoverImage src={track.cover} alt={trackTitle} />
           </div>
-          {/* Presenter image — only mounted when API actually has one */}
-          {hasPresenterImg && (
-            <div
-              className="absolute inset-0 transition-opacity duration-500"
-              style={{ opacity: showPresenterLayer ? 1 : 0, background: '#062a4a' }}
-            >
-              <img
-                src={presenter.image}
-                alt={hostName}
-                className="w-full h-full object-cover"
-                onError={() => setPresenterImgFailed(true)}
-              />
-            </div>
-          )}
+          {/* Presenter image (falls back to GRK logo when API has none) */}
+          <div
+            className="absolute inset-0 transition-opacity duration-500"
+            style={{ opacity: isShowView ? 1 : 0 }}
+          >
+            <CoverImage src={presenter.image} alt={hostName} />
+          </div>
         </div>
 
         <button
