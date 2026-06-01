@@ -3,10 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Share2 } from 'lucide-react';
 import { useNewsArticle, useNewsArticles, extractFirstImage, articleDate } from '../hooks/useNews';
 import NewsCard from '../components/NewsCard';
+import NewsBody from '../components/NewsBody';
 import CoverImage from '../components/CoverImage';
 
 // Remove the first <img> from the HTML body (we render it separately above the article)
-// and remove the inline title="" attribute that just clutters output.
+// and collapse the now-empty wrapper paragraphs.
 const stripFirstImage = (html) => {
   if (!html) return '';
   return html.replace(/<img[^>]*>/i, '').replace(/<p[^>]*>\s*<\/p>/gi, '');
@@ -99,11 +100,7 @@ const NewsDetailPage = () => {
           ) : notFound ? (
             <p className="text-[#4a6480] text-lg">Het artikel dat je zoekt bestaat niet of werd verwijderd. Ga terug naar het <Link to="/nieuws" className="font-semibold underline">overzicht</Link>.</p>
           ) : (
-            <div
-              data-testid="news-detail-body"
-              className="news-body text-[#2a3a4a] text-lg leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: bodyHtml }}
-            />
+            <NewsBody html={bodyHtml} />
           )}
 
           {article && (

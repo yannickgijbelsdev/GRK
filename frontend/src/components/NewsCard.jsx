@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CoverImage from './CoverImage';
-import { articleDate } from '../hooks/useNews';
+import { articleDate, useArticleThumbnail } from '../hooks/useNews';
 
 const NewsCard = ({ article, compact = false }) => {
   const date = articleDate(article);
+  const thumb = useArticleThumbnail(article);
   return (
     <Link
       to={`/nieuws/${article.id}`}
@@ -13,7 +14,7 @@ const NewsCard = ({ article, compact = false }) => {
     >
       <div className="relative aspect-[2/1] overflow-hidden bg-[#e4ecf5]">
         <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
-          <CoverImage src={article.image_url} alt={article.title} />
+          <CoverImage src={thumb} alt={article.title} />
         </div>
       </div>
       <div className={`${compact ? 'p-5' : 'p-6'} flex flex-col flex-1`}>

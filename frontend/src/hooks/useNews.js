@@ -83,6 +83,31 @@ export const useNewsArticles = () => {
   return { articles: articles || [], loading };
 };
 
+/**
+ * Returns the best thumbnail URL for an article. If `image_url` is missing,
+ * fetches the article body in the background and extracts the first <img>.
+ */
+export const useArticleThumbnail = (article) => {
+  const directUrl = article?.image_url || '';
+  const cachedDetail = article?.id && detailCache.has(article.id) ? detailCache.get(article.id) : null;
+  const initialFromBody = cachedDetail ? extractFirstImage(cachedDetail.body) : '';
+  const [url, setUrl] = useState(directUrl || initialFromBody || '');
+
+  useEffect(() => {
+    if (!article) return;
+    if (article.image_url) { setUrl(article.image_url); return; }
+    let cancelled = false;
+    fetchOne(article.id).then((data) => {
+      if (cancelled || !data) return;
+      const img = extractFirstImage(data.body);
+      if (img) setUrl(img);
+    });
+    return () => { cancelled = true; };
+  }, [article]);
+
+  return url;
+};
+
 export const useNewsArticle = (id) => {
   const [article, setArticle] = useState(id && detailCache.has(id) ? detailCache.get(id) : null);
   const [loading, setLoading] = useState(!article);
