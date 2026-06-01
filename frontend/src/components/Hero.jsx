@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { broadcasts, playlist } from '../mock';
@@ -24,16 +24,11 @@ const fmtTime = (d) => {
 const Hero = () => {
   const { playing, toggle } = usePlayer();
   const { show, presenter, track } = useNowOnAir();
-  const [presenterImgFailed, setPresenterImgFailed] = useState(false);
-
-  useEffect(() => {
-    setPresenterImgFailed(false);
-  }, [presenter.image]);
 
   const slot = getCurrentScheduleSlot();
   const showName = show || slot.title || fallbackShow.title;
   const hostName = presenter.name || slot.host || fallbackShow.host;
-  const showPresenterImg = !!presenter.image && !presenterImgFailed;
+  const hasPresenterImg = !!presenter.image;
   const trackArtist = track.artist || fallbackTrack.artist;
   const trackTitle = track.title || fallbackTrack.title;
   const startedAt = fmtTime(track.startedAt) || fallbackTrack.time;
@@ -63,41 +58,43 @@ const Hero = () => {
         ))}
       </div>
 
-      <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
-        <div className="relative h-full">
-          {showPresenterImg ? (
-            <img
-              src={presenter.image}
-              alt={hostName}
-              onError={() => setPresenterImgFailed(true)}
-              className="absolute right-0 bottom-0 w-auto select-none pointer-events-none drop-shadow-2xl hidden sm:block"
-              style={{ height: '100%', maxHeight: '100%', objectFit: 'contain', objectPosition: 'bottom right' }}
-              draggable={false}
-            />
-          ) : (
-            <div
-              className="absolute right-0 bottom-0 hidden sm:flex items-end justify-end pointer-events-none"
-              style={{ height: '100%', width: 'auto' }}
-            >
-              <VinylRecord
-                cover={track.cover}
-                alt={track.title || ''}
-                style={{ width: 'min(72vh, 520px)', height: 'min(72vh, 520px)', marginBottom: '-6vh', marginRight: '-3vw' }}
-              />
-            </div>
-          )}
+      {/* Vinyl record — always mounted (so animation never restarts); just hidden when a presenter image is available */}
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/2 z-[5] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700"
+        style={{ opacity: hasPresenterImg ? 0 : 1 }}
+        aria-hidden="true"
+      >
+        <VinylRecord
+          cover={track.cover}
+          alt={track.title || ''}
+          style={{ width: 'min(58vh, 460px)', height: 'min(58vh, 460px)' }}
+        />
+      </div>
 
-          <div className="relative z-10 h-full flex flex-col justify-center" style={{ maxWidth: '480px' }}>
-            <h1
-              className="text-white font-black tracking-tight leading-[0.95] break-words"
-              style={{ fontSize: 'clamp(2.25rem, 4.5vw, 4.25rem)' }}
-            >
-              {showName}
-            </h1>
-            <p className="text-white/90 text-base md:text-xl mt-3 md:mt-4 font-medium">
-              met {hostName}
-            </p>
-          </div>
+      {/* Presenter image — only shown when API actually has one */}
+      {hasPresenterImg && (
+        <div className="absolute inset-0 z-[6] pointer-events-none flex items-end justify-center sm:justify-end max-w-4xl mx-auto px-6 md:px-8">
+          <img
+            src={presenter.image}
+            alt={hostName}
+            className="w-auto select-none drop-shadow-2xl hidden sm:block"
+            style={{ height: '100%', maxHeight: '100%', objectFit: 'contain', objectPosition: 'bottom right' }}
+            draggable={false}
+          />
+        </div>
+      )}
+
+      <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
+        <div className="relative h-full flex flex-col items-center justify-center text-center">
+          <h1
+            className="text-white font-black tracking-tight leading-[0.95] drop-shadow-[0_2px_20px_rgba(0,0,0,0.45)]"
+            style={{ fontSize: 'clamp(2.25rem, 4.5vw, 4.25rem)' }}
+          >
+            {showName}
+          </h1>
+          <p className="text-white/90 text-base md:text-xl mt-3 md:mt-4 font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
+            met {hostName}
+          </p>
         </div>
       </div>
 

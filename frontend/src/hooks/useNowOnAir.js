@@ -5,6 +5,13 @@ const NOW_JSON_URL = 'https://clara.koodh.com/api/rds/grk/now-playing';
 const SHOW_URL = 'https://clara.koodh.com/api/rds/grk/live';
 const PRESENTER_URL = 'https://clara.koodh.com/api/rds/grk/presenters.txt';
 const PRESENTER_IMAGE_URL = 'https://clara.koodh.com/api/rds/grk/presenter-image.jpg';
+
+const probeImage = (url) => new Promise((resolve) => {
+  const img = new Image();
+  img.onload = () => resolve(true);
+  img.onerror = () => resolve(false);
+  img.src = url;
+});
 const HISTORY_KEY = 'grk-recent-tracks';
 const HISTORY_LIMIT = 2000;
 const HISTORY_MAX_AGE_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
@@ -153,10 +160,17 @@ export const useNowOnAir = (intervalMs = 10000) => {
       ]);
       if (cancelled) return;
       if (showText) setShow(showText);
-      // Always set presenter (name from API, image url with cache-buster so it refreshes per tick)
-      setPresenter({
-        name: presenterText || '',
-        image: `${PRESENTER_IMAGE_URL}?_=${Date.now()}`,
+
+      // Probe the presenter image — only expose URL when it actually loads (200).
+      // We use a static URL (no cache-buster) so the vinyl/image element doesn't
+      // remount on every poll.
+      const probed = await probeImage(PRESENTER_IMAGE_URL);
+      if (cancelled) return;
+      setPresenter((prev) => {
+        const nextName = presenterText || '';
+        const nextImage = probed ? PRESENTER_IMAGE_URL : '';
+        if (prev.name === nextName && prev.image === nextImage) return prev;
+        return { name: nextName, image: nextImage };
       });
 
       if (!data) return;
