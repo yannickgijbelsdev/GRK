@@ -1,13 +1,30 @@
 import React, { useState } from 'react';
 import PageHeader from '../components/PageHeader';
-import { Clock, Search } from 'lucide-react';
-import { playlist } from '../mock';
+import { Clock, Search, Music2 } from 'lucide-react';
+import { useNowOnAir } from '../hooks/useNowOnAir';
+
+const palette = [
+  'linear-gradient(135deg, #2a5d99 0%, #4b8fcc 100%)',
+  'linear-gradient(135deg, #0a3a6b 0%, #4b8fcc 100%)',
+  'linear-gradient(135deg, #062a4a 0%, #1f5499 100%)',
+  'linear-gradient(135deg, #1f5499 0%, #2c6db8 100%)',
+  'linear-gradient(135deg, #062a4a 0%, #2c6db8 100%)',
+];
+
+const fmtTime = (iso) => {
+  try {
+    const d = new Date(iso);
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  } catch { return ''; }
+};
 
 const PlayedPage = () => {
+  const { history } = useNowOnAir();
   const [query, setQuery] = useState('');
-  const filtered = playlist.filter((s) =>
-    s.title.toLowerCase().includes(query.toLowerCase()) ||
-    s.artist.toLowerCase().includes(query.toLowerCase())
+
+  const filtered = history.filter((s) =>
+    (s.title || '').toLowerCase().includes(query.toLowerCase()) ||
+    (s.artist || '').toLowerCase().includes(query.toLowerCase())
   );
 
   return (
@@ -26,20 +43,32 @@ const PlayedPage = () => {
             />
           </div>
 
+          {filtered.length === 0 && (
+            <div className="text-center py-16 text-[#4a6480]">
+              <Music2 size={32} className="mx-auto mb-3 text-[#2a5d99]" />
+              {history.length === 0
+                ? 'Even geduld — we verzamelen wat er nu draait.'
+                : 'Geen resultaten gevonden.'}
+            </div>
+          )}
+
           <div className="space-y-4">
-            {filtered.length === 0 && (
-              <div className="text-center py-12 text-[#4a6480]">Geen resultaten gevonden.</div>
-            )}
             {filtered.map((song, idx) => (
-              <div key={song.id} className="bg-white rounded-2xl p-4 md:p-5 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center gap-5 md:gap-7">
+              <div key={`${song.time}-${idx}`} className="bg-white rounded-2xl p-4 md:p-5 shadow-sm hover:shadow-md transition-shadow duration-300 flex items-center gap-5 md:gap-7">
                 <div className="flex items-center gap-2 text-[#4a6480] text-sm font-medium w-16 flex-shrink-0">
                   <Clock size={16} className="text-[#2a5d99]"/>
-                  <span>{song.time}</span>
+                  <span>{fmtTime(song.time)}</span>
                 </div>
-                <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-full shadow-lg" style={{background: song.gradient}}></div>
+                <div
+                  className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-full shadow-lg flex items-center justify-center text-white font-black text-xl"
+                  style={{ background: palette[idx % palette.length] }}
+                  aria-hidden="true"
+                >
+                  {(song.artist || song.title || '?').charAt(0).toUpperCase()}
+                </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-[#062a4a] text-lg md:text-xl font-bold truncate">{song.title}</h3>
-                  <p className="text-[#4a6480] text-sm mt-1">{song.artist}</p>
+                  <p className="text-[#4a6480] text-sm mt-1 truncate">{song.artist}</p>
                 </div>
                 {idx === 0 && query === '' && (
                   <div className="hidden md:flex items-end gap-1 h-6">

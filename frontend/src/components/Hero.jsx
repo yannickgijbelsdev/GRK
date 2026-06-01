@@ -1,8 +1,9 @@
 import React from 'react';
 import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
-import { broadcasts, playlist, currentShow } from '../mock';
+import { broadcasts, playlist } from '../mock';
 import { useNowOnAir } from '../hooks/useNowOnAir';
+import { getCurrentScheduleSlot } from '../lib/schedule';
 
 const heroPersonImg = '/assets/hero-presenter.png';
 const fallbackShow = broadcasts[2];
@@ -10,14 +11,22 @@ const fallbackTrack = playlist[0];
 
 const fmtTime = (d) => {
   if (!d) return '';
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  // Format in Europe/Amsterdam timezone
+  return new Intl.DateTimeFormat('nl-NL', {
+    timeZone: 'Europe/Amsterdam',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(d);
 };
 
 const Hero = () => {
   const { playing, toggle } = usePlayer();
   const { show, track } = useNowOnAir();
 
-  const showName = show || fallbackShow.title;
+  const slot = getCurrentScheduleSlot();
+  const showName = show || slot.title || fallbackShow.title;
+  const hostName = slot.host || fallbackShow.host;
   const trackArtist = track.artist || fallbackTrack.artist;
   const trackTitle = track.title || fallbackTrack.title;
   const startedAt = fmtTime(track.startedAt) || fallbackTrack.time;
@@ -53,7 +62,7 @@ const Hero = () => {
         <div className="relative h-full">
           <img
             src={heroPersonImg}
-            alt={fallbackShow.host}
+            alt={hostName}
             className="absolute right-0 bottom-0 w-auto select-none pointer-events-none drop-shadow-2xl hidden sm:block"
             style={{ height: '100%', maxHeight: '100%', objectFit: 'contain', objectPosition: 'bottom right' }}
             draggable={false}
@@ -67,7 +76,7 @@ const Hero = () => {
               {showName}
             </h1>
             <p className="text-white/90 text-base md:text-xl mt-3 md:mt-4 font-medium">
-              met {fallbackShow.host}
+              met {hostName}
             </p>
           </div>
         </div>
@@ -76,11 +85,15 @@ const Hero = () => {
       <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 z-30 px-4 w-full max-w-fit">
         <div className="bg-white rounded-2xl shadow-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 ring-1 ring-black/5">
           <div
-            className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-xl flex items-center justify-center text-white font-black text-xl"
-            style={{ background: coverGradient }}
+            className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-xl flex items-center justify-center text-white font-black text-xl overflow-hidden"
+            style={track.cover ? undefined : { background: coverGradient }}
             aria-hidden="true"
           >
-            {coverInitial}
+            {track.cover ? (
+              <img src={track.cover} alt="" className="w-full h-full object-cover" />
+            ) : (
+              coverInitial
+            )}
           </div>
           <button
             onClick={toggle}

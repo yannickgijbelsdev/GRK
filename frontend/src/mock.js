@@ -190,7 +190,7 @@ export const missedShows = [
 ];
 
 // Weekly programming schedule
-const baseSchedule = [
+export const baseSchedule = [
   { time: '00:00 - 07:00', title: 'Non-stop', host: 'Doorlopende muziek', image: '/assets/grk-logo.png', nonstop: true },
   { time: '07:00 - 10:00', title: 'The Morning Show', host: 'Q-Bah & Jasmine Sendar', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&q=80' },
   { time: '10:00 - 13:00', title: "Jaimy's Jamz", host: 'Jaimy de Ruijter', image: '/assets/hero-presenter.png' },
