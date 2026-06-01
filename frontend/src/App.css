@@ -202,3 +202,59 @@ html { scroll-behavior: smooth; }
 
 /* Page container padding for sticky player breathing room */
 .page-pad-bottom { padding-bottom: 140px; }
+
+
+/* Vinyl record — shown on hero when no presenter image is available */
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.vinyl-disc {
+  position: relative;
+  border-radius: 9999px;
+  background:
+    repeating-radial-gradient(circle at center,
+      rgba(255,255,255,0.045) 0px,
+      rgba(255,255,255,0.045) 1px,
+      transparent 1px,
+      transparent 4px),
+    radial-gradient(circle at 32% 32%, rgba(255,255,255,0.08) 0%, transparent 28%),
+    radial-gradient(circle at center, #181818 0%, #0a0a0a 70%, #050505 100%);
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,0.7),
+    0 30px 80px rgba(0,0,0,0.55);
+  animation: vinylSpin 28s linear infinite;
+}
+.vinyl-disc::before {
+  /* subtle highlight sheen */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.10) 0%, transparent 35%);
+  pointer-events: none;
+}
+.vinyl-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 38%;
+  height: 38%;
+  border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  box-shadow: 0 0 0 6px #0c0c0c, 0 0 0 7px rgba(255,255,255,0.08);
+  background: #062a4a;
+}
+.vinyl-spindle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #050505;
+  transform: translate(-50%, -50%);
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.15), 0 0 0 2px rgba(255,255,255,0.04);
+  z-index: 2;
+}

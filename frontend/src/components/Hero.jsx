@@ -5,6 +5,7 @@ import { broadcasts, playlist } from '../mock';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import { getCurrentScheduleSlot } from '../lib/schedule';
 import CoverImage from './CoverImage';
+import VinylRecord from './VinylRecord';
 
 const fallbackShow = broadcasts[2];
 const fallbackTrack = playlist[0];
@@ -64,7 +65,7 @@ const Hero = () => {
 
       <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
         <div className="relative h-full">
-          {showPresenterImg && (
+          {showPresenterImg ? (
             <img
               src={presenter.image}
               alt={hostName}
@@ -73,6 +74,17 @@ const Hero = () => {
               style={{ height: '100%', maxHeight: '100%', objectFit: 'contain', objectPosition: 'bottom right' }}
               draggable={false}
             />
+          ) : (
+            <div
+              className="absolute right-0 bottom-0 hidden sm:flex items-end justify-end pointer-events-none"
+              style={{ height: '100%', width: 'auto' }}
+            >
+              <VinylRecord
+                cover={track.cover}
+                alt={track.title || ''}
+                style={{ width: 'min(72vh, 520px)', height: 'min(72vh, 520px)', marginBottom: '-6vh', marginRight: '-3vw' }}
+              />
+            </div>
           )}
 
           <div className="relative z-10 h-full flex flex-col justify-center" style={{ maxWidth: '480px' }}>
