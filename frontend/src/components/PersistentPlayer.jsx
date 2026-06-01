@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { useNowOnAir } from '../hooks/useNowOnAir';
-import { getCurrentScheduleSlot } from '../lib/schedule';
-import { broadcasts } from '../mock';
 import CoverImage from './CoverImage';
-
-const fallbackShow = broadcasts[2];
 
 const ROTATE_MS = 7000;
 
@@ -22,9 +18,8 @@ const PersistentPlayer = () => {
     return () => clearInterval(id);
   }, []);
 
-  const slot = getCurrentScheduleSlot();
-  const showName = show || slot.title || fallbackShow.title;
-  const hostName = presenter.name || slot.host || fallbackShow.host;
+  const showName = show || '';
+  const hostName = presenter.name || '';
   const trackArtist = track.artist || '';
   const trackTitle = track.title || '';
 

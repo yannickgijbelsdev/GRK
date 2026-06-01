@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { getCurrentScheduleSlot } from '../lib/schedule';
 
 const NOW_JSON_URL = 'https://clara.koodh.com/api/rds/grk/now-playing';
 const SHOW_URL = 'https://clara.koodh.com/api/rds/grk/live';
@@ -184,10 +183,9 @@ export const useNowOnAir = (intervalMs = 10000) => {
 
       setTrack({ ...parsed, startedAt, cover: '' });
 
-      // Determine the current show name & host for this entry
-      const slot = getCurrentScheduleSlot();
-      const showName = (showText || show || slot.title || '').trim();
-      const hostName = (presenterText || slot.host || '').trim();
+      // Determine the current show name & host for this entry (live API only — no schedule fallback)
+      const showName = (showText || show || '').trim();
+      const hostName = (presenterText || '').trim();
 
       // Push to history (skip duplicate of last entry, even if cover/show differ)
       if (parsed.title) {

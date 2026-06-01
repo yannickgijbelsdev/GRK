@@ -1,14 +1,9 @@
 import React from 'react';
 import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
-import { broadcasts, playlist } from '../mock';
 import { useNowOnAir } from '../hooks/useNowOnAir';
-import { getCurrentScheduleSlot } from '../lib/schedule';
 import CoverImage from './CoverImage';
 import VinylRecord from './VinylRecord';
-
-const fallbackShow = broadcasts[2];
-const fallbackTrack = playlist[0];
 
 const fmtTime = (d) => {
   if (!d) return '';
@@ -25,13 +20,12 @@ const Hero = () => {
   const { playing, toggle } = usePlayer();
   const { show, presenter, track } = useNowOnAir();
 
-  const slot = getCurrentScheduleSlot();
-  const showName = show || slot.title || fallbackShow.title;
-  const hostName = presenter.name || slot.host || fallbackShow.host;
+  const showName = show || '';
+  const hostName = presenter.name || '';
   const hasPresenterImg = !!presenter.image;
-  const trackArtist = track.artist || fallbackTrack.artist;
-  const trackTitle = track.title || fallbackTrack.title;
-  const startedAt = fmtTime(track.startedAt) || fallbackTrack.time;
+  const trackArtist = track.artist || '';
+  const trackTitle = track.title || '';
+  const startedAt = fmtTime(track.startedAt);
 
   return (
     <section
@@ -92,9 +86,11 @@ const Hero = () => {
           >
             {showName}
           </h1>
-          <p className="text-white/90 text-base md:text-xl mt-3 md:mt-4 font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
-            met {hostName}
-          </p>
+          {hostName && (
+            <p className="text-white/90 text-base md:text-xl mt-3 md:mt-4 font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
+              met {hostName}
+            </p>
+          )}
         </div>
       </div>
 
@@ -113,7 +109,7 @@ const Hero = () => {
           </button>
           <div className="min-w-0 pr-3">
             <div className="text-[10px] uppercase tracking-wider font-semibold text-[#2a5d99]">
-              Nu speelt &middot; sinds {startedAt}
+              Nu speelt{startedAt ? ` · sinds ${startedAt}` : ''}
             </div>
             <div className="text-[#062a4a] text-base md:text-lg font-bold leading-tight truncate max-w-[280px] mt-0.5">
               {trackTitle}
