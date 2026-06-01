@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { getCurrentScheduleSlot } from '../lib/schedule';
 
 const NOW_JSON_URL = 'https://clara.koodh.com/api/rds/grk/now-playing';
 const SHOW_URL = 'https://clara.koodh.com/api/rds/grk/live';
 const HISTORY_KEY = 'grk-recent-tracks';
-const HISTORY_LIMIT = 50;
+const HISTORY_LIMIT = 2000;
+const HISTORY_MAX_AGE_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
 const COVER_CACHE_KEY = 'grk-cover-cache';
 
 const fetchJson = async (url) => {
@@ -47,16 +49,45 @@ const saveJson = (key, val) => {
 // -------- history (shared across hook instances) --------
 const historyListeners = new Set();
 let cachedHistory = null;
-const getHistory = () => {
-  if (cachedHistory === null) cachedHistory = loadJson(HISTORY_KEY, []);
-  return Array.isArray(cachedHistory) ? cachedHistory : [];
+
+const pruneHistory = (list) => {
+  const cutoff = Date.now() - HISTORY_MAX_AGE_MS;
+  return list
+    .filter((e) => {
+      const t = new Date(e.time).getTime();
+      return Number.isFinite(t) && t >= cutoff;
+    })
+    .slice(0, HISTORY_LIMIT);
 };
-const pushHistory = (entry) => {
-  const list = getHistory();
-  const next = [entry, ...list].slice(0, HISTORY_LIMIT);
+
+const getHistory = () => {
+  if (cachedHistory === null) {
+    const raw = loadJson(HISTORY_KEY, []);
+    cachedHistory = Array.isArray(raw) ? pruneHistory(raw) : [];
+  }
+  return cachedHistory;
+};
+
+const setHistoryAndNotify = (next) => {
   cachedHistory = next;
   saveJson(HISTORY_KEY, next);
   historyListeners.forEach((l) => l(next));
+};
+
+const pushHistory = (entry) => {
+  const list = getHistory();
+  const next = pruneHistory([entry, ...list]);
+  setHistoryAndNotify(next);
+};
+
+const updateLatestCover = (artist, title, cover) => {
+  const list = getHistory();
+  if (!list.length) return;
+  const top = list[0];
+  if ((top.artist || '') === (artist || '') && (top.title || '') === (title || '') && !top.cover) {
+    const next = [{ ...top, cover }, ...list.slice(1)];
+    setHistoryAndNotify(next);
+  }
 };
 
 // -------- cover art lookup (iTunes Search API, no key needed) --------
@@ -68,7 +99,6 @@ const getCoverCache = () => {
 const coverKey = (artist, title) => `${(artist || '').toLowerCase()}|${(title || '').toLowerCase()}`;
 const upscaleArtwork = (url) => {
   if (!url) return '';
-  // iTunes returns urls like .../100x100bb.jpg — upgrade to 600x600
   return url.replace(/\/\d+x\d+(bb)?(-[0-9]+)?\.(jpg|png)/i, '/600x600bb.jpg');
 };
 const fetchCover = async (artist, title) => {
@@ -103,6 +133,9 @@ export const useNowOnAir = (intervalMs = 10000) => {
   useEffect(() => {
     const listener = (next) => setHistory(next);
     historyListeners.add(listener);
+    // Prune on mount in case stored data is old
+    const pruned = pruneHistory(getHistory());
+    if (pruned.length !== cachedHistory.length) setHistoryAndNotify(pruned);
     return () => historyListeners.delete(listener);
   }, []);
 
@@ -115,36 +148,43 @@ export const useNowOnAir = (intervalMs = 10000) => {
       if (showText) setShow(showText);
 
       if (!data) return;
-      // Prefer original_song_title (case preserved), fall back to song_title / raw_song_title
       const raw = data.original_song_title || data.song_title || data.raw_song_title || '';
       const parsed = parseTrack(raw);
       const startedAt = data.song_started_at ? new Date(data.song_started_at) : new Date();
       const key = `${parsed.artist}|${parsed.title}|${data.song_started_at || ''}`;
 
       if (key === prevKeyRef.current) return;
-      const wasInitial = prevKeyRef.current === '';
       prevKeyRef.current = key;
 
-      // Set track immediately (without cover) so UI updates fast
       setTrack({ ...parsed, startedAt, cover: '' });
 
-      // Push to history (skip duplicate of last entry)
+      // Determine the current show name for this entry (live RDS preferred, fallback schedule)
+      const slot = getCurrentScheduleSlot();
+      const showName = (showText || show || slot.title || '').trim();
+      const hostName = slot.host || '';
+
+      // Push to history (skip duplicate of last entry, even if cover/show differ)
       if (parsed.title) {
         const list = getHistory();
         const last = list[0];
         if (!last || last.artist !== parsed.artist || last.title !== parsed.title) {
-          pushHistory({ ...parsed, time: startedAt.toISOString() });
+          pushHistory({
+            ...parsed,
+            time: startedAt.toISOString(),
+            cover: '',
+            show: showName,
+            host: hostName,
+          });
         }
       }
 
-      // Fetch cover, then update
+      // Fetch cover, then update both live track + latest history entry
       const cover = await fetchCover(parsed.artist, parsed.title);
       if (cancelled) return;
-      // Only update if still the same track
       if (prevKeyRef.current === key) {
         setTrack((t) => ({ ...t, cover }));
       }
-      void wasInitial;
+      if (cover) updateLatestCover(parsed.artist, parsed.title, cover);
     };
 
     tick();
@@ -156,6 +196,7 @@ export const useNowOnAir = (intervalMs = 10000) => {
       clearInterval(id);
       document.removeEventListener('visibilitychange', onVis);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intervalMs]);
 
   return { show, track, history };
