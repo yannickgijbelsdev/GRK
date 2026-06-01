@@ -18,6 +18,7 @@ const HomePage = () => {
         basePath="/social-club"
         moreLabel="Meer uit Social Club"
         background
+        bottomSpacing
       />
     </>
   );

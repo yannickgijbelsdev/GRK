@@ -13,12 +13,13 @@ const NewsSection = ({
   background = false,
   showHeader = true,
   showMore = true,
+  bottomSpacing = false,
 }) => {
   const { articles, loading } = useNewsArticles(category);
   const items = articles.slice(0, limit);
 
   return (
-    <section className={`py-16 md:py-20 ${background ? 'bg-[#f0f4fa]' : ''}`}>
+    <section className={`py-16 md:py-20 ${background ? 'bg-[#f0f4fa]' : ''} ${bottomSpacing ? 'page-pad-bottom' : ''}`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         {showHeader && <h2 className="text-[#062a4a] text-3xl md:text-4xl font-black mb-10">{title}</h2>}
         {loading && items.length === 0 ? (
