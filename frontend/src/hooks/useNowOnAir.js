@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const SHOW_URL = 'https://clara.koodh.com/api/rds/grk/live';
 const TRACK_URL = 'https://clara.koodh.com/api/rds/grk/now-playing.txt';
@@ -25,27 +25,31 @@ const parseTrack = (raw) => {
 export const useNowOnAir = (intervalMs = 20000) => {
   const [show, setShow] = useState('');
   const [track, setTrack] = useState({ artist: '', title: '', startedAt: null });
+  const prevRawRef = useRef('');
 
   useEffect(() => {
     let cancelled = false;
-    let prevRaw = '';
 
     const tick = async () => {
       const [s, t] = await Promise.all([fetchText(SHOW_URL), fetchText(TRACK_URL)]);
       if (cancelled) return;
       if (s) setShow(s);
       if (t) {
-        const parsed = parseTrack(t);
-        const startedAt = t !== prevRaw ? new Date() : track.startedAt;
-        prevRaw = t;
-        setTrack({ ...parsed, startedAt: startedAt || new Date() });
+        setTrack((prev) => {
+          const parsed = parseTrack(t);
+          // Only refresh startedAt when the raw now-playing string actually changed
+          if (t === prevRawRef.current && prev.startedAt) {
+            return { ...parsed, startedAt: prev.startedAt };
+          }
+          prevRawRef.current = t;
+          return { ...parsed, startedAt: new Date() };
+        });
       }
     };
 
     tick();
     const id = setInterval(tick, intervalMs);
     return () => { cancelled = true; clearInterval(id); };
-    // eslint-disable-next-line
   }, [intervalMs]);
 
   return { show, track };
