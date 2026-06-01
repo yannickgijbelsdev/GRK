@@ -31,14 +31,14 @@ const PersistentPlayer = () => {
   const slot = getCurrentScheduleSlot();
   const showName = show || slot.title || fallbackShow.title;
   const hostName = presenter.name || slot.host || fallbackShow.host;
-  const presenterImg = (!presenterImgFailed && presenter.image)
-    ? presenter.image
-    : (slot.image || fallbackShow.image);
+  const hasPresenterImg = !!presenter.image && !presenterImgFailed;
   const trackArtist = track.artist || fallbackTrack.artist;
   const trackTitle = track.title || fallbackTrack.title;
   const coverInitial = (trackArtist || '?').charAt(0).toUpperCase();
 
   const isShowView = view === 'show';
+  // When there's no presenter image, keep the track cover visible even during show view
+  const showPresenterLayer = isShowView && hasPresenterImg;
 
   return (
     <div className="relative max-w-5xl mx-auto px-4 md:px-6">
@@ -50,7 +50,7 @@ const PersistentPlayer = () => {
             className="absolute inset-0 flex items-center justify-center text-white font-black text-2xl transition-opacity duration-500"
             style={{
               background: track.cover ? '#0a3a6b' : fallbackTrack.gradient,
-              opacity: isShowView ? 0 : 1,
+              opacity: showPresenterLayer ? 0 : 1,
             }}
           >
             {track.cover ? (
@@ -59,18 +59,20 @@ const PersistentPlayer = () => {
               coverInitial
             )}
           </div>
-          {/* Presenter image */}
-          <div
-            className="absolute inset-0 transition-opacity duration-500"
-            style={{ opacity: isShowView ? 1 : 0, background: '#062a4a' }}
-          >
-            <img
-              src={presenterImg}
-              alt={hostName}
-              className="w-full h-full object-cover"
-              onError={() => setPresenterImgFailed(true)}
-            />
-          </div>
+          {/* Presenter image — only mounted when API actually has one */}
+          {hasPresenterImg && (
+            <div
+              className="absolute inset-0 transition-opacity duration-500"
+              style={{ opacity: showPresenterLayer ? 1 : 0, background: '#062a4a' }}
+            >
+              <img
+                src={presenter.image}
+                alt={hostName}
+                className="w-full h-full object-cover"
+                onError={() => setPresenterImgFailed(true)}
+              />
+            </div>
+          )}
         </div>
 
         <button

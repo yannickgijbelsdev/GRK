@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { broadcasts, playlist } from '../mock';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import { getCurrentScheduleSlot } from '../lib/schedule';
 
-const heroPersonImg = '/assets/hero-presenter.png';
 const fallbackShow = broadcasts[2];
 const fallbackTrack = playlist[0];
 
@@ -23,10 +22,16 @@ const fmtTime = (d) => {
 const Hero = () => {
   const { playing, toggle } = usePlayer();
   const { show, presenter, track } = useNowOnAir();
+  const [presenterImgFailed, setPresenterImgFailed] = useState(false);
+
+  useEffect(() => {
+    setPresenterImgFailed(false);
+  }, [presenter.image]);
 
   const slot = getCurrentScheduleSlot();
   const showName = show || slot.title || fallbackShow.title;
   const hostName = presenter.name || slot.host || fallbackShow.host;
+  const showPresenterImg = !!presenter.image && !presenterImgFailed;
   const trackArtist = track.artist || fallbackTrack.artist;
   const trackTitle = track.title || fallbackTrack.title;
   const startedAt = fmtTime(track.startedAt) || fallbackTrack.time;
@@ -60,13 +65,16 @@ const Hero = () => {
 
       <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
         <div className="relative h-full">
-          <img
-            src={heroPersonImg}
-            alt={hostName}
-            className="absolute right-0 bottom-0 w-auto select-none pointer-events-none drop-shadow-2xl hidden sm:block"
-            style={{ height: '100%', maxHeight: '100%', objectFit: 'contain', objectPosition: 'bottom right' }}
-            draggable={false}
-          />
+          {showPresenterImg && (
+            <img
+              src={presenter.image}
+              alt={hostName}
+              onError={() => setPresenterImgFailed(true)}
+              className="absolute right-0 bottom-0 w-auto select-none pointer-events-none drop-shadow-2xl hidden sm:block"
+              style={{ height: '100%', maxHeight: '100%', objectFit: 'contain', objectPosition: 'bottom right' }}
+              draggable={false}
+            />
+          )}
 
           <div className="relative z-10 h-full flex flex-col justify-center" style={{ maxWidth: '480px' }}>
             <h1
