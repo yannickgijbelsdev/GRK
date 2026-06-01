@@ -1,23 +1,40 @@
-import React from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
-import { Calendar, ArrowLeft, Share2, Tag } from 'lucide-react';
-import { newsItems } from '../mock';
+import React, { useMemo } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, Share2 } from 'lucide-react';
+import { useNewsArticle, useNewsArticles, extractFirstImage, articleDate } from '../hooks/useNews';
+import NewsCard from '../components/NewsCard';
+import CoverImage from '../components/CoverImage';
+
+// Remove the first <img> from the HTML body (we render it separately above the article)
+// and remove the inline title="" attribute that just clutters output.
+const stripFirstImage = (html) => {
+  if (!html) return '';
+  return html.replace(/<img[^>]*>/i, '').replace(/<p[^>]*>\s*<\/p>/gi, '');
+};
 
 const NewsDetailPage = () => {
   const { id } = useParams();
-  const article = newsItems.find((n) => n.id === id);
-  if (!article) return <Navigate to="/nieuws" replace />;
+  const { article, loading, notFound } = useNewsArticle(id);
+  const { articles: allArticles } = useNewsArticles();
 
-  const related = newsItems.filter((n) => n.id !== article.id).slice(0, 3);
+  const heroImg = useMemo(() => {
+    if (!article) return '';
+    return article.image_url || extractFirstImage(article.body);
+  }, [article]);
+
+  const bodyHtml = useMemo(() => stripFirstImage(article?.body || ''), [article]);
+  const related = useMemo(
+    () => allArticles.filter((a) => a.id !== id).slice(0, 3),
+    [allArticles, id]
+  );
 
   return (
     <>
-      {/* Colored banner with title — image card sits on top and overlaps into white content below */}
+      {/* Colored banner with title */}
       <section
         className="relative overflow-hidden pt-28 md:pt-32"
         style={{ background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 60%,#1f5499 100%)' }}
       >
-        {/* Flashing rings spanning the whole banner */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
           {[500, 800, 1100, 1400, 1700].map((size, i) => (
             <div
@@ -29,24 +46,32 @@ const NewsDetailPage = () => {
         </div>
 
         <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
-          <Link to="/nieuws" className="inline-flex items-center gap-2 text-white/85 hover:text-white mb-6 font-medium text-sm">
+          <Link to="/nieuws" data-testid="news-back-btn" className="inline-flex items-center gap-2 text-white/85 hover:text-white mb-6 font-medium text-sm">
             <ArrowLeft size={16} /> Terug
           </Link>
 
-          <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
-            {article.title}
-          </h1>
+          {loading && !article ? (
+            <div className="space-y-4 animate-pulse">
+              <div className="h-10 bg-white/20 rounded w-3/4" />
+              <div className="h-10 bg-white/20 rounded w-1/2" />
+            </div>
+          ) : notFound ? (
+            <h1 className="text-white text-3xl md:text-4xl font-black">Artikel niet gevonden</h1>
+          ) : (
+            <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight" data-testid="news-detail-title">
+              {article?.title}
+            </h1>
+          )}
         </div>
 
-        {/* Spacer so the colored banner extends down behind the overlapping image */}
-        <div className="h-48 md:h-56" aria-hidden="true"></div>
+        <div className="h-48 md:h-56" aria-hidden="true" />
       </section>
 
       {/* Overlapping image card */}
       <div className="relative -mt-32 md:-mt-40 z-10">
         <div className="max-w-4xl mx-auto px-6 lg:px-10">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[16/9] bg-[#062a4a]">
-            <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+            <CoverImage src={heroImg} alt={article?.title || ''} />
           </div>
         </div>
       </div>
@@ -54,39 +79,51 @@ const NewsDetailPage = () => {
       {/* Article body */}
       <article className="bg-white page-pad-bottom">
         <div className="max-w-3xl mx-auto px-6 lg:px-8 pt-10 md:pt-14">
-          {article.lead && (
-            <p className="text-[#062a4a] text-xl md:text-2xl font-bold leading-snug">
-              {article.lead}
+          {articleDate(article) && (
+            <p className="text-[#4a6480] text-sm font-semibold tracking-wide uppercase mb-4">
+              {articleDate(article)}
             </p>
           )}
+          {article?.excerpt ? (
+            <p className="text-[#062a4a] text-xl md:text-2xl font-bold leading-snug mb-8">
+              {article.excerpt}
+            </p>
+          ) : null}
 
-          <div className="mt-6 md:mt-8 space-y-5 text-[#2a3a4a] text-lg leading-relaxed">
-            {article.body.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </div>
-
-          {article.sections && article.sections.map((section, i) => (
-            <div key={i} className="mt-10 md:mt-12">
-              <h2 className="text-[#062a4a] text-2xl md:text-3xl font-black tracking-tight mb-5">
-                {section.heading}
-              </h2>
-              <ul className="space-y-3">
-                {section.items.map((it, j) => (
-                  <li key={j} className="flex items-start gap-3 text-[#2a3a4a] text-lg leading-relaxed">
-                    <span className="mt-2.5 inline-block w-1.5 h-1.5 rounded-full bg-[#2a5d99] flex-shrink-0"></span>
-                    <span>{it}</span>
-                  </li>
-                ))}
-              </ul>
+          {loading && !article ? (
+            <div className="space-y-3 animate-pulse">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-4 bg-[#e4ecf5] rounded w-full" />
+              ))}
             </div>
-          ))}
+          ) : notFound ? (
+            <p className="text-[#4a6480] text-lg">Het artikel dat je zoekt bestaat niet of werd verwijderd. Ga terug naar het <Link to="/nieuws" className="font-semibold underline">overzicht</Link>.</p>
+          ) : (
+            <div
+              data-testid="news-detail-body"
+              className="news-body text-[#2a3a4a] text-lg leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: bodyHtml }}
+            />
+          )}
 
-          <div className="mt-10 pt-8 border-t border-[#d8e4f0] flex items-center gap-3">
-            <button className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white font-semibold hover:opacity-90 transition" style={{ background: 'linear-gradient(135deg,#2a5d99,#4b8fcc)' }}>
-              <Share2 size={16} /> Deel artikel
-            </button>
-          </div>
+          {article && (
+            <div className="mt-10 pt-8 border-t border-[#d8e4f0] flex items-center gap-3">
+              <button
+                onClick={() => {
+                  const url = typeof window !== 'undefined' ? window.location.href : '';
+                  if (navigator.share) {
+                    navigator.share({ title: article.title, url }).catch(() => {});
+                  } else if (navigator.clipboard) {
+                    navigator.clipboard.writeText(url).catch(() => {});
+                  }
+                }}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white font-semibold hover:opacity-90 transition"
+                style={{ background: 'linear-gradient(135deg,#2a5d99,#4b8fcc)' }}
+              >
+                <Share2 size={16} /> Deel artikel
+              </button>
+            </div>
+          )}
         </div>
 
         {related.length > 0 && (
@@ -95,16 +132,7 @@ const NewsDetailPage = () => {
               <h2 className="text-[#062a4a] text-2xl md:text-3xl font-black mb-8">Ander nieuws</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 {related.map((item) => (
-                  <Link key={item.id} to={`/nieuws/${item.id}`} className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[#d8e4f0]">
-                    <div className="aspect-[2/1] overflow-hidden bg-[#e4ecf5]">
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    </div>
-                    <div className="p-5">
-                      <h3 className="text-[#062a4a] text-lg font-bold leading-snug hover-pulse line-clamp-2 min-h-[3.25rem]">
-                        {item.title}
-                      </h3>
-                    </div>
-                  </Link>
+                  <NewsCard key={item.id} article={item} compact />
                 ))}
               </div>
             </div>
