@@ -79,7 +79,7 @@ const Footer = () => {
             <Link to="/nieuws" className="hover-pulse text-white">Nieuws uit de buurt</Link>
             <Link to="/social-club" className="hover-pulse text-white">Social Club</Link>
             <Link to="/selected" className="hover-pulse text-white">Selected</Link>
-            <Link to="/programmering" className="hover-pulse text-white">Programmering</Link>
+            <Link to="/programmering" className="hover-pulse text-white">Programma&apos;s</Link>
             <Link to="/gedraaid" className="hover-pulse text-white">Gedraaid</Link>
           </div>
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3 text-white/80 text-sm pt-2">

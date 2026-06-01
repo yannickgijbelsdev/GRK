@@ -29,7 +29,7 @@ const Header = () => {
     { label: 'Nieuws uit de buurt', to: '/nieuws' },
     { label: 'Social Club', to: '/social-club' },
     { label: 'Selected', to: '/selected' },
-    { label: 'Programmering', to: '/programmering' },
+    { label: "Programma's", to: '/programmering' },
     { label: 'Gedraaid', to: '/gedraaid' },
   ];
 
