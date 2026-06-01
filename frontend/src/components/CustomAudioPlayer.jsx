@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
+import VolumeControl from './VolumeControl';
 
 const fmt = (s) => {
   if (!Number.isFinite(s)) return '0:00';
@@ -19,6 +20,13 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(totalSeconds || 0);
   const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
+
+  // Keep the audio element in sync with our volume state
+  useEffect(() => {
+    const a = audioRef.current;
+    if (a) a.volume = volume;
+  }, [volume]);
 
   useEffect(() => {
     const a = audioRef.current;
@@ -58,6 +66,15 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
       setPlaying(false);
       // User manually paused — don't auto-resume the radio when they hit play again.
       // We only auto-resume on `ended`.
+    }
+  };
+
+  const handleVolume = (v) => {
+    setVolume(v);
+    const a = audioRef.current;
+    if (a && v > 0 && a.muted) {
+      a.muted = false;
+      setMuted(false);
     }
   };
 
@@ -111,13 +128,7 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
           <span>{fmt(duration)}</span>
         </div>
       </div>
-      <button
-        onClick={toggleMute}
-        aria-label="Dempen"
-        className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition"
-      >
-        {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-      </button>
+      <VolumeControl value={volume} onChange={handleVolume} muted={muted} onToggleMute={toggleMute} />
     </div>
   );
 };

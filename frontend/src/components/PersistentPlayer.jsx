@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import CoverImage from './CoverImage';
+import VolumeControl from './VolumeControl';
 
 const ROTATE_MS = 7000;
 
 const PersistentPlayer = () => {
-  const { playing, muted, toggle, toggleMute } = usePlayer();
+  const { playing, muted, volume, setVolume, toggle, toggleMute } = usePlayer();
   const { show, presenter, track } = useNowOnAir();
   const [view, setView] = useState('track'); // 'track' | 'show'
 
@@ -90,9 +91,7 @@ const PersistentPlayer = () => {
           </div>
         </div>
 
-        <button onClick={toggleMute} aria-label="Dempen" className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-blue-50 transition-colors">
-          {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-        </button>
+        <VolumeControl value={volume} onChange={setVolume} muted={muted} onToggleMute={toggleMute} />
       </div>
     </div>
   );

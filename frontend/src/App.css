@@ -300,3 +300,41 @@ html { scroll-behavior: smooth; }
   font-style: italic;
   color: #062a4a;
 }
+
+/* GRK volume slider */
+.grk-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    #2a5d99 0%,
+    #4b8fcc var(--pct, 100%),
+    #d8e4f0 var(--pct, 100%),
+    #d8e4f0 100%
+  );
+  outline: none;
+  cursor: pointer;
+}
+.grk-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid #2a5d99;
+  box-shadow: 0 2px 6px rgba(6, 42, 74, 0.25);
+  cursor: pointer;
+}
+.grk-volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid #2a5d99;
+  box-shadow: 0 2px 6px rgba(6, 42, 74, 0.25);
+  cursor: pointer;
+}
+
