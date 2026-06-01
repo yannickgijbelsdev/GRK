@@ -45,8 +45,8 @@ const AppPromoBanner = () => {
           <img src="/assets/grk-logo-fallback.png" alt="GRK" className="w-7 h-7 object-contain" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-white text-sm font-bold leading-tight">Luister via de GRK-app</div>
-          <div className="text-white/75 text-xs leading-tight">Beter geluid, sneller starten.</div>
+          <div className="text-white text-sm font-bold leading-tight">Neem GRK overal met je mee met de GRK-app</div>
+          <div className="text-white/75 text-xs leading-snug mt-0.5">Krijg als eerste een pushmelding over onze nieuwe acties.</div>
         </div>
         <a
           href={url}
