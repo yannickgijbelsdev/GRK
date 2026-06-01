@@ -1,16 +1,24 @@
 import React from 'react';
 import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
-import FragmentsSection from '../components/FragmentsSection';
-import BroadcastsSection from '../components/BroadcastsSection';
 
 const HomePage = () => {
   return (
     <>
       <Hero />
-      <NewsSection />
-      <FragmentsSection />
-      <BroadcastsSection />
+      <NewsSection
+        title="Nieuws uit de buurt"
+        category="nieuws-uit-de-buurt"
+        basePath="/nieuws"
+        moreLabel="Meer nieuws uit de buurt"
+      />
+      <NewsSection
+        title="Social Club"
+        category="social-club"
+        basePath="/social-club"
+        moreLabel="Meer uit Social Club"
+        background
+      />
     </>
   );
 };

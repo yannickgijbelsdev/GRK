@@ -12,10 +12,8 @@ import { CookieConsentProvider } from './context/CookieConsentContext';
 import HomePage from './pages/HomePage';
 import NewsListPage from './pages/NewsListPage';
 import NewsDetailPage from './pages/NewsDetailPage';
-import FragmentsListPage from './pages/FragmentsListPage';
-import FragmentDetailPage from './pages/FragmentDetailPage';
+import SocialClubListPage from './pages/SocialClubListPage';
 import ProgrammingListPage from './pages/ProgrammingListPage';
-import BroadcastDetailPage from './pages/BroadcastDetailPage';
 import PlayedPage from './pages/PlayedPage';
 import CookiesPage from './pages/CookiesPage';
 import PrivacyPage from './pages/PrivacyPage';
@@ -34,10 +32,9 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/nieuws" element={<NewsListPage />} />
                 <Route path="/nieuws/:id" element={<NewsDetailPage />} />
-                <Route path="/fragmenten" element={<FragmentsListPage />} />
-                <Route path="/fragmenten/:id" element={<FragmentDetailPage />} />
+                <Route path="/social-club" element={<SocialClubListPage />} />
+                <Route path="/social-club/:id" element={<NewsDetailPage />} />
                 <Route path="/programmering" element={<ProgrammingListPage />} />
-                <Route path="/programmering/:id" element={<BroadcastDetailPage />} />
                 <Route path="/gedraaid" element={<PlayedPage />} />
                 <Route path="/cookies" element={<CookiesPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />

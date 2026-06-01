@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Share2, Volume2 } from 'lucide-react';
 import { useNewsArticle, useNewsArticles, extractFirstImage, hasAudio as detectAudio, articleDate } from '../hooks/useNews';
 import NewsCard from '../components/NewsCard';
@@ -13,10 +13,20 @@ const stripFirstImage = (html) => {
   return html.replace(/<img[^>]*>/i, '').replace(/<p[^>]*>\s*<\/p>/gi, '');
 };
 
+// Derive category and back-link target from the URL pathname.
+const deriveContext = (pathname) => {
+  if (pathname && pathname.startsWith('/social-club')) {
+    return { category: 'social-club', backTo: '/social-club', backLabel: 'Terug naar Social Club', listTitle: 'Meer uit Social Club' };
+  }
+  return { category: 'nieuws-uit-de-buurt', backTo: '/nieuws', backLabel: 'Terug', listTitle: 'Ander nieuws' };
+};
+
 const NewsDetailPage = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const ctx = useMemo(() => deriveContext(location.pathname), [location.pathname]);
   const { article, loading, notFound } = useNewsArticle(id);
-  const { articles: allArticles } = useNewsArticles();
+  const { articles: allArticles } = useNewsArticles(ctx.category);
 
   const heroImg = useMemo(() => {
     if (!article) return '';
@@ -48,8 +58,8 @@ const NewsDetailPage = () => {
         </div>
 
         <div className="relative max-w-4xl mx-auto px-6 lg:px-10">
-          <Link to="/nieuws" data-testid="news-back-btn" className="inline-flex items-center gap-2 text-white/85 hover:text-white mb-6 font-medium text-sm">
-            <ArrowLeft size={16} /> Terug
+          <Link to={ctx.backTo} data-testid="news-back-btn" className="inline-flex items-center gap-2 text-white/85 hover:text-white mb-6 font-medium text-sm">
+            <ArrowLeft size={16} /> {ctx.backLabel}
           </Link>
 
           {loading && !article ? (
@@ -102,7 +112,7 @@ const NewsDetailPage = () => {
               ))}
             </div>
           ) : notFound ? (
-            <p className="text-[#4a6480] text-lg">Het artikel dat je zoekt bestaat niet of werd verwijderd. Ga terug naar het <Link to="/nieuws" className="font-semibold underline">overzicht</Link>.</p>
+            <p className="text-[#4a6480] text-lg">Het artikel dat je zoekt bestaat niet of werd verwijderd. Ga terug naar het <Link to={ctx.backTo} className="font-semibold underline">overzicht</Link>.</p>
           ) : (
             <NewsBody html={bodyHtml} title={article?.title} />
           )}
@@ -130,10 +140,10 @@ const NewsDetailPage = () => {
         {related.length > 0 && (
           <div className="bg-[#f0f4fa] py-12 md:py-16 mt-12 md:mt-16">
             <div className="max-w-7xl mx-auto px-6 lg:px-10">
-              <h2 className="text-[#062a4a] text-2xl md:text-3xl font-black mb-8">Ander nieuws</h2>
+              <h2 className="text-[#062a4a] text-2xl md:text-3xl font-black mb-8">{ctx.listTitle}</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 {related.map((item) => (
-                  <NewsCard key={item.id} article={item} compact />
+                  <NewsCard key={item.id} article={item} compact basePath={ctx.backTo} />
                 ))}
               </div>
             </div>

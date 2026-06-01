@@ -77,6 +77,7 @@ const Footer = () => {
         <div className="md:text-right space-y-4">
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3">
             <Link to="/nieuws" className="hover-pulse text-white">Nieuws uit de buurt</Link>
+            <Link to="/social-club" className="hover-pulse text-white">Social Club</Link>
             <Link to="/programmering" className="hover-pulse text-white">Programmering</Link>
             <Link to="/gedraaid" className="hover-pulse text-white">Gedraaid</Link>
           </div>

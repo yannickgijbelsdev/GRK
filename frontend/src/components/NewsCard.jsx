@@ -4,13 +4,13 @@ import { Volume2 } from 'lucide-react';
 import CoverImage from './CoverImage';
 import { articleDate, useArticleMeta } from '../hooks/useNews';
 
-const NewsCard = ({ article, compact = false }) => {
+const NewsCard = ({ article, compact = false, basePath = '/nieuws' }) => {
   const date = articleDate(article);
   const { thumbnail, hasAudio } = useArticleMeta(article);
 
   return (
     <Link
-      to={`/nieuws/${article.id}`}
+      to={`${basePath}/${article.id}`}
       className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[#d8e4f0] flex flex-col"
       data-testid="news-card"
     >

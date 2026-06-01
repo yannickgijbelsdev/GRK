@@ -3,30 +3,43 @@ import { useEffect, useState } from 'react';
 const API_BASE = 'https://clara.koodh.com/api/news';
 
 // -------- Module-level caches (shared across components & remounts) --------
-let listCache = null;          // { fetchedAt, articles[] }
-let listPromise = null;        // in-flight Promise
-const detailCache = new Map(); // id → article
+const listCaches = new Map();       // category → { fetchedAt, articles[] }
+const listPromises = new Map();     // category → in-flight Promise
+const detailCache = new Map();      // id → article
 const detailPromises = new Map();
 
 const LIST_TTL_MS = 5 * 60 * 1000; // 5 min
 const DEFAULT_LIMIT = 50;
+const DEFAULT_CATEGORY = 'nieuws-uit-de-buurt';
 
-const fetchList = async () => {
-  if (listCache && Date.now() - listCache.fetchedAt < LIST_TTL_MS) {
-    return listCache.articles;
+const fetchList = async (category = DEFAULT_CATEGORY) => {
+  const cached = listCaches.get(category);
+  if (cached && Date.now() - cached.fetchedAt < LIST_TTL_MS) {
+    return cached.articles;
   }
-  if (!listPromise) {
-    listPromise = fetch(`${API_BASE}/articles?limit=${DEFAULT_LIMIT}`, { cache: 'no-store' })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        const articles = (data && Array.isArray(data.articles)) ? data.articles : [];
-        listCache = { fetchedAt: Date.now(), articles };
-        return articles;
-      })
-      .catch(() => [])
-      .finally(() => { listPromise = null; });
-  }
-  return listPromise;
+  if (listPromises.has(category)) return listPromises.get(category);
+
+  const p = fetch(`${API_BASE}/grk/${encodeURIComponent(category)}?limit=${DEFAULT_LIMIT}`, { cache: 'no-store' })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      const raw = (data && Array.isArray(data.articles)) ? data.articles : [];
+      // Dedupe on title+excerpt (the API sometimes returns near-duplicates).
+      const seen = new Set();
+      const articles = [];
+      for (const a of raw) {
+        const key = `${(a.title || '').trim()}|${(a.excerpt || '').slice(0, 80)}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        articles.push(a);
+      }
+      listCaches.set(category, { fetchedAt: Date.now(), articles });
+      return articles;
+    })
+    .catch(() => [])
+    .finally(() => { listPromises.delete(category); });
+
+  listPromises.set(category, p);
+  return p;
 };
 
 const fetchOne = async (id) => {
@@ -70,20 +83,21 @@ const fmtDate = (iso) => {
 export const articleDate = (a) => fmtDate(a?.original_date || a?.created_at);
 
 // -------- Hooks --------
-export const useNewsArticles = () => {
-  const [articles, setArticles] = useState(listCache ? listCache.articles : null);
+export const useNewsArticles = (category = DEFAULT_CATEGORY) => {
+  const initial = listCaches.get(category);
+  const [articles, setArticles] = useState(initial ? initial.articles : null);
   const [loading, setLoading] = useState(!articles);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetchList().then((items) => {
+    fetchList(category).then((items) => {
       if (cancelled) return;
       setArticles(items);
       setLoading(false);
     });
     return () => { cancelled = true; };
-  }, []);
+  }, [category]);
 
   return { articles: articles || [], loading };
 };
