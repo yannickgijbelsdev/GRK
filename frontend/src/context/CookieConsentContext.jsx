@@ -39,17 +39,12 @@ export const CookieConsentProvider = ({ children }) => {
   const [bannerOpen, setBannerOpen] = useState(() => readStored() == null);
   const [optionsOpen, setOptionsOpen] = useState(false);
 
-  // Persist whenever consent changes (only when set), and react to category opt-outs.
+  // Persist whenever consent changes (only when set).
   useEffect(() => {
     if (!consent) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: VERSION, prefs: consent, savedAt: new Date().toISOString() }));
     } catch {}
-    // Functional opted out → remove functional storage entries
-    if (!consent.functional) {
-      try { localStorage.removeItem('grk-recent-tracks'); } catch {}
-      try { localStorage.removeItem('grk-cover-cache'); } catch {}
-    }
   }, [consent]);
 
   const acceptAll = useCallback(() => {

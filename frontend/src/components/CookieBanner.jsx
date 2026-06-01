@@ -17,7 +17,7 @@ const Toggle = ({ checked, onChange, disabled }) => (
 
 const categories = [
   { key: 'necessary', label: 'Noodzakelijk', desc: 'Vereist om de site te laten werken (sessie, cookie-voorkeuren, audio-player status).' },
-  { key: 'functional', label: 'Functioneel', desc: 'Onthoudt jouw voorkeuren en bewaart bv. recent gedraaide nummers en cover-art cache.' },
+  { key: 'functional', label: 'Functioneel', desc: 'Onthoudt extra voorkeuren (bv. audio-volume).' },
   { key: 'analytical', label: 'Analytisch', desc: 'Anonieme bezoekstatistieken zodat we de site kunnen verbeteren.' },
   { key: 'social', label: 'Sociale media', desc: 'Embeds en deel-knoppen van Facebook, Instagram, Spotify e.d.' },
 ];

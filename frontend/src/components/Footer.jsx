@@ -23,7 +23,7 @@ const Footer = () => {
         ))}
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <img src="/assets/grk-logo.png" alt="GRK" className="h-16 w-16 object-contain" />
@@ -34,9 +34,48 @@ const Footer = () => {
             <a href="#" aria-label="Spotify" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Music2 size={18}/></a>
           </div>
         </div>
+
+        <div className="space-y-3">
+          <h3 className="text-white/70 text-xs uppercase tracking-[0.18em] font-semibold">Luister via</h3>
+          <ul className="space-y-2 text-white">
+            <li className="flex items-baseline gap-3">
+              <span className="text-white/60 text-xs w-20 flex-shrink-0">FM</span>
+              <span className="font-semibold">107.4 FM <span className="text-white/70 font-normal">— Genk</span></span>
+            </li>
+            <li className="flex items-baseline gap-3">
+              <span className="text-white/60 text-xs w-20 flex-shrink-0">DAB+</span>
+              <span className="font-semibold">Limburg</span>
+            </li>
+            <li className="flex items-baseline gap-3">
+              <span className="text-white/60 text-xs w-20 flex-shrink-0">App</span>
+              <a
+                href="https://www.radioplayer.be"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold hover-pulse"
+              >
+                Radioplayer
+              </a>
+            </li>
+            <li className="flex items-baseline gap-3">
+              <span className="text-white/60 text-xs w-20 flex-shrink-0">Online</span>
+              <Link to="/" className="font-semibold hover-pulse">grk.fm</Link>
+            </li>
+            <li className="flex items-baseline gap-3 pt-2">
+              <span className="text-white/60 text-xs w-20 flex-shrink-0">Contact</span>
+              <a
+                href="mailto:info@grk.fm"
+                className="font-semibold hover-pulse"
+                data-testid="footer-contact-email"
+              >
+                info@grk.fm
+              </a>
+            </li>
+          </ul>
+        </div>
+
         <div className="md:text-right space-y-4">
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3">
-            <Link to="/" className="hover-pulse text-white">grk.nl</Link>
             <Link to="/nieuws" className="hover-pulse text-white">Nieuws uit de buurt</Link>
             <Link to="/programmering" className="hover-pulse text-white">Programmering</Link>
             <Link to="/gedraaid" className="hover-pulse text-white">Gedraaid</Link>

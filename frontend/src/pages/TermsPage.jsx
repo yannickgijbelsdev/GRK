@@ -14,7 +14,7 @@ const TermsPage = () => (
     <section className="py-12 md:py-16 page-pad-bottom">
       <div className="max-w-3xl mx-auto px-6 lg:px-10">
         <Section title="1. Toepasselijkheid">
-          <p>Deze algemene voorwaarden zijn van toepassing op het gebruik van de website grk.nl, de bijbehorende sub-domeinen en de live audio-stream van GRK. Door de site of stream te gebruiken stem je in met deze voorwaarden.</p>
+          <p>Deze algemene voorwaarden zijn van toepassing op het gebruik van de website grk.fm, de bijbehorende sub-domeinen, de live audio-stream van GRK en onze uitzendingen op 107.4 FM (Genk) en DAB+ (Limburg). Door de site of stream te gebruiken stem je in met deze voorwaarden.</p>
         </Section>
 
         <Section title="2. Inhoud en programmering">

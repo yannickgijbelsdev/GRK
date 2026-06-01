@@ -32,7 +32,7 @@ const CookiesPage = () => {
           <Section title="Welke categorieën gebruiken we?">
             <ul className="list-disc pl-5 space-y-2">
               <li><strong className="text-[#062a4a]">Noodzakelijk</strong> &mdash; altijd actief. Zonder deze cookies werkt de site niet (bv. de cookie-instelling zelf, de status van de audio-player).</li>
-              <li><strong className="text-[#062a4a]">Functioneel</strong> &mdash; onthoudt je voorkeuren. Bewaart bv. de lijst met recent gedraaide nummers (Gedraaid pagina) en de cover-art cache zodat covers sneller laden.</li>
+              <li><strong className="text-[#062a4a]">Functioneel</strong> &mdash; onthoudt extra voorkeuren zoals bv. audio-volume.</li>
               <li><strong className="text-[#062a4a]">Analytisch</strong> &mdash; volledig anoniem. Geeft ons inzicht in welke pagina&apos;s populair zijn zodat we de site kunnen verbeteren.</li>
               <li><strong className="text-[#062a4a]">Sociale media</strong> &mdash; alleen actief met jouw toestemming. Maakt embeds en deel-knoppen van Facebook, Instagram en Spotify mogelijk.</li>
             </ul>
@@ -51,12 +51,43 @@ const CookiesPage = () => {
                 </thead>
                 <tbody>
                   <Row name="grk-cookie-consent" purpose="Bewaart jouw cookie-voorkeuren zodat we de banner niet bij elk bezoek tonen." retention="1 jaar" type="Noodzakelijk" />
-                  <Row name="grk-recent-tracks" purpose="Houdt de laatste 3 dagen aan gedraaide nummers bij voor de Gedraaid pagina." retention="3 dagen" type="Functioneel" />
-                  <Row name="grk-cover-cache" purpose="Cachet album-art URLs zodat covers sneller laden en we de externe API minder belasten." retention="30 dagen" type="Functioneel" />
                 </tbody>
               </table>
             </div>
             <p className="text-sm">Daarnaast gebruiken we de live-stream URL van onze radio-provider; deze plaatst zelf geen cookies in jouw browser.</p>
+          </Section>
+
+          <Section title="Lokale opslag (geen cookies)">
+            <p>Voor een aantal functies gebruiken we technische opslag in jouw browser (<code className="bg-[#eef3f8] px-1.5 py-0.5 rounded">localStorage</code>) in plaats van cookies. Deze gegevens worden niet naar onze server gestuurd en zijn enkel zichtbaar voor jouw eigen browser.</p>
+            <div className="overflow-x-auto -mx-2">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b-2 border-[#062a4a]">
+                    <th className="py-3 pr-4 text-[#062a4a] text-sm uppercase tracking-wide">Naam</th>
+                    <th className="py-3 pr-4 text-[#062a4a] text-sm uppercase tracking-wide">Doel</th>
+                    <th className="py-3 text-[#062a4a] text-sm uppercase tracking-wide">Bewaartijd</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-[#e1e8f0]">
+                    <td className="py-3 pr-4 align-top text-[#062a4a] font-semibold">grk-recent-tracks</td>
+                    <td className="py-3 pr-4 align-top text-[#062a4a]/80 text-sm">Houdt de laatste 3 dagen aan gedraaide nummers bij voor de Gedraaid pagina.</td>
+                    <td className="py-3 align-top text-[#062a4a]/80 text-sm whitespace-nowrap">3 dagen</td>
+                  </tr>
+                  <tr className="border-b border-[#e1e8f0]">
+                    <td className="py-3 pr-4 align-top text-[#062a4a] font-semibold">grk-cover-cache</td>
+                    <td className="py-3 pr-4 align-top text-[#062a4a]/80 text-sm">Cachet album-art URLs zodat covers sneller laden en we de externe API minder belasten.</td>
+                    <td className="py-3 align-top text-[#062a4a]/80 text-sm whitespace-nowrap">Tot het wissen van je browserdata</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 pr-4 align-top text-[#062a4a] font-semibold">grk-app-promo-dismissed</td>
+                    <td className="py-3 pr-4 align-top text-[#062a4a]/80 text-sm">Onthoudt dat je de &quot;Download de app&quot;-banner gesloten hebt.</td>
+                    <td className="py-3 align-top text-[#062a4a]/80 text-sm whitespace-nowrap">Tot het wissen van je browserdata</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-sm">Je kunt deze gegevens op elk moment wissen via de instellingen van jouw browser.</p>
           </Section>
 
           <Section title="Jouw voorkeuren wijzigen">
@@ -71,7 +102,7 @@ const CookiesPage = () => {
           </Section>
 
           <Section title="Vragen?">
-            <p>Heb je vragen over hoe we met je gegevens omgaan? Stuur ons een bericht via onze socials. Lees ook ons <a className="underline font-semibold text-[#062a4a]" href="/privacy">privacybeleid</a>.</p>
+            <p>Heb je vragen over hoe we met je gegevens omgaan? Stuur ons gerust een mail op <a href="mailto:info@grk.fm" className="underline font-semibold text-[#062a4a]">info@grk.fm</a>. Lees ook ons <a className="underline font-semibold text-[#062a4a]" href="/privacy">privacybeleid</a>.</p>
           </Section>
         </div>
       </section>

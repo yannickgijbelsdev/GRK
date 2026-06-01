@@ -14,7 +14,7 @@ const PrivacyPage = () => (
     <section className="py-12 md:py-16 page-pad-bottom">
       <div className="max-w-3xl mx-auto px-6 lg:px-10">
         <Section title="1. Wie zijn we?">
-          <p>GRK is een online radiostation. Dit privacybeleid is van toepassing op de website grk.nl en de bijbehorende streaming-dienst.</p>
+          <p>GRK is een online radiostation. We zenden uit op <strong>107.4 FM in Genk</strong>, op <strong>DAB+ in heel Limburg</strong> en je vindt ons ook in de <strong>Radioplayer-app</strong>. Dit privacybeleid is van toepassing op de website grk.fm en de bijbehorende streaming-dienst.</p>
         </Section>
 
         <Section title="2. Welke gegevens verzamelen we?">
@@ -51,7 +51,11 @@ const PrivacyPage = () => (
           </ul>
         </Section>
 
-        <Section title="7. Wijzigingen">
+        <Section title="8. Contact">
+          <p>Vragen, opmerkingen of wens je een recht uit te oefenen? Stuur ons gerust een mail op <a href="mailto:info@grk.fm" className="underline font-semibold text-[#062a4a]">info@grk.fm</a>.</p>
+        </Section>
+
+        <Section title="9. Wijzigingen">
           <p>Dit beleid kan af en toe geüpdatet worden. Wijzigingen publiceren we hier; bij ingrijpende wijzigingen vragen we opnieuw je cookie-toestemming.</p>
         </Section>
       </div>
