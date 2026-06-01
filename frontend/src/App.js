@@ -15,6 +15,7 @@ import NewsDetailPage from './pages/NewsDetailPage';
 import SocialClubListPage from './pages/SocialClubListPage';
 import ProgrammingListPage from './pages/ProgrammingListPage';
 import PlayedPage from './pages/PlayedPage';
+import SelectedPage from './pages/SelectedPage';
 import CookiesPage from './pages/CookiesPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/social-club/:id" element={<NewsDetailPage />} />
                 <Route path="/programmering" element={<ProgrammingListPage />} />
                 <Route path="/gedraaid" element={<PlayedPage />} />
+                <Route path="/selected" element={<SelectedPage />} />
                 <Route path="/cookies" element={<CookiesPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/voorwaarden" element={<TermsPage />} />
