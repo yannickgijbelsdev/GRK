@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Music2 } from 'lucide-react';
+import { useCookieConsent } from '../context/CookieConsentContext';
 
 const Footer = () => {
+  const { openPreferences } = useCookieConsent();
   return (
     <footer className="relative overflow-hidden text-white" style={{ background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 100%)' }}>
       {/* Animated rings — same effect as the header */}
@@ -37,17 +39,26 @@ const Footer = () => {
             <Link to="/" className="hover-pulse text-white">grk.nl</Link>
             <Link to="/nieuws" className="hover-pulse text-white">Nieuws uit de buurt</Link>
             <Link to="/programmering" className="hover-pulse text-white">Programmering</Link>
-            <Link to="/over" className="hover-pulse text-white">Over GRK</Link>
+            <Link to="/gedraaid" className="hover-pulse text-white">Gedraaid</Link>
           </div>
           <div className="flex flex-wrap md:justify-end gap-x-8 gap-y-3 text-white/80 text-sm pt-2">
-            <a href="#" className="hover-pulse">Algemene voorwaarden &amp; Privacybeleid</a>
-            <a href="#" className="hover-pulse">Cookies op grk.nl</a>
+            <Link to="/voorwaarden" className="hover-pulse">Algemene voorwaarden</Link>
+            <Link to="/privacy" className="hover-pulse">Privacybeleid</Link>
+            <Link to="/cookies" className="hover-pulse">Cookies</Link>
+            <button
+              type="button"
+              onClick={openPreferences}
+              data-testid="footer-cookie-prefs-btn"
+              className="hover-pulse text-white/80 hover:text-white text-left md:text-right"
+            >
+              Cookie-voorkeuren
+            </button>
           </div>
         </div>
       </div>
       <div className="relative border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 text-xs text-white/60">
-          &copy; {new Date().getFullYear()} GRK &mdash; Design replica voor educatieve doeleinden.
+          &copy; {new Date().getFullYear()} GRK &mdash; the feelgood station.
         </div>
       </div>
     </footer>

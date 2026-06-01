@@ -42,6 +42,16 @@ const parseTrack = (raw) => {
 };
 
 // -------- localStorage helpers --------
+// Read cookie consent at call time. Only persist when 'functional' is allowed.
+const CONSENT_KEY = 'grk-cookie-consent';
+const isFunctionalAllowed = () => {
+  try {
+    const raw = localStorage.getItem(CONSENT_KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    return !!(parsed && parsed.prefs && parsed.prefs.functional);
+  } catch { return false; }
+};
 const loadJson = (key, fallback) => {
   try {
     const raw = localStorage.getItem(key);
@@ -51,6 +61,7 @@ const loadJson = (key, fallback) => {
   } catch { return fallback; }
 };
 const saveJson = (key, val) => {
+  if (!isFunctionalAllowed()) return;
   try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
 };
 
