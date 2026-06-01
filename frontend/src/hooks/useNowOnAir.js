@@ -5,7 +5,9 @@ const TRACK_URL = 'https://clara.koodh.com/api/rds/grk/now-playing.txt';
 
 const fetchText = async (url) => {
   try {
-    const r = await fetch(url, { cache: 'no-store' });
+    // Cache-buster query so neither the browser nor any CDN serves a stale response
+    const sep = url.includes('?') ? '&' : '?';
+    const r = await fetch(`${url}${sep}_=${Date.now()}`, { cache: 'no-store' });
     if (!r.ok) return '';
     return (await r.text()).trim();
   } catch {
@@ -22,7 +24,7 @@ const parseTrack = (raw) => {
   return { artist: '', title: raw };
 };
 
-export const useNowOnAir = (intervalMs = 20000) => {
+export const useNowOnAir = (intervalMs = 10000) => {
   const [show, setShow] = useState('');
   const [track, setTrack] = useState({ artist: '', title: '', startedAt: null });
   const prevRawRef = useRef('');
@@ -35,21 +37,24 @@ export const useNowOnAir = (intervalMs = 20000) => {
       if (cancelled) return;
       if (s) setShow(s);
       if (t) {
-        setTrack((prev) => {
-          const parsed = parseTrack(t);
-          // Only refresh startedAt when the raw now-playing string actually changed
-          if (t === prevRawRef.current && prev.startedAt) {
-            return { ...parsed, startedAt: prev.startedAt };
-          }
+        if (t !== prevRawRef.current) {
+          // Track actually changed → refresh startedAt and parsed data
           prevRawRef.current = t;
-          return { ...parsed, startedAt: new Date() };
-        });
+          setTrack({ ...parseTrack(t), startedAt: new Date() });
+        }
       }
     };
 
     tick();
     const id = setInterval(tick, intervalMs);
-    return () => { cancelled = true; clearInterval(id); };
+    // Refresh whenever the tab becomes visible again
+    const onVis = () => { if (document.visibilityState === 'visible') tick(); };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+      document.removeEventListener('visibilitychange', onVis);
+    };
   }, [intervalMs]);
 
   return { show, track };
