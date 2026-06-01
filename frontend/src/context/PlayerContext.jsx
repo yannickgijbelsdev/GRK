@@ -28,16 +28,29 @@ export const PlayerProvider = ({ children }) => {
     };
   }, []);
 
+  const pause = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (!a.paused) {
+      a.pause();
+      setPlaying(false);
+    }
+  };
+
+  const play = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    try { a.src = STREAM_URL; a.load(); } catch (e) { /* ignore */ }
+    a.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+  };
+
   const toggle = () => {
     const a = audioRef.current;
     if (!a) return;
     if (a.paused) {
-      // Reset src to ensure live stream starts from now (not buffered)
-      try { a.src = STREAM_URL; a.load(); } catch (e) { /* ignore */ }
-      a.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      play();
     } else {
-      a.pause();
-      setPlaying(false);
+      pause();
     }
   };
 
@@ -49,7 +62,7 @@ export const PlayerProvider = ({ children }) => {
   };
 
   return (
-    <PlayerContext.Provider value={{ playing, muted, toggle, toggleMute, streamUrl: STREAM_URL }}>
+    <PlayerContext.Provider value={{ playing, muted, toggle, toggleMute, pause, play, streamUrl: STREAM_URL }}>
       {children}
     </PlayerContext.Provider>
   );

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { usePlayer } from '../context/PlayerContext';
 
 const fmt = (s) => {
   if (!Number.isFinite(s)) return '0:00';
@@ -11,6 +12,9 @@ const fmt = (s) => {
 const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
   const audioRef = useRef(null);
   const barRef = useRef(null);
+  // Did we pause the live radio when this fragment started? Used to auto-resume on `ended`.
+  const radioWasPlayingRef = useRef(false);
+  const { playing: radioPlaying, pause: pauseRadio, play: playRadio } = usePlayer();
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(totalSeconds || 0);
@@ -21,7 +25,14 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
     if (!a) return;
     const onTime = () => setCurrent(a.currentTime);
     const onMeta = () => setDuration(a.duration || totalSeconds || 0);
-    const onEnded = () => setPlaying(false);
+    const onEnded = () => {
+      setPlaying(false);
+      // Auto-resume the live radio when the fragment finishes, only if WE paused it.
+      if (radioWasPlayingRef.current) {
+        radioWasPlayingRef.current = false;
+        playRadio();
+      }
+    };
     a.addEventListener('timeupdate', onTime);
     a.addEventListener('loadedmetadata', onMeta);
     a.addEventListener('ended', onEnded);
@@ -30,13 +41,24 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
       a.removeEventListener('loadedmetadata', onMeta);
       a.removeEventListener('ended', onEnded);
     };
-  }, [totalSeconds]);
+  }, [totalSeconds, playRadio]);
 
   const toggle = () => {
     const a = audioRef.current;
     if (!a) return;
-    if (a.paused) { a.play(); setPlaying(true); }
-    else { a.pause(); setPlaying(false); }
+    if (a.paused) {
+      // If the live radio is currently playing, pause it for the duration of this fragment.
+      if (radioPlaying) {
+        radioWasPlayingRef.current = true;
+        pauseRadio();
+      }
+      a.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    } else {
+      a.pause();
+      setPlaying(false);
+      // User manually paused — don't auto-resume the radio when they hit play again.
+      // We only auto-resume on `ended`.
+    }
   };
 
   const toggleMute = () => {

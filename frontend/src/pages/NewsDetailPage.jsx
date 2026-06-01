@@ -100,7 +100,7 @@ const NewsDetailPage = () => {
           ) : notFound ? (
             <p className="text-[#4a6480] text-lg">Het artikel dat je zoekt bestaat niet of werd verwijderd. Ga terug naar het <Link to="/nieuws" className="font-semibold underline">overzicht</Link>.</p>
           ) : (
-            <NewsBody html={bodyHtml} />
+            <NewsBody html={bodyHtml} title={article?.title} />
           )}
 
           {article && (

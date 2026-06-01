@@ -9,7 +9,7 @@ const SRC_REGEX = /(?:src|data-src)=["']([^"']+)["']/i;
  * branded CustomAudioPlayer component. Other HTML is rendered via
  * dangerouslySetInnerHTML inside `.news-body`.
  */
-const NewsBody = ({ html }) => {
+const NewsBody = ({ html, title }) => {
   const segments = useMemo(() => {
     if (!html) return [];
     const result = [];
@@ -43,7 +43,7 @@ const NewsBody = ({ html }) => {
         if (seg.kind === 'audio') {
           return (
             <div key={`a-${i}`} className="my-6 md:my-8">
-              <CustomAudioPlayer src={seg.src} title="Luister naar het fragment" />
+              <CustomAudioPlayer src={seg.src} title={title || ''} />
             </div>
           );
         }
