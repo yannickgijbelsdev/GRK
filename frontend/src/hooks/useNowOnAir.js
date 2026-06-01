@@ -134,7 +134,7 @@ const fetchCover = async (artist, title) => {
 
 export const useNowOnAir = (intervalMs = 10000) => {
   const [show, setShow] = useState('');
-  const [presenter, setPresenter] = useState({ name: '', image: '' });
+  const [presenter, setPresenter] = useState({ name: '', image: '', checked: false });
   const [track, setTrack] = useState({ artist: '', title: '', startedAt: null, cover: '' });
   const [history, setHistory] = useState(getHistory());
   const prevKeyRef = useRef('');
@@ -168,8 +168,8 @@ export const useNowOnAir = (intervalMs = 10000) => {
       setPresenter((prev) => {
         const nextName = presenterText || '';
         const nextImage = probed ? PRESENTER_IMAGE_URL : '';
-        if (prev.name === nextName && prev.image === nextImage) return prev;
-        return { name: nextName, image: nextImage };
+        if (prev.name === nextName && prev.image === nextImage && prev.checked) return prev;
+        return { name: nextName, image: nextImage, checked: true };
       });
 
       if (!data) return;

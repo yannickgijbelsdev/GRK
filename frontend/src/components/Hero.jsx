@@ -23,6 +23,7 @@ const Hero = () => {
   const showName = show || '';
   const hostName = presenter.name || '';
   const hasPresenterImg = !!presenter.image;
+  const showVinyl = presenter.checked && !hasPresenterImg;
   const trackArtist = track.artist || '';
   const trackTitle = track.title || '';
   const startedAt = fmtTime(track.startedAt);
@@ -52,18 +53,20 @@ const Hero = () => {
         ))}
       </div>
 
-      {/* Vinyl record — always mounted (so animation never restarts); just hidden when a presenter image is available */}
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/2 z-[5] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700"
-        style={{ opacity: hasPresenterImg ? 0 : 1 }}
-        aria-hidden="true"
-      >
-        <VinylRecord
-          cover={track.cover}
-          alt={track.title || ''}
-          style={{ width: 'min(58vh, 460px)', height: 'min(58vh, 460px)' }}
-        />
-      </div>
+      {/* Vinyl record — only shown after we've confirmed there's no presenter image. Once mounted it stays mounted to keep the spin animation continuous. */}
+      {showVinyl && (
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 z-[5] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-700"
+          style={{ opacity: hasPresenterImg ? 0 : 1 }}
+          aria-hidden="true"
+        >
+          <VinylRecord
+            cover={track.cover}
+            alt={track.title || ''}
+            style={{ width: 'min(58vh, 460px)', height: 'min(58vh, 460px)' }}
+          />
+        </div>
+      )}
 
       {/* Presenter image — only shown when API actually has one */}
       {hasPresenterImg && (
