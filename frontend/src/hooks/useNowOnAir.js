@@ -3,6 +3,8 @@ import { getCurrentScheduleSlot } from '../lib/schedule';
 
 const NOW_JSON_URL = 'https://clara.koodh.com/api/rds/grk/now-playing';
 const SHOW_URL = 'https://clara.koodh.com/api/rds/grk/live';
+const PRESENTER_URL = 'https://clara.koodh.com/api/rds/grk/presenters.txt';
+const PRESENTER_IMAGE_URL = 'https://clara.koodh.com/api/rds/grk/presenter-image.jpg';
 const HISTORY_KEY = 'grk-recent-tracks';
 const HISTORY_LIMIT = 2000;
 const HISTORY_MAX_AGE_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
@@ -126,6 +128,7 @@ const fetchCover = async (artist, title) => {
 
 export const useNowOnAir = (intervalMs = 10000) => {
   const [show, setShow] = useState('');
+  const [presenter, setPresenter] = useState({ name: '', image: '' });
   const [track, setTrack] = useState({ artist: '', title: '', startedAt: null, cover: '' });
   const [history, setHistory] = useState(getHistory());
   const prevKeyRef = useRef('');
@@ -143,9 +146,18 @@ export const useNowOnAir = (intervalMs = 10000) => {
     let cancelled = false;
 
     const tick = async () => {
-      const [data, showText] = await Promise.all([fetchJson(NOW_JSON_URL), fetchText(SHOW_URL)]);
+      const [data, showText, presenterText] = await Promise.all([
+        fetchJson(NOW_JSON_URL),
+        fetchText(SHOW_URL),
+        fetchText(PRESENTER_URL),
+      ]);
       if (cancelled) return;
       if (showText) setShow(showText);
+      // Always set presenter (name from API, image url with cache-buster so it refreshes per tick)
+      setPresenter({
+        name: presenterText || '',
+        image: `${PRESENTER_IMAGE_URL}?_=${Date.now()}`,
+      });
 
       if (!data) return;
       const raw = data.original_song_title || data.song_title || data.raw_song_title || '';
@@ -158,10 +170,10 @@ export const useNowOnAir = (intervalMs = 10000) => {
 
       setTrack({ ...parsed, startedAt, cover: '' });
 
-      // Determine the current show name for this entry (live RDS preferred, fallback schedule)
+      // Determine the current show name & host for this entry
       const slot = getCurrentScheduleSlot();
       const showName = (showText || show || slot.title || '').trim();
-      const hostName = slot.host || '';
+      const hostName = (presenterText || slot.host || '').trim();
 
       // Push to history (skip duplicate of last entry, even if cover/show differ)
       if (parsed.title) {
@@ -199,5 +211,5 @@ export const useNowOnAir = (intervalMs = 10000) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intervalMs]);
 
-  return { show, track, history };
+  return { show, presenter, track, history };
 };

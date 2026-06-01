@@ -12,8 +12,9 @@ const ROTATE_MS = 7000;
 
 const PersistentPlayer = () => {
   const { playing, muted, toggle, toggleMute } = usePlayer();
-  const { show, track } = useNowOnAir();
+  const { show, presenter, track } = useNowOnAir();
   const [view, setView] = useState('track'); // 'track' | 'show'
+  const [presenterImgFailed, setPresenterImgFailed] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -22,10 +23,17 @@ const PersistentPlayer = () => {
     return () => clearInterval(id);
   }, []);
 
+  // Reset failure state whenever presenter image URL changes (cache-buster)
+  useEffect(() => {
+    setPresenterImgFailed(false);
+  }, [presenter.image]);
+
   const slot = getCurrentScheduleSlot();
   const showName = show || slot.title || fallbackShow.title;
-  const hostName = slot.host || fallbackShow.host;
-  const presenterImg = slot.image || fallbackShow.image;
+  const hostName = presenter.name || slot.host || fallbackShow.host;
+  const presenterImg = (!presenterImgFailed && presenter.image)
+    ? presenter.image
+    : (slot.image || fallbackShow.image);
   const trackArtist = track.artist || fallbackTrack.artist;
   const trackTitle = track.title || fallbackTrack.title;
   const coverInitial = (trackArtist || '?').charAt(0).toUpperCase();
@@ -56,7 +64,12 @@ const PersistentPlayer = () => {
             className="absolute inset-0 transition-opacity duration-500"
             style={{ opacity: isShowView ? 1 : 0, background: '#062a4a' }}
           >
-            <img src={presenterImg} alt={hostName} className="w-full h-full object-cover" />
+            <img
+              src={presenterImg}
+              alt={hostName}
+              className="w-full h-full object-cover"
+              onError={() => setPresenterImgFailed(true)}
+            />
           </div>
         </div>
 

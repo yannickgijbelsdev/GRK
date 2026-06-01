@@ -22,11 +22,11 @@ const fmtTime = (d) => {
 
 const Hero = () => {
   const { playing, toggle } = usePlayer();
-  const { show, track } = useNowOnAir();
+  const { show, presenter, track } = useNowOnAir();
 
   const slot = getCurrentScheduleSlot();
   const showName = show || slot.title || fallbackShow.title;
-  const hostName = slot.host || fallbackShow.host;
+  const hostName = presenter.name || slot.host || fallbackShow.host;
   const trackArtist = track.artist || fallbackTrack.artist;
   const trackTitle = track.title || fallbackTrack.title;
   const startedAt = fmtTime(track.startedAt) || fallbackTrack.time;
