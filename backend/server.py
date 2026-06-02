@@ -1,8 +1,11 @@
 from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi.responses import HTMLResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+import re
+import html
 import logging
 import httpx
 from pathlib import Path
@@ -93,6 +96,103 @@ async def trigger_vdc_deploy():
     if r.status_code >= 400:
         raise HTTPException(r.status_code, r.text)
     return r.json()
+
+
+# -----------------------------------------------------------------------------
+# Share / Open-Graph endpoint
+# -----------------------------------------------------------------------------
+#
+# Facebook, Twitter, LinkedIn, WhatsApp etc. fetch the share-card without
+# running JS. This endpoint returns a static HTML page that contains the right
+# <meta og:*> tags for a given article and meta-refreshes real users to the
+# canonical SPA URL. The frontend's "Deel artikel" button shares THIS URL so
+# the social-card image matches the article.
+NEWS_API_BASE = "https://clara.koodh.com/api/news/grk"
+CATEGORY_TO_PATH = {"nieuws": "nieuws-uit-de-buurt", "social-club": "social-club"}
+SITE_URL = "https://grk.fm"
+DEFAULT_OG_IMAGE = f"{SITE_URL}/assets/grk-logo-fallback.png"
+
+
+def _slugify(text: str) -> str:
+    if not text:
+        return ""
+    text = text.lower()
+    text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
+    text = re.sub(r"[\s_-]+", "-", text).strip("-")
+    return text[:80]
+
+
+def _strip_html(s: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", s or "")).strip()
+
+
+def _first_img(body: str) -> str:
+    if not body:
+        return ""
+    m = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', body, flags=re.I)
+    return m.group(1) if m else ""
+
+
+@app.get("/api/share/{kind}/{slug}", response_class=HTMLResponse)
+async def share_article(kind: str, slug: str):
+    """Prerender OG/Twitter meta tags so social shares show the article image."""
+    category = CATEGORY_TO_PATH.get(kind)
+    if not category:
+        raise HTTPException(404, "Unknown category")
+
+    async with httpx.AsyncClient(timeout=15) as client_http:
+        list_resp = await client_http.get(f"{NEWS_API_BASE}/{category}?limit=200")
+        if list_resp.status_code >= 400:
+            raise HTTPException(502, "Could not reach news API")
+        data = list_resp.json()
+        article = next(
+            (a for a in (data.get("articles") or []) if _slugify(a.get("title")) == slug),
+            None,
+        )
+        if not article:
+            raise HTTPException(404, "Article not found")
+
+        detail_resp = await client_http.get(f"https://clara.koodh.com/api/news/articles/{article['id']}")
+        if detail_resp.status_code < 400:
+            article = detail_resp.json()
+
+    title = article.get("title") or "GRK"
+    image = article.get("image_url") or _first_img(article.get("body", "")) or DEFAULT_OG_IMAGE
+    excerpt = article.get("excerpt") or _strip_html(article.get("body", ""))[:220]
+    if len(excerpt) > 220:
+        excerpt = excerpt[:217] + "…"
+    canonical = f"{SITE_URL}/{kind}/{slug}"
+    e = html.escape
+    body = f"""<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{e(title)} — GRK</title>
+<meta name="description" content="{e(excerpt)}" />
+<link rel="canonical" href="{e(canonical)}" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="GRK — the feelgood station" />
+<meta property="og:title" content="{e(title)}" />
+<meta property="og:description" content="{e(excerpt)}" />
+<meta property="og:url" content="{e(canonical)}" />
+<meta property="og:image" content="{e(image)}" />
+<meta property="og:locale" content="nl_BE" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{e(title)}" />
+<meta name="twitter:description" content="{e(excerpt)}" />
+<meta name="twitter:image" content="{e(image)}" />
+<meta http-equiv="refresh" content="0; url={e(canonical)}" />
+<script>window.location.replace({canonical!r});</script>
+</head>
+<body>
+<p>Doorverwijzen naar <a href="{e(canonical)}">{e(title)}</a>…</p>
+</body>
+</html>"""
+    return HTMLResponse(
+        body,
+        headers={"Cache-Control": "public, max-age=300"},
+    )
 
 # Include the router in the main app
 app.include_router(api_router)

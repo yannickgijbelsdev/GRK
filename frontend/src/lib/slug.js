@@ -13,16 +13,16 @@ export const slugify = (text) => {
 // UUID v4-style regex (matches the IDs returned by the news API)
 const UUID_RE = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
-// Build "/{slug}-{id}" url segment for an article
+// Build "/{slug}" url segment for an article (slug only — no UUID suffix).
 export const articleSlugPath = (article) => {
   if (!article) return '';
   const slug = slugify(article.title);
-  if (!slug) return article.id;
-  return `${slug}-${article.id}`;
+  return slug || article.id;
 };
 
 // Pull the article id back out of a slugified path parameter. Accepts
-// either a plain UUID (legacy links) or "slug-words-{uuid}".
+// either a plain UUID (legacy links) or a slug (current). Returns the slug
+// as-is when no UUID is embedded — callers must then resolve via the list.
 export const idFromSlugParam = (param) => {
   if (!param) return '';
   const m = param.match(UUID_RE);

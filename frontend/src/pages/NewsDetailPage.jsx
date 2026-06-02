@@ -6,7 +6,7 @@ import NewsCard from '../components/NewsCard';
 import NewsBody from '../components/NewsBody';
 import CoverImage from '../components/CoverImage';
 import SEO from '../components/SEO';
-import { idFromSlugParam, articleSlugPath } from '../lib/slug';
+import { articleSlugPath } from '../lib/slug';
 
 // Remove the first <img> from the HTML body (we render it separately above the article)
 // and collapse the now-empty wrapper paragraphs.
@@ -31,11 +31,10 @@ const deriveContext = (pathname) => {
 
 const NewsDetailPage = () => {
   const { id: rawParam } = useParams();
-  const id = useMemo(() => idFromSlugParam(rawParam), [rawParam]);
   const location = useLocation();
   const navigate = useNavigate();
   const ctx = useMemo(() => deriveContext(location.pathname), [location.pathname]);
-  const { article, loading, notFound } = useNewsArticle(id);
+  const { article, loading, notFound } = useNewsArticle(rawParam);
   const { articles: allArticles } = useNewsArticles(ctx.category);
 
   // Canonicalize URL once article is loaded: rewrite plain UUID urls (or stale
@@ -61,8 +60,8 @@ const NewsDetailPage = () => {
     return text.length > 220 ? `${text.slice(0, 217)}…` : text;
   }, [article]);
   const related = useMemo(
-    () => allArticles.filter((a) => a.id !== id).slice(0, 3),
-    [allArticles, id]
+    () => allArticles.filter((a) => a.id !== article?.id).slice(0, 3),
+    [allArticles, article]
   );
 
   return (
@@ -177,7 +176,9 @@ const NewsDetailPage = () => {
             <div className="mt-10 pt-8 border-t border-[#d8e4f0] flex items-center gap-3">
               <button
                 onClick={() => {
-                  const url = typeof window !== 'undefined' ? window.location.href : '';
+                  // Share via the backend OG endpoint so socials show the article image.
+                  const kind = ctx.backTo === '/social-club' ? 'social-club' : 'nieuws';
+                  const url = `${window.location.origin}/api/share/${kind}/${articleSlugPath(article)}`;
                   if (navigator.share) {
                     navigator.share({ title: article.title, url }).catch(() => {});
                   } else if (navigator.clipboard) {

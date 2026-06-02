@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { slugify } from '../lib/slug';
 
 const API_BASE = 'https://clara.koodh.com/api/news';
 
@@ -136,16 +137,36 @@ export const useArticleMeta = (article) => {
  */
 export const useArticleThumbnail = (article) => useArticleMeta(article).thumbnail;
 
-export const useNewsArticle = (id) => {
-  const [article, setArticle] = useState(id && detailCache.has(id) ? detailCache.get(id) : null);
-  const [loading, setLoading] = useState(!article);
+export const useNewsArticle = (idOrSlug) => {
+  // Detect: UUID → fetch directly. Anything else → slug, must resolve against the list.
+  const isUuid = !!idOrSlug && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+  const initial = isUuid && detailCache.has(idOrSlug) ? detailCache.get(idOrSlug) : null;
+  const [article, setArticle] = useState(initial);
+  const [loading, setLoading] = useState(!initial);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setNotFound(false);
-    fetchOne(id).then((data) => {
+
+    const resolve = async () => {
+      if (!idOrSlug) return null;
+      if (isUuid) return fetchOne(idOrSlug);
+      // Slug path — try all categories until we find a match.
+      const candidates = await Promise.all([
+        fetchList('nieuws-uit-de-buurt'),
+        fetchList('social-club'),
+      ]);
+      const slug = slugify(idOrSlug);
+      for (const list of candidates) {
+        const found = (list || []).find((a) => slugify(a.title) === slug);
+        if (found) return fetchOne(found.id);
+      }
+      return null;
+    };
+
+    resolve().then((data) => {
       if (cancelled) return;
       if (!data) {
         setNotFound(true);
@@ -156,7 +177,7 @@ export const useNewsArticle = (id) => {
       setLoading(false);
     });
     return () => { cancelled = true; };
-  }, [id]);
+  }, [idOrSlug, isUuid]);
 
   return { article, loading, notFound };
 };
