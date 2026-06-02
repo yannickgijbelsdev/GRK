@@ -74,8 +74,8 @@ const Hero = () => {
           <img
             src={presenter.image}
             alt={hostName}
-            className="w-auto select-none drop-shadow-2xl h-[55%] sm:h-full"
-            style={{ maxHeight: '100%', maxWidth: '60%', objectFit: 'contain', objectPosition: 'bottom right' }}
+            className="w-auto select-none drop-shadow-2xl h-[80%] sm:h-full"
+            style={{ maxHeight: '100%', maxWidth: '75%', objectFit: 'contain', objectPosition: 'bottom right' }}
             draggable={false}
           />
         </div>
