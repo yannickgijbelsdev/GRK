@@ -68,14 +68,18 @@ const Hero = () => {
         </div>
       )}
 
-      {/* Presenter image — only shown when API actually has one */}
+      {/* Presenter image — only shown when API actually has one. Top of image
+         starts ~3cm below the fixed header on every viewport. */}
       {hasPresenterImg && (
-        <div className="absolute inset-0 z-[6] pointer-events-none flex items-end justify-end">
+        <div
+          className="absolute inset-x-0 bottom-0 z-[6] pointer-events-none"
+          style={{ top: 'calc(6.5rem + 3cm)' }}
+        >
           <img
             src={presenter.image}
             alt={hostName}
-            className="w-auto select-none drop-shadow-2xl h-full"
-            style={{ maxHeight: '100%', objectFit: 'contain', objectPosition: 'bottom right' }}
+            className="w-full h-full select-none drop-shadow-2xl"
+            style={{ objectFit: 'contain', objectPosition: 'bottom right' }}
             draggable={false}
           />
         </div>
