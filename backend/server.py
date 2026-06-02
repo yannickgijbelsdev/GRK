@@ -1,9 +1,10 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import httpx
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
@@ -65,6 +66,33 @@ async def get_status_checks():
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
     
     return status_checks
+
+
+@api_router.post("/vdc/deploy")
+async def trigger_vdc_deploy():
+    """Trigger a deploy on Koodh VDC over the reverse SSH tunnel."""
+    base_url = os.environ.get("VDC_BASE_URL")
+    api_key = os.environ.get("VDC_API_KEY")
+    app_id = os.environ.get("VDC_APPLICATION_ID")
+    if not base_url or not api_key or not app_id:
+        raise HTTPException(500, "VDC env vars not configured")
+
+    payload = {
+        "project_name": "root-grk-fm",
+        "ssh_host": "172.17.0.1",
+        "ssh_port": 2226,
+        "application_id": app_id,
+        "metadata": {"requested_via": "agent-auto-on-complete"},
+    }
+    async with httpx.AsyncClient(timeout=30) as client_http:
+        r = await client_http.post(
+            f"{base_url}/api/clara/deploy/ssh-init",
+            headers={"X-API-Key": api_key},
+            json=payload,
+        )
+    if r.status_code >= 400:
+        raise HTTPException(r.status_code, r.text)
+    return r.json()
 
 # Include the router in the main app
 app.include_router(api_router)
