@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo } from 'react';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Share2, Volume2 } from 'lucide-react';
 import { useNewsArticle, useNewsArticles, extractFirstImage, hasAudio as detectAudio, articleDate } from '../hooks/useNews';
 import NewsCard from '../components/NewsCard';
 import NewsBody from '../components/NewsBody';
 import CoverImage from '../components/CoverImage';
+import SEO from '../components/SEO';
+import { idFromSlugParam, articleSlugPath } from '../lib/slug';
 
 // Remove the first <img> from the HTML body (we render it separately above the article)
 // and collapse the now-empty wrapper paragraphs.
@@ -13,20 +15,38 @@ const stripFirstImage = (html) => {
   return html.replace(/<img[^>]*>/i, '').replace(/<p[^>]*>\s*<\/p>/gi, '');
 };
 
+// Quickly strip any HTML to get a plain-text description for meta tags.
+const stripHtml = (html) => (html || '')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
 // Derive category and back-link target from the URL pathname.
 const deriveContext = (pathname) => {
   if (pathname && pathname.startsWith('/social-club')) {
-    return { category: 'social-club', backTo: '/social-club', backLabel: 'Terug naar Social Club', listTitle: 'Meer uit Social Club' };
+    return { category: 'social-club', backTo: '/social-club', backLabel: 'Terug naar Social Club', listTitle: 'Meer uit Social Club', section: 'Social Club' };
   }
-  return { category: 'nieuws-uit-de-buurt', backTo: '/nieuws', backLabel: 'Terug', listTitle: 'Ander nieuws' };
+  return { category: 'nieuws-uit-de-buurt', backTo: '/nieuws', backLabel: 'Terug', listTitle: 'Ander nieuws', section: 'Nieuws uit de buurt' };
 };
 
 const NewsDetailPage = () => {
-  const { id } = useParams();
+  const { id: rawParam } = useParams();
+  const id = useMemo(() => idFromSlugParam(rawParam), [rawParam]);
   const location = useLocation();
+  const navigate = useNavigate();
   const ctx = useMemo(() => deriveContext(location.pathname), [location.pathname]);
   const { article, loading, notFound } = useNewsArticle(id);
   const { articles: allArticles } = useNewsArticles(ctx.category);
+
+  // Canonicalize URL once article is loaded: rewrite plain UUID urls (or stale
+  // slug urls) to the slugified one without adding a history entry.
+  useEffect(() => {
+    if (!article) return;
+    const desired = `${ctx.backTo}/${articleSlugPath(article)}`;
+    if (location.pathname !== desired) {
+      navigate(desired, { replace: true });
+    }
+  }, [article, ctx.backTo, location.pathname, navigate]);
 
   const heroImg = useMemo(() => {
     if (!article) return '';
@@ -35,6 +55,11 @@ const NewsDetailPage = () => {
 
   const bodyHtml = useMemo(() => stripFirstImage(article?.body || ''), [article]);
   const articleHasAudio = useMemo(() => detectAudio(article?.body || ''), [article]);
+  const description = useMemo(() => {
+    if (!article) return '';
+    const text = article.excerpt || stripHtml(article.body).slice(0, 220);
+    return text.length > 220 ? `${text.slice(0, 217)}…` : text;
+  }, [article]);
   const related = useMemo(
     () => allArticles.filter((a) => a.id !== id).slice(0, 3),
     [allArticles, id]
@@ -42,6 +67,37 @@ const NewsDetailPage = () => {
 
   return (
     <>
+      {article && (
+        <SEO
+          title={article.title}
+          description={description}
+          image={heroImg || undefined}
+          type="article"
+          section={ctx.section}
+          publishedAt={article.original_date || article.created_at}
+          modifiedAt={article.updated_at}
+        >
+          <script type="application/ld+json">
+            {JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'NewsArticle',
+              headline: article.title,
+              description,
+              image: heroImg ? [heroImg] : undefined,
+              datePublished: article.original_date || article.created_at,
+              dateModified: article.updated_at || article.original_date || article.created_at,
+              articleSection: ctx.section,
+              author: { '@type': 'Organization', name: 'GRK' },
+              publisher: {
+                '@type': 'Organization',
+                name: 'GRK — the feelgood station',
+                logo: { '@type': 'ImageObject', url: 'https://grk.fm/assets/grk-logo-fallback.png' },
+              },
+              mainEntityOfPage: typeof window !== 'undefined' ? window.location.href : undefined,
+            })}
+          </script>
+        </SEO>
+      )}
       {/* Colored banner with title */}
       <section
         className="relative overflow-hidden pt-28 md:pt-32"

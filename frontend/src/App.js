@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
@@ -23,7 +24,8 @@ import TermsPage from './pages/TermsPage';
 function App() {
   return (
     <div className="App min-h-screen bg-white">
-      <CookieConsentProvider>
+      <HelmetProvider>
+        <CookieConsentProvider>
         <PlayerProvider>
           <BrowserRouter>
             <ScrollToTop />
@@ -49,6 +51,7 @@ function App() {
           </BrowserRouter>
         </PlayerProvider>
       </CookieConsentProvider>
+      </HelmetProvider>
     </div>
   );
 }

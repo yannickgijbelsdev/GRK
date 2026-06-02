@@ -1,5 +1,6 @@
 import React from 'react';
 import PageHeader from '../components/PageHeader';
+import SEO from '../components/SEO';
 
 const Section = ({ title, children }) => (
   <section className="mb-10">
@@ -10,6 +11,7 @@ const Section = ({ title, children }) => (
 
 const TermsPage = () => (
   <>
+    <SEO title="Algemene voorwaarden" description="De spelregels voor het gebruik van de website en stream van GRK." url="https://grk.fm/voorwaarden" />
     <PageHeader title="Algemene voorwaarden" subtitle="De spelregels voor het gebruik van onze website en stream." />
     <section className="py-12 md:py-16 page-pad-bottom">
       <div className="max-w-3xl mx-auto px-6 lg:px-10">

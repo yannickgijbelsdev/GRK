@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Repeat } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
+import SEO from '../components/SEO';
 import CoverImage from '../components/CoverImage';
 import { useDaySchedule } from '../hooks/useSchedule';
 
@@ -30,6 +31,7 @@ const ProgrammingListPage = () => {
 
   return (
     <>
+      <SEO title="Programma's" description="Onze volledige weekprogrammatie op GRK 107.4 FM en DAB+ in Limburg." url="https://grk.fm/programmering" />
       <PageHeader title="Programma's" subtitle="Hier vind je de hele programmatie terug." />
       <section className="py-12 md:py-16 page-pad-bottom bg-white">
         <div className="max-w-5xl mx-auto px-6 lg:px-10">

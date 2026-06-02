@@ -1,6 +1,7 @@
 import React from 'react';
 import PageHeader from '../components/PageHeader';
 import NewsCard from '../components/NewsCard';
+import SEO from '../components/SEO';
 import { useNewsArticles } from '../hooks/useNews';
 
 /**
@@ -17,6 +18,7 @@ const NewsListPage = ({
 
   return (
     <>
+      <SEO title={title} description={subtitle} url={`https://grk.fm${basePath}`} />
       <PageHeader title={title} subtitle={subtitle} />
       <section className="py-12 md:py-16 page-pad-bottom">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Volume2 } from 'lucide-react';
 import CoverImage from './CoverImage';
 import { articleDate, useArticleMeta } from '../hooks/useNews';
+import { articleSlugPath } from '../lib/slug';
 
 const NewsCard = ({ article, compact = false, basePath = '/nieuws' }) => {
   const date = articleDate(article);
@@ -10,7 +11,7 @@ const NewsCard = ({ article, compact = false, basePath = '/nieuws' }) => {
 
   return (
     <Link
-      to={`${basePath}/${article.id}`}
+      to={`${basePath}/${articleSlugPath(article)}`}
       className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-[#d8e4f0] flex flex-col"
       data-testid="news-card"
     >

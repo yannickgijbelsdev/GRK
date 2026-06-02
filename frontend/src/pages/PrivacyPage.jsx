@@ -1,5 +1,6 @@
 import React from 'react';
 import PageHeader from '../components/PageHeader';
+import SEO from '../components/SEO';
 
 const Section = ({ title, children }) => (
   <section className="mb-10">
@@ -10,6 +11,7 @@ const Section = ({ title, children }) => (
 
 const PrivacyPage = () => (
   <>
+    <SEO title="Privacybeleid" description="Hoe GRK omgaat met jouw gegevens — onze privacypolicy." url="https://grk.fm/privacy" />
     <PageHeader title="Privacybeleid" subtitle="Hoe wij omgaan met jouw gegevens." />
     <section className="py-12 md:py-16 page-pad-bottom">
       <div className="max-w-3xl mx-auto px-6 lg:px-10">

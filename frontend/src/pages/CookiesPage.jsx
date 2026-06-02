@@ -1,5 +1,6 @@
 import React from 'react';
 import PageHeader from '../components/PageHeader';
+import SEO from '../components/SEO';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
 const Section = ({ title, children }) => (
@@ -22,6 +23,7 @@ const CookiesPage = () => {
   const { openPreferences } = useCookieConsent();
   return (
     <>
+      <SEO title="Cookies" description="Welke cookies bewaren wij op GRK en waarom — en hoe je jouw voorkeuren aanpast." url="https://grk.fm/cookies" />
       <PageHeader title="Cookies op GRK" subtitle="Welke cookies bewaren we, en waarom?" />
       <section className="py-12 md:py-16 page-pad-bottom">
         <div className="max-w-3xl mx-auto px-6 lg:px-10">

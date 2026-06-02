@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import PageHeader from '../components/PageHeader';
+import SEO from '../components/SEO';
 import { Clock, Music2, Calendar } from 'lucide-react';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import CoverImage from '../components/CoverImage';
@@ -57,6 +58,7 @@ const SelectedPage = () => {
 
   return (
     <>
+      <SEO title="Selected" description="Elke zaterdag van 17u tot 19u: de meest gestreamde nummers van het moment in Limburg." url="https://grk.fm/selected" />
       <PageHeader
         title="Selected"
         subtitle="Elke zaterdag van 17u tot 19u hoor je de meest gestreamde nummers van het moment in Limburg."
