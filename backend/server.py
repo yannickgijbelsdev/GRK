@@ -167,7 +167,8 @@ async def _render_share_html(kind: str, slug: str):
             None,
         )
         if not article:
-            raise HTTPException(404, "Article not found")
+            # Article unknown — fall back to the bare SPA so the route still works.
+            return HTMLResponse(_load_spa_index(), headers={"Cache-Control": "no-store"})
 
         detail_resp = await client_http.get(f"https://clara.koodh.com/api/news/articles/{article['id']}")
         if detail_resp.status_code < 400:
@@ -179,37 +180,118 @@ async def _render_share_html(kind: str, slug: str):
     if len(excerpt) > 220:
         excerpt = excerpt[:217] + "…"
     canonical = f"{SITE_URL}/{kind}/{slug}"
-    e = html.escape
-    body = f"""<!doctype html>
-<html lang="nl">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>{e(title)} — GRK</title>
-<meta name="description" content="{e(excerpt)}" />
-<link rel="canonical" href="{e(canonical)}" />
-<meta property="og:type" content="article" />
-<meta property="og:site_name" content="GRK — the feelgood station" />
-<meta property="og:title" content="{e(title)}" />
-<meta property="og:description" content="{e(excerpt)}" />
-<meta property="og:url" content="{e(canonical)}" />
-<meta property="og:image" content="{e(image)}" />
-<meta property="og:locale" content="nl_BE" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="{e(title)}" />
-<meta name="twitter:description" content="{e(excerpt)}" />
-<meta name="twitter:image" content="{e(image)}" />
-<meta http-equiv="refresh" content="0; url={e(canonical)}" />
-<script>window.location.replace({canonical!r});</script>
-</head>
-<body>
-<p>Doorverwijzen naar <a href="{e(canonical)}">{e(title)}</a>…</p>
-</body>
-</html>"""
-    return HTMLResponse(
-        body,
-        headers={"Cache-Control": "public, max-age=300"},
+    spa_html = _load_spa_index()
+    full_title = f"{title} — GRK"
+    injected = _inject_meta(
+        spa_html,
+        title=full_title,
+        description=excerpt,
+        image=image,
+        url=canonical,
     )
+    return HTMLResponse(
+        injected,
+        headers={"Cache-Control": "public, max-age=120"},
+    )
+
+
+# Cache the SPA's index.html in memory so we don't hit disk on every request.
+_SPA_INDEX_CACHE = {"html": "", "mtime": 0.0}
+SPA_INDEX_PATHS = [
+    Path("/app/frontend/build/index.html"),
+    Path("/app/frontend/public/index.html"),
+]
+
+
+def _load_spa_index() -> str:
+    """Return the current SPA index.html, with a tiny mtime-based cache."""
+    for p in SPA_INDEX_PATHS:
+        if p.exists():
+            mtime = p.stat().st_mtime
+            if _SPA_INDEX_CACHE["mtime"] != mtime:
+                _SPA_INDEX_CACHE["html"] = p.read_text(encoding="utf-8")
+                _SPA_INDEX_CACHE["mtime"] = mtime
+            return _SPA_INDEX_CACHE["html"]
+    # Last-ditch: minimal HTML pointing at the SPA bundle.
+    return "<!doctype html><html><head><title>GRK</title></head><body></body></html>"
+
+
+_TAG_REPLACERS = (
+    # (regex, replacement-with-{value})
+    (re.compile(r"<title>[^<]*</title>", re.I),
+     "<title>{value}</title>"),
+    (re.compile(r'<meta\s+name=["\']description["\'][^>]*>', re.I),
+     '<meta name="description" content="{value}" />'),
+    (re.compile(r'<meta\s+property=["\']og:title["\'][^>]*>', re.I),
+     '<meta property="og:title" content="{value}" />'),
+    (re.compile(r'<meta\s+property=["\']og:description["\'][^>]*>', re.I),
+     '<meta property="og:description" content="{value}" />'),
+    (re.compile(r'<meta\s+property=["\']og:image["\'][^>]*>', re.I),
+     '<meta property="og:image" content="{value}" />'),
+    (re.compile(r'<meta\s+property=["\']og:url["\'][^>]*>', re.I),
+     '<meta property="og:url" content="{value}" />'),
+    (re.compile(r'<meta\s+property=["\']og:type["\'][^>]*>', re.I),
+     '<meta property="og:type" content="article" />'),
+    (re.compile(r'<meta\s+name=["\']twitter:title["\'][^>]*>', re.I),
+     '<meta name="twitter:title" content="{value}" />'),
+    (re.compile(r'<meta\s+name=["\']twitter:description["\'][^>]*>', re.I),
+     '<meta name="twitter:description" content="{value}" />'),
+    (re.compile(r'<meta\s+name=["\']twitter:image["\'][^>]*>', re.I),
+     '<meta name="twitter:image" content="{value}" />'),
+    (re.compile(r'<link\s+rel=["\']canonical["\'][^>]*>', re.I),
+     '<link rel="canonical" href="{value}" />'),
+)
+
+
+def _inject_meta(html_src: str, *, title: str, description: str, image: str, url: str) -> str:
+    """Replace title / description / canonical / og:* / twitter:* tags in the
+    SPA index.html with article-specific values. Leaves the rest untouched so
+    the React bundle still mounts and renders for human visitors."""
+    e = html.escape
+    values = {
+        "<title>": title,
+        "description": description,
+        "og:title": title,
+        "og:description": description,
+        "og:image": image,
+        "og:url": url,
+        "og:type": "article",  # static
+        "twitter:title": title,
+        "twitter:description": description,
+        "twitter:image": image,
+        "canonical": url,
+    }
+
+    def value_for(template: str) -> str:
+        if "og:title" in template or template.startswith("<title>"):
+            return values["og:title"]
+        if "og:description" in template:
+            return values["og:description"]
+        if "og:image" in template:
+            return values["og:image"]
+        if "og:url" in template:
+            return values["og:url"]
+        if "description" in template:
+            return values["description"]
+        if "twitter:title" in template:
+            return values["twitter:title"]
+        if "twitter:description" in template:
+            return values["twitter:description"]
+        if "twitter:image" in template:
+            return values["twitter:image"]
+        if "canonical" in template:
+            return values["canonical"]
+        return ""
+
+    out = html_src
+    for pattern, template in _TAG_REPLACERS:
+        rep = template.replace("{value}", e(value_for(template)))
+        new_out, n = pattern.subn(rep, out, count=1)
+        if n == 0:
+            # Tag wasn't present — inject before </head>
+            new_out = out.replace("</head>", rep + "\n</head>", 1)
+        out = new_out
+    return out
 
 # Include the router in the main app
 app.include_router(api_router)
