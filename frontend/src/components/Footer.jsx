@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Music2 } from 'lucide-react';
+import { Instagram, Facebook, Radio } from 'lucide-react';
 import { useCookieConsent } from '../context/CookieConsentContext';
 
 const Footer = () => {
@@ -29,9 +29,9 @@ const Footer = () => {
             <img src="/assets/grk-logo.png" alt="GRK" className="h-16 w-16 object-contain" />
           </div>
           <div className="flex items-center gap-5">
-            <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Instagram size={18}/></a>
-            <a href="#" aria-label="Facebook" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Facebook size={18}/></a>
-            <a href="#" aria-label="Spotify" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Music2 size={18}/></a>
+            <a href="https://www.instagram.com/radio.grk/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Instagram size={18}/></a>
+            <a href="https://www.facebook.com/RadioGRK/?locale=nl_BE" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Facebook size={18}/></a>
+            <a href="https://radioplayer.be/nl" target="_blank" rel="noopener noreferrer" aria-label="Radioplayer" className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"><Radio size={18}/></a>
           </div>
         </div>
 
