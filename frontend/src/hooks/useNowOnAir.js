@@ -174,7 +174,14 @@ export const useNowOnAir = (intervalMs = 10000) => {
 
       if (!data) return;
       const raw = data.original_song_title || data.song_title || data.raw_song_title || '';
-      const parsed = parseTrack(raw);
+      let parsed = parseTrack(raw);
+      // Station "filler" track: API reports the station tagline as the track.
+      // Treat that as a non-song slot — artist = GRK, title = the feelgood station,
+      // and let the GRK logo serve as cover (we skip the iTunes lookup).
+      const isStationFiller = !parsed.artist && /feelgood\s*station/i.test(parsed.title);
+      if (isStationFiller) {
+        parsed = { artist: 'GRK', title: 'the feelgood station' };
+      }
       const startedAt = data.song_started_at ? new Date(data.song_started_at) : new Date();
       const key = `${parsed.artist}|${parsed.title}|${data.song_started_at || ''}`;
 
@@ -187,8 +194,9 @@ export const useNowOnAir = (intervalMs = 10000) => {
       const showName = (showText || show || '').trim();
       const hostName = (presenterText || '').trim();
 
-      // Push to history (skip duplicate of last entry, even if cover/show differ)
-      if (parsed.title) {
+      // Push to history (skip duplicate of last entry, even if cover/show differ).
+      // Don't pollute the "Gedraaid" log with the station filler track.
+      if (parsed.title && !isStationFiller) {
         const list = getHistory();
         const last = list[0];
         if (!last || last.artist !== parsed.artist || last.title !== parsed.title) {
@@ -202,7 +210,9 @@ export const useNowOnAir = (intervalMs = 10000) => {
         }
       }
 
-      // Fetch cover, then update both live track + latest history entry
+      // Fetch cover, then update both live track + latest history entry.
+      // Skip for the station-filler track — we want the GRK logo to show.
+      if (isStationFiller) return;
       const cover = await fetchCover(parsed.artist, parsed.title);
       if (cancelled) return;
       if (prevKeyRef.current === key) {
