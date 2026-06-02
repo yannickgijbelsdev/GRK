@@ -342,26 +342,28 @@ html { scroll-behavior: smooth; }
 /* Hero presenter image — responsive sizing/positioning */
 .hero-presenter {
   position: absolute;
-  inset: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* Default: keep the image below the fixed header */
+  top: 7rem;
 }
 .hero-presenter img {
   width: 100%;
   height: 100%;
 }
-/* Mobile: fill the area starting 3cm below the menu */
+/* Mobile: drop the image another 3cm so the head sits well below the menu */
 @media (max-width: 767px) {
   .hero-presenter {
     top: calc(6.5rem + 3cm);
-    bottom: 0;
-    left: 0;
-    right: 0;
   }
   .hero-presenter img {
     object-fit: cover;
     object-position: 50% top;
   }
 }
-/* Desktop & up: full banner height, contain so the entire presenter shows */
+/* Desktop & up: full available height (below menu), contain so the entire
+   presenter shows and never overlaps the header. */
 @media (min-width: 768px) {
   .hero-presenter img {
     object-fit: contain;
