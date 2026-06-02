@@ -150,6 +150,10 @@ export const useNowOnAir = (intervalMs = 10000) => {
 
   useEffect(() => {
     let cancelled = false;
+    // Remember the last show/presenter context so we can detect changes and
+    // bust the presenter-image cache only when one of them actually changes.
+    let lastShowKey = '';
+    let lastImageBust = '';
 
     const tick = async () => {
       const [data, showText, presenterText] = await Promise.all([
@@ -160,14 +164,24 @@ export const useNowOnAir = (intervalMs = 10000) => {
       if (cancelled) return;
       if (showText) setShow(showText);
 
+      // When the show or presenter name changes, refresh the presenter image
+      // by appending a cache-buster. While they stay the same, keep the URL
+      // stable so React doesn't remount the <img> (and we don't flicker).
+      const nextShowKey = `${showText}|${presenterText}`;
+      if (nextShowKey !== lastShowKey) {
+        lastShowKey = nextShowKey;
+        lastImageBust = String(Date.now());
+      }
+      const candidateUrl = lastImageBust
+        ? `${PRESENTER_IMAGE_URL}?v=${lastImageBust}`
+        : PRESENTER_IMAGE_URL;
+
       // Probe the presenter image — only expose URL when it actually loads (200).
-      // We use a static URL (no cache-buster) so the vinyl/image element doesn't
-      // remount on every poll.
-      const probed = await probeImage(PRESENTER_IMAGE_URL);
+      const probed = await probeImage(candidateUrl);
       if (cancelled) return;
       setPresenter((prev) => {
         const nextName = presenterText || '';
-        const nextImage = probed ? PRESENTER_IMAGE_URL : '';
+        const nextImage = probed ? candidateUrl : '';
         if (prev.name === nextName && prev.image === nextImage && prev.checked) return prev;
         return { name: nextName, image: nextImage, checked: true };
       });
