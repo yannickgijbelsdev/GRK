@@ -338,3 +338,34 @@ html { scroll-behavior: smooth; }
   cursor: pointer;
 }
 
+
+/* Hero presenter image — responsive sizing/positioning */
+.hero-presenter {
+  position: absolute;
+  inset: 0;
+}
+.hero-presenter img {
+  width: 100%;
+  height: 100%;
+}
+/* Mobile: fill the area starting 3cm below the menu */
+@media (max-width: 767px) {
+  .hero-presenter {
+    top: calc(6.5rem + 3cm);
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .hero-presenter img {
+    object-fit: cover;
+    object-position: 50% top;
+  }
+}
+/* Desktop & up: full banner height, contain so the entire presenter shows */
+@media (min-width: 768px) {
+  .hero-presenter img {
+    object-fit: contain;
+    object-position: 50% bottom;
+  }
+}
+
