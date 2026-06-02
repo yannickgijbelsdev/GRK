@@ -81,7 +81,7 @@ const Hero = () => {
       )}
 
       <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
-        <div className="hero-title-wrap z-20" style={{ maxWidth: '480px' }}>
+        <div className="relative h-full flex flex-col justify-start sm:justify-center pt-[2cm] sm:pt-0 z-20" style={{ maxWidth: '480px' }}>
           <h1
             className="text-white font-black tracking-tight leading-[0.95] break-words drop-shadow-[0_2px_20px_rgba(0,0,0,0.45)]"
             style={{ fontSize: 'clamp(1.85rem, 4.5vw, 4.25rem)' }}
