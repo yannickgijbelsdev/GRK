@@ -368,6 +368,34 @@ html { scroll-behavior: smooth; }
   .hero-presenter img {
     object-fit: contain;
     object-position: 50% bottom;
+
+/* Hero title wrapper — anchors text bottom to the photo top on mobile so the
+   show + presenter name never overlap the presenter image. */
+.hero-title-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 767px) {
+  .hero-title-wrap {
+    position: absolute;
+    /* Fixed band: from just below the menu down to where the photo starts. */
+    top: 6.5rem;
+    height: 3cm;
+    left: 1.5rem;
+    right: 1.5rem;
+    /* Anchor the text at the bottom of the band so longer text grows upward. */
+    justify-content: flex-end;
+    overflow: visible;
+  }
+}
+@media (min-width: 768px) {
+  .hero-title-wrap {
+    height: 100%;
+    justify-content: center;
+  }
+}
+
   }
 }
 
