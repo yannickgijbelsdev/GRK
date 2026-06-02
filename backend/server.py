@@ -136,6 +136,23 @@ def _first_img(body: str) -> str:
 @app.get("/api/share/{kind}/{slug}", response_class=HTMLResponse)
 async def share_article(kind: str, slug: str):
     """Prerender OG/Twitter meta tags so social shares show the article image."""
+    return await _render_share_html(kind, slug)
+
+
+# Same handler exposed without the /api prefix so a reverse proxy can route
+# /nieuws/{slug} and /social-club/{slug} bot traffic straight to the backend
+# without having to URL-rewrite. See deploy/nginx-share-snippet.conf.
+@app.get("/nieuws/{slug}", response_class=HTMLResponse)
+async def share_article_nieuws(slug: str):
+    return await _render_share_html("nieuws", slug)
+
+
+@app.get("/social-club/{slug}", response_class=HTMLResponse)
+async def share_article_socialclub(slug: str):
+    return await _render_share_html("social-club", slug)
+
+
+async def _render_share_html(kind: str, slug: str):
     category = CATEGORY_TO_PATH.get(kind)
     if not category:
         raise HTTPException(404, "Unknown category")
