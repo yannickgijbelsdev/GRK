@@ -62,12 +62,27 @@ const firstImg = (html) => {
   return m ? m[1] : '';
 };
 
+// WhatsApp/Telegram don't render WebP previews, and Twitter cards prefer a
+// 1200×630 jpg. Pipe every og:image through weserv.nl (free image CDN) which
+// converts to jpg and resizes/crops to the canonical Open Graph dimensions.
+const ogImageUrl = (raw) => {
+  if (!raw) return DEFAULT_IMAGE;
+  if (raw.startsWith(SITE_URL)) return raw; // already on our domain, e.g. the GRK logo fallback
+  // weserv.nl needs the full URL including the protocol; encode it for the query string.
+  return `https://images.weserv.nl/?url=${encodeURIComponent(raw)}&w=1200&h=630&fit=cover&output=jpg&q=85`;
+};
+
 const replacers = [
   [/<title>[^<]*<\/title>/i, '<title>{value}</title>'],
   [/<meta\s+name=["']description["'][^>]*>/i, '<meta name="description" content="{value}" />'],
   [/<meta\s+property=["']og:title["'][^>]*>/i, '<meta property="og:title" content="{value}" />'],
   [/<meta\s+property=["']og:description["'][^>]*>/i, '<meta property="og:description" content="{value}" />'],
-  [/<meta\s+property=["']og:image["'][^>]*>/i, '<meta property="og:image" content="{value}" />'],
+  [/<meta\s+property=["']og:image["'][^>]*>/i,
+    '<meta property="og:image" content="{value}" />\n'
+    + '    <meta property="og:image:secure_url" content="{value}" />\n'
+    + '    <meta property="og:image:type" content="image/jpeg" />\n'
+    + '    <meta property="og:image:width" content="1200" />\n'
+    + '    <meta property="og:image:height" content="630" />'],
   [/<meta\s+property=["']og:url["'][^>]*>/i, '<meta property="og:url" content="{value}" />'],
   [/<meta\s+property=["']og:type["'][^>]*>/i, '<meta property="og:type" content="article" />'],
   [/<meta\s+name=["']twitter:title["'][^>]*>/i, '<meta name="twitter:title" content="{value}" />'],
@@ -88,7 +103,9 @@ const inject = (html, v) => {
   let out = html;
   for (const [re, tpl] of replacers) {
     const val = escape(valueFor(tpl, v));
-    const rep = tpl.replace('{value}', val);
+    // Replace ALL occurrences of {value} inside the template (some templates
+    // emit several tags that share the same value, e.g. og:image+secure_url).
+    const rep = tpl.split('{value}').join(val);
     if (re.test(out)) out = out.replace(re, rep);
     else out = out.replace('</head>', rep + '\n</head>');
   }
@@ -131,7 +148,8 @@ const main = async () => {
       }
       const slug = slugify(detail.title);
       if (!slug) continue;
-      const image = detail.image_url || firstImg(detail.body) || DEFAULT_IMAGE;
+      const rawImage = detail.image_url || firstImg(detail.body) || '';
+      const image = ogImageUrl(rawImage);
       const excerpt = (detail.excerpt || stripHtml(detail.body).slice(0, 220) || '').trim();
       const trimmed = excerpt.length > 220 ? excerpt.slice(0, 217) + '…' : excerpt;
       const url = `${SITE_URL}/${cat.kind}/${slug}`;
