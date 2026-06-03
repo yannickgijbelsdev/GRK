@@ -157,16 +157,23 @@ export const useNowOnAir = (intervalMs = 10000) => {
         const json = await r.json();
         const remote = Array.isArray(json.tracks) ? json.tracks : [];
         if (!remote.length || cancelled) return;
-        // Merge: dedupe on artist|title|time, prefer entries that already have a cover.
+        // Merge: dedupe on artist|title|minute (server vs local tz-strings may
+        // differ for the same moment), prefer entries that already have a cover.
         const list = getHistory();
+        const minuteKey = (e) => {
+          const t = new Date(e.time || 0).getTime();
+          return `${e.artist || ''}|${e.title || ''}|${Math.floor(t / 60000)}`;
+        };
         const byKey = new Map();
-        for (const e of list) byKey.set(`${e.artist}|${e.title}|${e.time}`, e);
+        for (const e of list) byKey.set(minuteKey(e), e);
         for (const e of remote) {
-          const k = `${e.artist}|${e.title}|${e.time}`;
+          const k = minuteKey(e);
           if (!byKey.has(k)) byKey.set(k, { ...e, cover: '' });
         }
         const merged = pruneHistory(
-          Array.from(byKey.values()).sort((a, b) => (b.time || '').localeCompare(a.time || ''))
+          Array.from(byKey.values()).sort(
+            (a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime()
+          )
         );
         setHistoryAndNotify(merged);
       } catch { /* offline ok */ }
