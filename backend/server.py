@@ -12,7 +12,9 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+import asyncio
+from contextlib import asynccontextmanager
 
 
 ROOT_DIR = Path(__file__).parent
@@ -293,6 +295,16 @@ def _inject_meta(html_src: str, *, title: str, description: str, image: str, url
         out = new_out
     return out
 
+@api_router.get("/now-playing/recent")
+async def recent_tracks():
+    cutoff = datetime.now(timezone.utc) - RETENTION
+    cursor = db.recent_tracks.find(
+        {"stored_at": {"$gte": cutoff}},
+        {"_id": 0, "stored_at": 0},
+    ).sort("time", -1).limit(500)
+    return {"tracks": await cursor.to_list(length=500)}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
@@ -314,3 +326,84 @@ logger = logging.getLogger(__name__)
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+
+# ---------------------------------------------------------------------------
+# Recent-tracks poller — keeps a server-side rolling 3-day history so mobile
+# browsers (Safari private mode, ITP) that can't persist localStorage still
+# see "Gedraaid" filled out.
+# ---------------------------------------------------------------------------
+NOW_JSON_URL = "https://clara.koodh.com/api/rds/grk/now-playing"
+SHOW_URL = "https://clara.koodh.com/api/rds/grk/live"
+PRESENTERS_URL = "https://clara.koodh.com/api/rds/grk/presenters.txt"
+RETENTION = timedelta(days=3)
+
+
+def _parse_track(raw: str):
+    if not raw:
+        return "", ""
+    idx = raw.find(" - ")
+    if idx > 0:
+        return raw[:idx].strip(), raw[idx + 3 :].strip()
+    return "", raw.strip()
+
+
+async def _poll_now_playing():
+    """Background task: every 15s pull the live API and store any new track."""
+    last_key = ""
+    while True:
+        try:
+            async with httpx.AsyncClient(timeout=10) as h:
+                data_r, show_r, pres_r = await asyncio.gather(
+                    h.get(NOW_JSON_URL),
+                    h.get(SHOW_URL),
+                    h.get(PRESENTERS_URL),
+                    return_exceptions=True,
+                )
+            if not isinstance(data_r, httpx.Response) or data_r.status_code >= 400:
+                await asyncio.sleep(15)
+                continue
+            payload = data_r.json()
+            raw = payload.get("original_song_title") or payload.get("song_title") or ""
+            artist, title = _parse_track(raw)
+            # Skip the "feelgood station" station-filler track.
+            if not artist and re.search(r"feelgood\s*station", title, re.I):
+                await asyncio.sleep(15)
+                continue
+            if not title:
+                await asyncio.sleep(15)
+                continue
+            started_at = payload.get("song_started_at")
+            key = f"{artist}|{title}|{started_at or ''}"
+            if key == last_key:
+                await asyncio.sleep(15)
+                continue
+            last_key = key
+            show_name = ""
+            host_name = ""
+            if isinstance(show_r, httpx.Response) and show_r.status_code < 400:
+                show_name = show_r.text.strip()
+            if isinstance(pres_r, httpx.Response) and pres_r.status_code < 400:
+                host_name = pres_r.text.strip()
+            doc = {
+                "_id": key,
+                "artist": artist,
+                "title": title,
+                "time": started_at or datetime.now(timezone.utc).isoformat(),
+                "show": show_name,
+                "host": host_name,
+                "stored_at": datetime.now(timezone.utc),
+            }
+            await db.recent_tracks.update_one({"_id": key}, {"$setOnInsert": doc}, upsert=True)
+            # Prune anything older than the retention window.
+            cutoff = datetime.now(timezone.utc) - RETENTION
+            await db.recent_tracks.delete_many({"stored_at": {"$lt": cutoff}})
+        except Exception as e:
+            logger.exception("recent-tracks poller failed: %s", e)
+        await asyncio.sleep(15)
+
+
+@app.on_event("startup")
+async def _start_background_tasks():
+    await db.recent_tracks.create_index("stored_at")
+    asyncio.create_task(_poll_now_playing())

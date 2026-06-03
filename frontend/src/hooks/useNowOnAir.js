@@ -145,7 +145,38 @@ export const useNowOnAir = (intervalMs = 10000) => {
     // Prune on mount in case stored data is old
     const pruned = pruneHistory(getHistory());
     if (pruned.length !== cachedHistory.length) setHistoryAndNotify(pruned);
-    return () => historyListeners.delete(listener);
+
+    // Also seed from the server-side rolling 3-day history so mobile browsers
+    // (Safari private mode / ITP-cleared localStorage) still see "Gedraaid".
+    let cancelled = false;
+    const seed = async () => {
+      try {
+        const base = process.env.REACT_APP_BACKEND_URL || '';
+        const r = await fetch(`${base}/api/now-playing/recent`, { cache: 'no-store' });
+        if (!r.ok) return;
+        const json = await r.json();
+        const remote = Array.isArray(json.tracks) ? json.tracks : [];
+        if (!remote.length || cancelled) return;
+        // Merge: dedupe on artist|title|time, prefer entries that already have a cover.
+        const list = getHistory();
+        const byKey = new Map();
+        for (const e of list) byKey.set(`${e.artist}|${e.title}|${e.time}`, e);
+        for (const e of remote) {
+          const k = `${e.artist}|${e.title}|${e.time}`;
+          if (!byKey.has(k)) byKey.set(k, { ...e, cover: '' });
+        }
+        const merged = pruneHistory(
+          Array.from(byKey.values()).sort((a, b) => (b.time || '').localeCompare(a.time || ''))
+        );
+        setHistoryAndNotify(merged);
+      } catch { /* offline ok */ }
+    };
+    seed();
+
+    return () => {
+      cancelled = true;
+      historyListeners.delete(listener);
+    };
   }, []);
 
   useEffect(() => {
