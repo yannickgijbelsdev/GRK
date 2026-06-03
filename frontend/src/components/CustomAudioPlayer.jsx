@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, Rewind, FastForward } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import VolumeControl from './VolumeControl';
 
@@ -96,11 +96,27 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
     setCurrent(t);
   };
 
+  const skip = (delta) => {
+    const a = audioRef.current;
+    if (!a) return;
+    const next = Math.max(0, Math.min((duration || a.duration || 0), a.currentTime + delta));
+    a.currentTime = next;
+    setCurrent(next);
+  };
+
   const progress = duration ? (current / duration) * 100 : 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl ring-1 ring-black/5 p-4 md:p-5 flex items-center gap-4 md:gap-5">
+    <div className="bg-white rounded-2xl shadow-xl ring-1 ring-black/5 p-4 md:p-5 flex items-center gap-3 md:gap-4">
       <audio ref={audioRef} src={src} preload="metadata" />
+      <button
+        onClick={() => skip(-10)}
+        aria-label="10 seconden terug"
+        data-testid="audio-rewind-10"
+        className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition-colors"
+      >
+        <Rewind size={20} />
+      </button>
       <button
         onClick={toggle}
         aria-label={playing ? 'Pauzeren' : 'Afspelen'}
@@ -108,6 +124,14 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
         style={{ background: 'linear-gradient(135deg,#2a5d99 0%,#4b8fcc 100%)' }}
       >
         {playing ? <Pause size={24} fill="white" /> : <Play size={24} fill="white" className="ml-0.5" />}
+      </button>
+      <button
+        onClick={() => skip(10)}
+        aria-label="10 seconden vooruit"
+        data-testid="audio-forward-10"
+        className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition-colors"
+      >
+        <FastForward size={20} />
       </button>
       <div className="flex-1 min-w-0">
         {title && (

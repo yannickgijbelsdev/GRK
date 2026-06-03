@@ -92,8 +92,27 @@ export const PlayerProvider = ({ children }) => {
     setMuted(a.muted);
   };
 
+  const skip = (delta) => {
+    const a = audioRef.current;
+    if (!a) return;
+    try {
+      const seekable = a.seekable;
+      const lowerBound = seekable && seekable.length ? seekable.start(0) : 0;
+      const upperBound = seekable && seekable.length ? seekable.end(0) : (a.duration || a.currentTime);
+      const target = Math.max(lowerBound, Math.min(upperBound, a.currentTime + delta));
+      if (Number.isFinite(target)) a.currentTime = target;
+    } catch { /* live streams may not allow seeking — silently ignore */ }
+  };
+
+  const goLive = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    try { a.src = STREAM_URL; a.load(); } catch (e) { /* ignore */ }
+    a.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+  };
+
   return (
-    <PlayerContext.Provider value={{ playing, muted, volume, setVolume, toggle, toggleMute, pause, play, streamUrl: STREAM_URL }}>
+    <PlayerContext.Provider value={{ playing, muted, volume, setVolume, toggle, toggleMute, pause, play, skip, goLive, streamUrl: STREAM_URL }}>
       {children}
     </PlayerContext.Provider>
   );
