@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Play, Pause, Rewind, FastForward, Radio } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import CoverImage from './CoverImage';
@@ -8,7 +8,7 @@ import VolumeControl from './VolumeControl';
 const ROTATE_MS = 7000;
 
 const PersistentPlayer = () => {
-  const { playing, muted, volume, setVolume, toggle, toggleMute, skip, goLive } = usePlayer();
+  const { playing, muted, volume, setVolume, toggle, toggleMute } = usePlayer();
   const { show, presenter, track } = useNowOnAir();
   const [view, setView] = useState('track'); // 'track' | 'show'
 
@@ -48,14 +48,6 @@ const PersistentPlayer = () => {
         </div>
 
         <button
-          onClick={() => skip(-10)}
-          aria-label="10 seconden terug"
-          data-testid="live-rewind-10"
-          className="flex-shrink-0 hidden sm:flex w-10 h-10 md:w-11 md:h-11 rounded-full items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition-colors"
-        >
-          <Rewind size={18} />
-        </button>
-        <button
           onClick={toggle}
           aria-label={playing ? 'Pauzeren' : 'Afspelen'}
           data-testid="persistent-player-play-btn"
@@ -63,25 +55,6 @@ const PersistentPlayer = () => {
           style={{ background: 'linear-gradient(135deg,#2a5d99 0%,#4b8fcc 100%)' }}
         >
           {playing ? <Pause size={22} fill="white" /> : <Play size={22} fill="white" className="ml-1" />}
-        </button>
-        <button
-          onClick={() => skip(10)}
-          aria-label="10 seconden vooruit"
-          data-testid="live-forward-10"
-          className="flex-shrink-0 hidden sm:flex w-10 h-10 md:w-11 md:h-11 rounded-full items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition-colors"
-        >
-          <FastForward size={18} />
-        </button>
-        <button
-          onClick={goLive}
-          aria-label="Naar live"
-          title="Naar live"
-          data-testid="live-go-live"
-          className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 h-9 md:h-10 rounded-full text-white text-xs font-bold shadow hover:opacity-90 transition-opacity"
-          style={{ background: '#e0223c' }}
-        >
-          <Radio size={14} />
-          LIVE
         </button>
 
         {/* Text content (cross-faded) */}

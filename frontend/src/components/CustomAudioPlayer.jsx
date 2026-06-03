@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Play, Pause, Rewind, FastForward } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import VolumeControl from './VolumeControl';
+import Skip10Icon from './Skip10Icon';
 
 const fmt = (s) => {
   if (!Number.isFinite(s)) return '0:00';
@@ -115,7 +116,7 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
         data-testid="audio-rewind-10"
         className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition-colors"
       >
-        <Rewind size={20} />
+        <Skip10Icon size={22} direction="back" />
       </button>
       <button
         onClick={toggle}
@@ -131,7 +132,7 @@ const CustomAudioPlayer = ({ src, title, totalSeconds }) => {
         data-testid="audio-forward-10"
         className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition-colors"
       >
-        <FastForward size={20} />
+        <Skip10Icon size={22} direction="forward" />
       </button>
       <div className="flex-1 min-w-0">
         {title && (
