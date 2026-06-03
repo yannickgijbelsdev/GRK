@@ -15,7 +15,7 @@ const https = require('https');
 
 const BUILD_DIR = path.resolve(__dirname, '..', 'build');
 const INDEX_PATH = path.join(BUILD_DIR, 'index.html');
-const NEWS_API = 'https://clara.koodh.com/api/news';
+const NEWS_API = 'https://clr.koodh.com/api/news';
 const SITE_URL = 'https://grk.fm';
 const DEFAULT_IMAGE = `${SITE_URL}/assets/grk-logo-fallback.png`;
 const CATEGORIES = [
@@ -123,8 +123,9 @@ const main = async () => {
   for (const cat of CATEGORIES) {
     let articles = [];
     try {
-      const list = await get(`${NEWS_API}/grk/${cat.path}?limit=200`);
-      articles = (list && list.articles) || [];
+      const list = await get(`${NEWS_API}/grk/${cat.path}?limit=50`);
+      // clr.koodh.com exposes the array as `items`; clara used `articles`.
+      articles = (list && (list.items || list.articles)) || [];
       // Dedupe on slug (title-based; matches frontend behavior)
       const seen = new Set();
       articles = articles.filter((a) => {

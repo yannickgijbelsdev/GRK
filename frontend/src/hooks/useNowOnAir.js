@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-const NOW_JSON_URL = 'https://clara.koodh.com/api/rds/grk/now-playing';
-const SHOW_URL = 'https://clara.koodh.com/api/rds/grk/live';
-const PRESENTER_URL = 'https://clara.koodh.com/api/rds/grk/presenters.txt';
-const PRESENTER_IMAGE_URL = 'https://clara.koodh.com/api/rds/grk/presenter-image.jpg';
+const NOW_JSON_URL = 'https://clr.koodh.com/api/rds/grk/now-playing';
+const SHOW_URL = 'https://clr.koodh.com/api/rds/grk/live.json';
+const PRESENTER_URL = 'https://clr.koodh.com/api/rds/grk/presenter.json';
+const PRESENTER_IMAGE_URL = 'https://clr.koodh.com/api/rds/grk/image.jpg';
 
 const probeImage = (url) => new Promise((resolve) => {
   const img = new Image();
@@ -32,6 +32,16 @@ const fetchText = async (url) => {
     if (!r.ok) return '';
     return (await r.text()).trim();
   } catch { return ''; }
+};
+
+// New clr.koodh.com endpoints wrap the value in { value, list, ... }.
+// Accept either a string field (.value) or fall back to the first list entry.
+const fetchValue = async (url) => {
+  const json = await fetchJson(url);
+  if (!json) return '';
+  if (typeof json.value === 'string' && json.value.trim()) return json.value.trim();
+  if (Array.isArray(json.list) && json.list.length) return String(json.list[0] || '').trim();
+  return '';
 };
 
 const parseTrack = (raw) => {
@@ -196,8 +206,8 @@ export const useNowOnAir = (intervalMs = 10000) => {
     const tick = async () => {
       const [data, showText, presenterText] = await Promise.all([
         fetchJson(NOW_JSON_URL),
-        fetchText(SHOW_URL),
-        fetchText(PRESENTER_URL),
+        fetchValue(SHOW_URL),
+        fetchValue(PRESENTER_URL),
       ]);
       if (cancelled) return;
       if (showText) setShow(showText);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { slugify } from '../lib/slug';
 
-const API_BASE = 'https://clara.koodh.com/api/news';
+const API_BASE = 'https://clr.koodh.com/api/news';
 
 // -------- Module-level caches (shared across components & remounts) --------
 const listCaches = new Map();       // category → { fetchedAt, articles[] }
@@ -23,7 +23,10 @@ const fetchList = async (category = DEFAULT_CATEGORY) => {
   const p = fetch(`${API_BASE}/grk/${encodeURIComponent(category)}?limit=${DEFAULT_LIMIT}`, { cache: 'no-store' })
     .then((r) => (r.ok ? r.json() : null))
     .then((data) => {
-      const raw = (data && Array.isArray(data.articles)) ? data.articles : [];
+      // The new clr.koodh.com API returns articles under `items` while the
+      // previous clara endpoint used `articles`. Accept either so the rest of
+      // the app keeps working without touching individual components.
+      const raw = (data && (Array.isArray(data.items) ? data.items : (Array.isArray(data.articles) ? data.articles : []))) || [];
       // Dedupe on title+excerpt (the API sometimes returns near-duplicates).
       const seen = new Set();
       const articles = [];
@@ -81,7 +84,7 @@ const fmtDate = (iso) => {
   } catch { return ''; }
 };
 
-export const articleDate = (a) => fmtDate(a?.original_date || a?.created_at);
+export const articleDate = (a) => fmtDate(a?.original_date || a?.published_at || a?.created_at);
 
 // -------- Hooks --------
 export const useNewsArticles = (category = DEFAULT_CATEGORY) => {

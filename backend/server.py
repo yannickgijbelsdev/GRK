@@ -109,7 +109,7 @@ async def trigger_vdc_deploy():
 # <meta og:*> tags for a given article and meta-refreshes real users to the
 # canonical SPA URL. The frontend's "Deel artikel" button shares THIS URL so
 # the social-card image matches the article.
-NEWS_API_BASE = "https://clara.koodh.com/api/news/grk"
+NEWS_API_BASE = "https://clr.koodh.com/api/news/grk"
 CATEGORY_TO_PATH = {"nieuws": "nieuws-uit-de-buurt", "social-club": "social-club"}
 SITE_URL = "https://grk.fm"
 DEFAULT_OG_IMAGE = f"{SITE_URL}/assets/grk-logo-fallback.png"
@@ -160,19 +160,21 @@ async def _render_share_html(kind: str, slug: str):
         raise HTTPException(404, "Unknown category")
 
     async with httpx.AsyncClient(timeout=15) as client_http:
-        list_resp = await client_http.get(f"{NEWS_API_BASE}/{category}?limit=200")
+        list_resp = await client_http.get(f"{NEWS_API_BASE}/{category}?limit=50")
         if list_resp.status_code >= 400:
             raise HTTPException(502, "Could not reach news API")
         data = list_resp.json()
+        # clr.koodh.com exposes the listing under `items`; clara used `articles`.
+        items = data.get("items") or data.get("articles") or []
         article = next(
-            (a for a in (data.get("articles") or []) if _slugify(a.get("title")) == slug),
+            (a for a in items if _slugify(a.get("title")) == slug),
             None,
         )
         if not article:
             # Article unknown — fall back to the bare SPA so the route still works.
             return HTMLResponse(_load_spa_index(), headers={"Cache-Control": "no-store"})
 
-        detail_resp = await client_http.get(f"https://clara.koodh.com/api/news/articles/{article['id']}")
+        detail_resp = await client_http.get(f"https://clr.koodh.com/api/news/articles/{article['id']}")
         if detail_resp.status_code < 400:
             article = detail_resp.json()
 
@@ -333,9 +335,9 @@ async def shutdown_db_client():
 # browsers (Safari private mode, ITP) that can't persist localStorage still
 # see "Gedraaid" filled out.
 # ---------------------------------------------------------------------------
-NOW_JSON_URL = "https://clara.koodh.com/api/rds/grk/now-playing"
-SHOW_URL = "https://clara.koodh.com/api/rds/grk/live"
-PRESENTERS_URL = "https://clara.koodh.com/api/rds/grk/presenters.txt"
+NOW_JSON_URL = "https://clr.koodh.com/api/rds/grk/now-playing"
+SHOW_URL = "https://clr.koodh.com/api/rds/grk/live.json"
+PRESENTERS_URL = "https://clr.koodh.com/api/rds/grk/presenter.json"
 RETENTION = timedelta(days=3)
 
 
@@ -346,6 +348,26 @@ def _parse_track(raw: str):
     if idx > 0:
         return raw[:idx].strip(), raw[idx + 3 :].strip()
     return "", raw.strip()
+
+
+def _extract_value(resp):
+    """Pull the plain-text value out of the new clr.koodh.com {value,...} JSON
+    responses, gracefully degrading to legacy plain-text endpoints."""
+    if not isinstance(resp, httpx.Response) or resp.status_code >= 400:
+        return ""
+    try:
+        body = resp.json()
+        if isinstance(body, dict):
+            v = body.get("value")
+            if isinstance(v, str) and v.strip():
+                return v.strip()
+            lst = body.get("list")
+            if isinstance(lst, list) and lst:
+                return str(lst[0] or "").strip()
+            return ""
+    except Exception:
+        pass
+    return resp.text.strip()
 
 
 async def _poll_now_playing():
@@ -379,12 +401,8 @@ async def _poll_now_playing():
                 await asyncio.sleep(15)
                 continue
             last_key = key
-            show_name = ""
-            host_name = ""
-            if isinstance(show_r, httpx.Response) and show_r.status_code < 400:
-                show_name = show_r.text.strip()
-            if isinstance(pres_r, httpx.Response) and pres_r.status_code < 400:
-                host_name = pres_r.text.strip()
+            show_name = _extract_value(show_r)
+            host_name = _extract_value(pres_r)
             doc = {
                 "_id": key,
                 "artist": artist,

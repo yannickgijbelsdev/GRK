@@ -5,20 +5,20 @@ import SEO from '../components/SEO';
 import CoverImage from '../components/CoverImage';
 import { useDaySchedule } from '../hooks/useSchedule';
 
-// Map between Dutch UI labels and the API path used by clara.koodh.com
+// Map between Dutch UI labels and the API path used by clr.koodh.com
 const WEEKDAYS = [
-  { id: 'monday',    label: 'Maandag',   long: 'MAANDAG' },
-  { id: 'tuesday',   label: 'Dinsdag',   long: 'DINSDAG' },
-  { id: 'wednesday', label: 'Woensdag',  long: 'WOENSDAG' },
-  { id: 'thursday',  label: 'Donderdag', long: 'DONDERDAG' },
-  { id: 'friday',    label: 'Vrijdag',   long: 'VRIJDAG' },
-  { id: 'saturday',  label: 'Zaterdag',  long: 'ZATERDAG' },
-  { id: 'sunday',    label: 'Zondag',    long: 'ZONDAG' },
+  { id: 'maandag',   label: 'Maandag',   long: 'MAANDAG' },
+  { id: 'dinsdag',   label: 'Dinsdag',   long: 'DINSDAG' },
+  { id: 'woensdag',  label: 'Woensdag',  long: 'WOENSDAG' },
+  { id: 'donderdag', label: 'Donderdag', long: 'DONDERDAG' },
+  { id: 'vrijdag',   label: 'Vrijdag',   long: 'VRIJDAG' },
+  { id: 'zaterdag',  label: 'Zaterdag',  long: 'ZATERDAG' },
+  { id: 'zondag',    label: 'Zondag',    long: 'ZONDAG' },
 ];
 
 const getCurrentDayId = () => {
-  // 0 = Sunday → sunday, 1 = Monday → monday, …
-  const map = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  // 0 = Sunday → zondag, 1 = Monday → maandag, …
+  const map = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
   return map[new Date().getDay()];
 };
 
@@ -94,7 +94,7 @@ const ProgrammingListPage = () => {
                       )}
                     </div>
                     <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden">
-                      <CoverImage src={s.presenter_image_url} alt={s.show_name} />
+                      <CoverImage src={s.presenter_image_url || s.image} alt={s.show_name} />
                     </div>
                   </div>
                 </div>

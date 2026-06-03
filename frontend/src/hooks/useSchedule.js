@@ -1,10 +1,22 @@
 import { useEffect, useState } from 'react';
 
-const API_BASE = 'https://clara.koodh.com/api/rds/grk/schedule';
+const API_BASE = 'https://clr.koodh.com/api/public/schedule/grk/grk/day';
 const TTL_MS = 10 * 60 * 1000; // 10 minutes
 
 const cache = new Map(); // dayId → { fetchedAt, data }
 const inflight = new Map();
+
+// The new clr.koodh.com schedule API returns `presenter_names` as an array
+// and uses `title` for the show name (the legacy clara endpoint exposed both
+// as plain strings under `show_name`). Adapter normalises both shapes so the
+// existing UI components keep working unchanged.
+const adaptShow = (s) => ({
+  ...s,
+  show_name: s.show_name || s.title || '',
+  presenter_names: Array.isArray(s.presenter_names)
+    ? s.presenter_names.filter(Boolean).join(', ')
+    : (s.presenter_names || s.presenter || ''),
+});
 
 const fetchSchedule = async (dayId) => {
   const cached = cache.get(dayId);
@@ -14,7 +26,8 @@ const fetchSchedule = async (dayId) => {
   const p = fetch(`${API_BASE}/${dayId}`, { cache: 'no-store' })
     .then((r) => (r.ok ? r.json() : null))
     .then((data) => {
-      const safe = data && Array.isArray(data.shows) ? data : { shows: [], date: '' };
+      const shows = data && Array.isArray(data.shows) ? data.shows.map(adaptShow) : [];
+      const safe = { shows, date: (data && data.date) || '' };
       cache.set(dayId, { fetchedAt: Date.now(), data: safe });
       return safe;
     })
