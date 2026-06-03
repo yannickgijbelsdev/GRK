@@ -1,11 +1,11 @@
 import { baseSchedule } from '../mock';
 
-// Returns the schedule row for the current Europe/Amsterdam local time.
+// Returns the schedule row for the current Europe/Brussels local time.
 // Each row has a `time` like "10:00 - 13:00" — we match the current hour:min against it.
 export const getCurrentScheduleSlot = (now = new Date()) => {
-  // Format current time in Europe/Amsterdam timezone as HH:MM
+  // Format current time in Europe/Brussels timezone as HH:MM
   const fmt = new Intl.DateTimeFormat('nl-NL', {
-    timeZone: 'Europe/Amsterdam',
+    timeZone: 'Europe/Brussels',
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,

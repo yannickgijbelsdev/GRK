@@ -5,7 +5,7 @@ import { Clock, Music2, Calendar } from 'lucide-react';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import CoverImage from '../components/CoverImage';
 
-const TZ = 'Europe/Amsterdam';
+const TZ = 'Europe/Brussels';
 const SHOW_NAME = 'Selected';
 
 const fmtTime = (iso) => {

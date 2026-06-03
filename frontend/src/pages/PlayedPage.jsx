@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '../components/ui/select';
 
-const TZ = 'Europe/Amsterdam';
+const TZ = 'Europe/Brussels';
 
 const fmtTime = (iso) => {
   try {
@@ -22,7 +22,7 @@ const fmtTime = (iso) => {
   } catch { return ''; }
 };
 
-// Day key like "2026-06-01" in Europe/Amsterdam timezone
+// Day key like "2026-06-01" in Europe/Brussels timezone
 const dayKey = (iso) => {
   try {
     const parts = new Intl.DateTimeFormat('en-CA', {
@@ -58,7 +58,7 @@ const PlayedPage = () => {
   const [query, setQuery] = useState('');
   const [selectedDay, setSelectedDay] = useState(todayKey());
 
-  // Group history by day (Europe/Amsterdam) — keys are ISO date strings
+  // Group history by day (Europe/Brussels) — keys are ISO date strings
   const days = useMemo(() => {
     const set = new Set();
     history.forEach((e) => { const k = dayKey(e.time); if (k) set.add(k); });

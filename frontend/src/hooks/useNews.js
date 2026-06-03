@@ -75,7 +75,7 @@ const fmtDate = (iso) => {
   if (!iso) return '';
   try {
     return new Intl.DateTimeFormat('nl-NL', {
-      timeZone: 'Europe/Amsterdam',
+      timeZone: 'Europe/Brussels',
       day: 'numeric', month: 'long', year: 'numeric',
     }).format(new Date(iso));
   } catch { return ''; }

@@ -7,9 +7,9 @@ import VinylRecord from './VinylRecord';
 
 const fmtTime = (d) => {
   if (!d) return '';
-  // Format in Europe/Amsterdam timezone
+  // Format in Europe/Brussels timezone
   return new Intl.DateTimeFormat('nl-NL', {
-    timeZone: 'Europe/Amsterdam',
+    timeZone: 'Europe/Brussels',
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
