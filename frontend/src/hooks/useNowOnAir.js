@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 const NOW_JSON_URL = 'https://clr.koodh.com/api/rds/grk/now-playing';
 const SHOW_URL = 'https://clr.koodh.com/api/rds/grk/live.json';
 const PRESENTER_URL = 'https://clr.koodh.com/api/rds/grk/presenter.json';
-const PRESENTER_IMAGE_URL = 'https://clr.koodh.com/api/rds/grk/image.jpg';
+const PRESENTER_IMAGE_RAW = 'https://clr.koodh.com/api/rds/grk/image.jpg';
+// The raw URL 302-redirects to an object-storage host that doesn't send CORS
+// headers, so the browser refuses to render it (ERR_BLOCKED_BY_RESPONSE
+// .NotSameSite). Routing through images.weserv.nl follows the redirect on the
+// server side and re-serves the bytes with permissive CORS headers.
+const PRESENTER_IMAGE_URL =
+  'https://images.weserv.nl/?url=' + encodeURIComponent('clr.koodh.com/api/rds/grk/image.jpg');
 
 const probeImage = (url) => new Promise((resolve) => {
   const img = new Image();
