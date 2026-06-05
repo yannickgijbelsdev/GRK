@@ -11,12 +11,50 @@ const PRESENTER_IMAGE_RAW = 'https://clr.koodh.com/api/rds/grk/image.jpg';
 const PRESENTER_IMAGE_URL =
   'https://images.weserv.nl/?url=' + encodeURIComponent('clr.koodh.com/api/rds/grk/image.jpg');
 
-const probeImage = (url) => new Promise((resolve) => {
-  const img = new Image();
-  img.onload = () => resolve(true);
-  img.onerror = () => resolve(false);
-  img.src = url;
-});
+// Load an image and inspect it: returns true only if the image loads AND
+// it is not (almost) entirely transparent. The presenter API occasionally
+// serves a fully transparent PNG when no presenter art is published yet —
+// in that case we want the hero to fall back to the vinyl record.
+const probeCache = new Map(); // url → boolean
+const ALPHA_OPAQUE_THRESHOLD = 32;     // any pixel with alpha > 32 counts
+const OPAQUE_PIXEL_RATIO_MIN = 0.02;   // need >2% opaque pixels to keep it
+const probeImage = (url) => {
+  if (probeCache.has(url)) return Promise.resolve(probeCache.get(url));
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onerror = () => { probeCache.set(url, false); resolve(false); };
+    img.onload = () => {
+      try {
+        const w = img.naturalWidth, h = img.naturalHeight;
+        if (!w || !h) { probeCache.set(url, false); return resolve(false); }
+        // Downsample for cheap analysis (max 64×64).
+        const scale = Math.min(64 / w, 64 / h, 1);
+        const cw = Math.max(1, Math.round(w * scale));
+        const ch = Math.max(1, Math.round(h * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0, cw, ch);
+        const { data } = ctx.getImageData(0, 0, cw, ch);
+        let opaque = 0;
+        const total = data.length / 4;
+        for (let i = 3; i < data.length; i += 4) {
+          if (data[i] > ALPHA_OPAQUE_THRESHOLD) opaque++;
+        }
+        const ratio = opaque / total;
+        const ok = ratio >= OPAQUE_PIXEL_RATIO_MIN;
+        probeCache.set(url, ok);
+        resolve(ok);
+      } catch {
+        // CORS-tainted canvas → treat the image as usable (it did load).
+        probeCache.set(url, true);
+        resolve(true);
+      }
+    };
+    img.src = url;
+  });
+};
 const HISTORY_KEY = 'grk-recent-tracks';
 const HISTORY_LIMIT = 2000;
 const HISTORY_MAX_AGE_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
