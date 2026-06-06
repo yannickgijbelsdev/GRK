@@ -26,6 +26,9 @@ const deriveContext = (pathname) => {
   if (pathname && pathname.startsWith('/social-club')) {
     return { category: 'social-club', backTo: '/social-club', backLabel: 'Terug naar Social Club', listTitle: 'Meer uit Social Club', section: 'Social Club' };
   }
+  if (pathname && pathname.startsWith('/events-tickets')) {
+    return { category: 'events-tickets', backTo: '/events-tickets', backLabel: 'Terug naar Events & Tickets', listTitle: 'Meer events', section: 'Events & Tickets' };
+  }
   return { category: 'nieuws-uit-de-buurt', backTo: '/nieuws', backLabel: 'Terug', listTitle: 'Ander nieuws', section: 'Nieuws uit de buurt' };
 };
 

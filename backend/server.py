@@ -110,7 +110,11 @@ async def trigger_vdc_deploy():
 # canonical SPA URL. The frontend's "Deel artikel" button shares THIS URL so
 # the social-card image matches the article.
 NEWS_API_BASE = "https://clr.koodh.com/api/news/grk"
-CATEGORY_TO_PATH = {"nieuws": "nieuws-uit-de-buurt", "social-club": "social-club"}
+CATEGORY_TO_PATH = {
+    "nieuws": "nieuws-uit-de-buurt",
+    "social-club": "social-club",
+    "events-tickets": "events-tickets",
+}
 SITE_URL = "https://grk.fm"
 DEFAULT_OG_IMAGE = f"{SITE_URL}/assets/grk-logo-fallback.png"
 
@@ -152,6 +156,11 @@ async def share_article_nieuws(slug: str):
 @app.get("/social-club/{slug}", response_class=HTMLResponse)
 async def share_article_socialclub(slug: str):
     return await _render_share_html("social-club", slug)
+
+
+@app.get("/events-tickets/{slug}", response_class=HTMLResponse)
+async def share_article_events(slug: str):
+    return await _render_share_html("events-tickets", slug)
 
 
 async def _render_share_html(kind: str, slug: str):

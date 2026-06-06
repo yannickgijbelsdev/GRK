@@ -160,6 +160,7 @@ export const useNewsArticle = (idOrSlug) => {
       const candidates = await Promise.all([
         fetchList('nieuws-uit-de-buurt'),
         fetchList('social-club'),
+        fetchList('events-tickets'),
       ]);
       const slug = slugify(idOrSlug);
       for (const list of candidates) {

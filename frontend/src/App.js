@@ -14,6 +14,7 @@ import HomePage from './pages/HomePage';
 import NewsListPage from './pages/NewsListPage';
 import NewsDetailPage from './pages/NewsDetailPage';
 import SocialClubListPage from './pages/SocialClubListPage';
+import EventsTicketsListPage from './pages/EventsTicketsListPage';
 import ProgrammingListPage from './pages/ProgrammingListPage';
 import PlayedPage from './pages/PlayedPage';
 import SelectedPage from './pages/SelectedPage';
@@ -37,6 +38,8 @@ function App() {
                 <Route path="/nieuws/:id" element={<NewsDetailPage />} />
                 <Route path="/social-club" element={<SocialClubListPage />} />
                 <Route path="/social-club/:id" element={<NewsDetailPage />} />
+                <Route path="/events-tickets" element={<EventsTicketsListPage />} />
+                <Route path="/events-tickets/:id" element={<NewsDetailPage />} />
                 <Route path="/programmering" element={<ProgrammingListPage />} />
                 <Route path="/gedraaid" element={<PlayedPage />} />
                 <Route path="/selected" element={<SelectedPage />} />

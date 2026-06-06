@@ -21,6 +21,7 @@ const DEFAULT_IMAGE = `${SITE_URL}/assets/grk-logo-fallback.png`;
 const CATEGORIES = [
   { kind: 'nieuws', path: 'nieuws-uit-de-buurt' },
   { kind: 'social-club', path: 'social-club' },
+  { kind: 'events-tickets', path: 'events-tickets' },
 ];
 
 const get = (url) =>

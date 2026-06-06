@@ -28,6 +28,7 @@ const Header = () => {
   const navItems = [
     { label: 'Nieuws uit de buurt', to: '/nieuws' },
     { label: 'Social Club', to: '/social-club' },
+    { label: 'Events & Tickets', to: '/events-tickets' },
     { label: 'Selected', to: '/selected' },
     { label: "Programma's", to: '/programmering' },
     { label: 'Gedraaid', to: '/gedraaid' },
