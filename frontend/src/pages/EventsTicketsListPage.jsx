@@ -4,7 +4,7 @@ import NewsListPage from './NewsListPage';
 const EventsTicketsListPage = () => (
   <NewsListPage
     title="Events & Tickets"
-    subtitle="Concerten, festivals en exclusieve events. Mis niks van wat eraan komt — en bemachtig je tickets als eerste."
+    subtitle="Dit zijn alle events en tickets voor de exclusieve shows van GRK."
     category="events-tickets"
     basePath="/events-tickets"
   />
