@@ -12,7 +12,14 @@ import { articleSlugPath } from '../lib/slug';
 // and collapse the now-empty wrapper paragraphs.
 const stripFirstImage = (html) => {
   if (!html) return '';
-  return html.replace(/<img[^>]*>/i, '').replace(/<p[^>]*>\s*<\/p>/gi, '');
+  return html
+    // Drop the leading hero image.
+    .replace(/<img[^>]*>/i, '')
+    // Drop the Clara-injected image credit paragraph — we render our own,
+    // styled, non-hyperlinked copyright above the article date.
+    .replace(/<p[^>]*class=["'][^"']*clara-image-credit[^"']*["'][^>]*>[\s\S]*?<\/p>/gi, '')
+    // Clean up resulting empty paragraphs.
+    .replace(/<p[^>]*>\s*<\/p>/gi, '');
 };
 
 // Quickly strip any HTML to get a plain-text description for meta tags.
@@ -152,6 +159,28 @@ const NewsDetailPage = () => {
       {/* Article body */}
       <article className="bg-white page-pad-bottom">
         <div className="max-w-3xl mx-auto px-6 lg:px-8 pt-10 md:pt-14">
+          {(() => {
+            const attr = article?.image_attribution || {};
+            const credit = attr.copyright || attr.credit || attr.photographer;
+            if (!credit) return null;
+            const label = `© ${credit}`;
+            return (
+              <p className="text-[#7d8fa3] text-xs font-medium tracking-wide mb-1.5" data-testid="news-detail-copyright">
+                {attr.source_url ? (
+                  <a
+                    href={attr.source_url}
+                    target="_blank"
+                    rel="nofollow noopener"
+                    className="text-inherit no-underline hover:no-underline"
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  label
+                )}
+              </p>
+            );
+          })()}
           {articleDate(article) && (
             <p className="text-[#4a6480] text-sm font-semibold tracking-wide uppercase mb-4">
               {articleDate(article)}
