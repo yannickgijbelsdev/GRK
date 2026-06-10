@@ -380,8 +380,20 @@ def _extract_value(resp):
 
 
 async def _poll_now_playing():
-    """Background task: every 15s pull the live API and store any new track."""
+    """Background task: every 10s pull the live API and store any new track.
+
+    On startup the loop seeds `last_key` from the most recently stored track so
+    that a quick pod restart doesn't accidentally re-save an identical entry,
+    and so the very first `now-playing` poll after a restart that returns the
+    *same* still-playing song is correctly treated as known.
+    """
     last_key = ""
+    try:
+        latest = await db.recent_tracks.find_one(sort=[("stored_at", -1)])
+        if latest:
+            last_key = latest.get("_id", "")
+    except Exception:
+        pass
     while True:
         try:
             async with httpx.AsyncClient(timeout=10) as h:
@@ -392,22 +404,27 @@ async def _poll_now_playing():
                     return_exceptions=True,
                 )
             if not isinstance(data_r, httpx.Response) or data_r.status_code >= 400:
-                await asyncio.sleep(15)
+                await asyncio.sleep(10)
                 continue
             payload = data_r.json()
-            raw = payload.get("original_song_title") or payload.get("song_title") or ""
+            raw = (
+                payload.get("original_song_title")
+                or payload.get("song_title")
+                or payload.get("raw_song_title")
+                or ""
+            )
             artist, title = _parse_track(raw)
             # Skip the "feelgood station" station-filler track.
             if not artist and re.search(r"feelgood\s*station", title, re.I):
-                await asyncio.sleep(15)
+                await asyncio.sleep(10)
                 continue
             if not title:
-                await asyncio.sleep(15)
+                await asyncio.sleep(10)
                 continue
             started_at = payload.get("song_started_at")
             key = f"{artist}|{title}|{started_at or ''}"
             if key == last_key:
-                await asyncio.sleep(15)
+                await asyncio.sleep(10)
                 continue
             last_key = key
             show_name = _extract_value(show_r)
@@ -427,7 +444,7 @@ async def _poll_now_playing():
             await db.recent_tracks.delete_many({"stored_at": {"$lt": cutoff}})
         except Exception as e:
             logger.exception("recent-tracks poller failed: %s", e)
-        await asyncio.sleep(15)
+        await asyncio.sleep(10)
 
 
 @app.on_event("startup")

@@ -200,30 +200,30 @@ export const useNowOnAir = (intervalMs = 10000) => {
     const pruned = pruneHistory(getHistory());
     if (pruned.length !== cachedHistory.length) setHistoryAndNotify(pruned);
 
-    // Also seed from the server-side rolling 3-day history so mobile browsers
-    // (Safari private mode / ITP-cleared localStorage) still see "Gedraaid".
+    // Seed + keep merging the server-side rolling history into our local
+    // history so that gaps caused by tab-closures get filled in automatically.
     let cancelled = false;
-    const seed = async () => {
+    const minuteKey = (e) => {
+      const t = new Date(e.time || 0).getTime();
+      return `${e.artist || ''}|${e.title || ''}|${Math.floor(t / 60000)}`;
+    };
+    const mergeRemote = async () => {
       try {
         const base = process.env.REACT_APP_BACKEND_URL || '';
         const r = await fetch(`${base}/api/now-playing/recent`, { cache: 'no-store' });
-        if (!r.ok) return;
+        if (!r.ok || cancelled) return;
         const json = await r.json();
         const remote = Array.isArray(json.tracks) ? json.tracks : [];
-        if (!remote.length || cancelled) return;
-        // Merge: dedupe on artist|title|minute (server vs local tz-strings may
-        // differ for the same moment), prefer entries that already have a cover.
+        if (!remote.length) return;
         const list = getHistory();
-        const minuteKey = (e) => {
-          const t = new Date(e.time || 0).getTime();
-          return `${e.artist || ''}|${e.title || ''}|${Math.floor(t / 60000)}`;
-        };
         const byKey = new Map();
         for (const e of list) byKey.set(minuteKey(e), e);
+        let added = 0;
         for (const e of remote) {
           const k = minuteKey(e);
-          if (!byKey.has(k)) byKey.set(k, { ...e, cover: '' });
+          if (!byKey.has(k)) { byKey.set(k, { ...e, cover: '' }); added++; }
         }
+        if (!added) return;
         const merged = pruneHistory(
           Array.from(byKey.values()).sort(
             (a, b) => new Date(b.time || 0).getTime() - new Date(a.time || 0).getTime()
@@ -232,10 +232,15 @@ export const useNowOnAir = (intervalMs = 10000) => {
         setHistoryAndNotify(merged);
       } catch { /* offline ok */ }
     };
-    seed();
+    mergeRemote();
+    const seedInterval = setInterval(mergeRemote, 60 * 1000);
+    const onVis = () => { if (document.visibilityState === 'visible') mergeRemote(); };
+    document.addEventListener('visibilitychange', onVis);
 
     return () => {
       cancelled = true;
+      clearInterval(seedInterval);
+      document.removeEventListener('visibilitychange', onVis);
       historyListeners.delete(listener);
     };
   }, []);
