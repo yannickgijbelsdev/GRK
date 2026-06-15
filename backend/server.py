@@ -316,6 +316,21 @@ async def recent_tracks():
     return {"tracks": await cursor.to_list(length=500)}
 
 
+@api_router.get("/diagnostics/poller")
+async def diagnostics_poller():
+    """Snapshot of the background poller — call this on the live deployment to
+    verify the poller actually runs and is writing to MongoDB."""
+    try:
+        total = await db.recent_tracks.count_documents({})
+    except Exception as e:
+        total = f"mongo error: {e!r}"
+    return {
+        "now": datetime.now(timezone.utc).isoformat(),
+        "mongo_total_tracks": total,
+        **POLLER_STATE,
+    }
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
@@ -379,22 +394,34 @@ def _extract_value(resp):
     return resp.text.strip()
 
 
-async def _poll_now_playing():
-    """Background task: every 10s pull the live API and store any new track.
+# In-memory snapshot so /api/diagnostics/poller can prove the poller is alive
+# on production (where we have no direct log access).
+POLLER_STATE = {
+    "started_at": None,
+    "last_poll_at": None,
+    "last_success_at": None,
+    "last_error_at": None,
+    "last_error": None,
+    "polls": 0,
+    "saves": 0,
+    "last_track": None,
+}
 
-    On startup the loop seeds `last_key` from the most recently stored track so
-    that a quick pod restart doesn't accidentally re-save an identical entry,
-    and so the very first `now-playing` poll after a restart that returns the
-    *same* still-playing song is correctly treated as known.
-    """
+
+async def _poll_now_playing():
+    """Background task: every 10s pull the live API and store any new track."""
+    POLLER_STATE["started_at"] = datetime.now(timezone.utc).isoformat()
     last_key = ""
     try:
         latest = await db.recent_tracks.find_one(sort=[("stored_at", -1)])
         if latest:
             last_key = latest.get("_id", "")
-    except Exception:
-        pass
+    except Exception as e:
+        POLLER_STATE["last_error"] = f"seed: {e}"
+        POLLER_STATE["last_error_at"] = datetime.now(timezone.utc).isoformat()
     while True:
+        POLLER_STATE["polls"] += 1
+        POLLER_STATE["last_poll_at"] = datetime.now(timezone.utc).isoformat()
         try:
             async with httpx.AsyncClient(timeout=10) as h:
                 data_r, show_r, pres_r = await asyncio.gather(
@@ -404,6 +431,8 @@ async def _poll_now_playing():
                     return_exceptions=True,
                 )
             if not isinstance(data_r, httpx.Response) or data_r.status_code >= 400:
+                POLLER_STATE["last_error"] = f"now-playing http {getattr(data_r,'status_code','exc')}"
+                POLLER_STATE["last_error_at"] = datetime.now(timezone.utc).isoformat()
                 await asyncio.sleep(10)
                 continue
             payload = data_r.json()
@@ -414,8 +443,8 @@ async def _poll_now_playing():
                 or ""
             )
             artist, title = _parse_track(raw)
-            # Skip the "feelgood station" station-filler track.
             if not artist and re.search(r"feelgood\s*station", title, re.I):
+                POLLER_STATE["last_success_at"] = datetime.now(timezone.utc).isoformat()
                 await asyncio.sleep(10)
                 continue
             if not title:
@@ -423,6 +452,8 @@ async def _poll_now_playing():
                 continue
             started_at = payload.get("song_started_at")
             key = f"{artist}|{title}|{started_at or ''}"
+            POLLER_STATE["last_success_at"] = datetime.now(timezone.utc).isoformat()
+            POLLER_STATE["last_track"] = {"artist": artist, "title": title, "key": key}
             if key == last_key:
                 await asyncio.sleep(10)
                 continue
@@ -438,16 +469,32 @@ async def _poll_now_playing():
                 "host": host_name,
                 "stored_at": datetime.now(timezone.utc),
             }
-            await db.recent_tracks.update_one({"_id": key}, {"$setOnInsert": doc}, upsert=True)
-            # Prune anything older than the retention window.
+            res = await db.recent_tracks.update_one({"_id": key}, {"$setOnInsert": doc}, upsert=True)
+            if res.upserted_id is not None:
+                POLLER_STATE["saves"] += 1
             cutoff = datetime.now(timezone.utc) - RETENTION
             await db.recent_tracks.delete_many({"stored_at": {"$lt": cutoff}})
         except Exception as e:
+            POLLER_STATE["last_error"] = repr(e)
+            POLLER_STATE["last_error_at"] = datetime.now(timezone.utc).isoformat()
             logger.exception("recent-tracks poller failed: %s", e)
         await asyncio.sleep(10)
 
 
-@app.on_event("startup")
-async def _start_background_tasks():
-    await db.recent_tracks.create_index("stored_at")
-    asyncio.create_task(_poll_now_playing())
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    # Make sure the index + poller actually start on every supported uvicorn
+    # startup path (old @app.on_event is deprecated and silently skipped under
+    # some production runners — lifespan is the modern, reliable hook).
+    try:
+        await db.recent_tracks.create_index("stored_at")
+    except Exception:
+        logger.exception("index create failed")
+    task = asyncio.create_task(_poll_now_playing())
+    try:
+        yield
+    finally:
+        task.cancel()
+
+
+app.router.lifespan_context = lifespan
