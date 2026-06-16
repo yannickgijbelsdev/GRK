@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -40,6 +40,8 @@ function App() {
                 <Route path="/social-club/:id" element={<NewsDetailPage />} />
                 <Route path="/events-tickets" element={<EventsTicketsListPage />} />
                 <Route path="/events-tickets/:id" element={<NewsDetailPage />} />
+                <Route path="/tickets" element={<Navigate to="/events-tickets" replace />} />
+                <Route path="/tickets/*" element={<Navigate to="/events-tickets" replace />} />
                 <Route path="/programmering" element={<ProgrammingListPage />} />
                 <Route path="/gedraaid" element={<PlayedPage />} />
                 <Route path="/selected" element={<SelectedPage />} />
