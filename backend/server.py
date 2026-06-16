@@ -359,9 +359,18 @@ async def shutdown_db_client():
 # browsers (Safari private mode, ITP) that can't persist localStorage still
 # see "Gedraaid" filled out.
 # ---------------------------------------------------------------------------
-NOW_JSON_URL = "https://clr.koodh.com/api/rds/grk/now-playing"
-SHOW_URL = "https://clr.koodh.com/api/rds/grk/live.json"
-PRESENTERS_URL = "https://clr.koodh.com/api/rds/grk/presenter.json"
+NOW_JSON_URLS = [
+    "https://clr.koodh.com/api/rds/grk/now-playing",
+    "https://clara.koodh.com/api/rds/grk/now-playing",
+]
+SHOW_URLS = [
+    "https://clr.koodh.com/api/rds/grk/live.json",
+    "https://clara.koodh.com/api/rds/grk/live",
+]
+PRESENTERS_URLS = [
+    "https://clr.koodh.com/api/rds/grk/presenter.json",
+    "https://clara.koodh.com/api/rds/grk/presenters.txt",
+]
 RETENTION = timedelta(days=3)
 
 
@@ -408,6 +417,21 @@ POLLER_STATE = {
 }
 
 
+async def _fetch_first_ok(client: httpx.AsyncClient, urls):
+    """Try every URL in order, return the first successful Response or the
+    last exception/non-200 response so the caller can log it."""
+    last = None
+    for u in urls:
+        try:
+            r = await client.get(u)
+            last = r
+            if r.status_code < 400:
+                return r
+        except Exception as e:
+            last = e
+    return last
+
+
 async def _poll_now_playing():
     """Background task: every 10s pull the live API and store any new track."""
     POLLER_STATE["started_at"] = datetime.now(timezone.utc).isoformat()
@@ -417,21 +441,24 @@ async def _poll_now_playing():
         if latest:
             last_key = latest.get("_id", "")
     except Exception as e:
-        POLLER_STATE["last_error"] = f"seed: {e}"
+        POLLER_STATE["last_error"] = f"seed: {e!r}"
         POLLER_STATE["last_error_at"] = datetime.now(timezone.utc).isoformat()
     while True:
         POLLER_STATE["polls"] += 1
         POLLER_STATE["last_poll_at"] = datetime.now(timezone.utc).isoformat()
         try:
-            async with httpx.AsyncClient(timeout=10) as h:
+            async with httpx.AsyncClient(timeout=15, follow_redirects=True) as h:
                 data_r, show_r, pres_r = await asyncio.gather(
-                    h.get(NOW_JSON_URL),
-                    h.get(SHOW_URL),
-                    h.get(PRESENTERS_URL),
-                    return_exceptions=True,
+                    _fetch_first_ok(h, NOW_JSON_URLS),
+                    _fetch_first_ok(h, SHOW_URLS),
+                    _fetch_first_ok(h, PRESENTERS_URLS),
                 )
             if not isinstance(data_r, httpx.Response) or data_r.status_code >= 400:
-                POLLER_STATE["last_error"] = f"now-playing http {getattr(data_r,'status_code','exc')}"
+                detail = (
+                    f"http {data_r.status_code}" if isinstance(data_r, httpx.Response)
+                    else f"exc {type(data_r).__name__}: {data_r!r}"
+                )
+                POLLER_STATE["last_error"] = f"now-playing {detail}"
                 POLLER_STATE["last_error_at"] = datetime.now(timezone.utc).isoformat()
                 await asyncio.sleep(10)
                 continue
