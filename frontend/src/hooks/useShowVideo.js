@@ -53,14 +53,9 @@ export const useShowVideo = () => {
 
   useEffect(() => {
     const showId = findCurrentShowId(shows);
-    if (!showId) {
-      // Re-evaluate when the schedule loads or the hour rolls over.
-      setVideo(null);
-      seenIdRef.current = '';
-      return undefined;
-    }
     let cancelled = false;
     const fetchVideo = async () => {
+      if (!showId) { seenIdRef.current = ''; setVideo(null); return; }
       try {
         const r = await fetch(`${VIDEO_API}/${showId}`, { cache: 'no-store' });
         if (!r.ok) {

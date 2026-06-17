@@ -36,10 +36,6 @@ const ShowVideo = ({ embedUrl, embedHtml, title = '' }) => {
             data-testid="show-livestream-iframe"
           />
         )}
-        <span className="show-video-live-badge" aria-label="Live">
-          <span className="show-video-live-dot" />
-          LIVE
-        </span>
       </div>
     </div>
   );
