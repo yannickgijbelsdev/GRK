@@ -2,8 +2,10 @@ import React from 'react';
 import { Play, Pause } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { useNowOnAir } from '../hooks/useNowOnAir';
+import { useShowVideo } from '../hooks/useShowVideo';
 import CoverImage from './CoverImage';
 import VinylRecord from './VinylRecord';
+import ShowVideo from './ShowVideo';
 
 const fmtTime = (d) => {
   if (!d) return '';
@@ -19,11 +21,13 @@ const fmtTime = (d) => {
 const Hero = () => {
   const { playing, toggle } = usePlayer();
   const { show, presenter, track } = useNowOnAir();
+  const showVideo = useShowVideo();
+  const hasVideo = !!showVideo;
 
   const showName = show || '';
   const hostName = presenter.name || '';
-  const hasPresenterImg = !!presenter.image;
-  const showVinyl = presenter.checked && !hasPresenterImg;
+  const hasPresenterImg = !hasVideo && !!presenter.image;
+  const showVinyl = !hasVideo && presenter.checked && !hasPresenterImg;
   const trackArtist = track.artist || '';
   const trackTitle = track.title || '';
   const startedAt = fmtTime(track.startedAt);
@@ -52,6 +56,16 @@ const Hero = () => {
           />
         ))}
       </div>
+
+      {/* Livestream video — only when an embed is configured for the current
+          show. Replaces the presenter / vinyl visual completely. */}
+      {hasVideo && (
+        <ShowVideo
+          embedUrl={showVideo.embedUrl}
+          embedHtml={showVideo.embedHtml}
+          title={showVideo.title || showName}
+        />
+      )}
 
       {/* Vinyl record — only shown after we've confirmed there's no presenter image. Once mounted it stays mounted to keep the spin animation continuous. */}
       {showVinyl && (
@@ -82,16 +96,20 @@ const Hero = () => {
 
       <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
         <div className="relative h-full flex flex-col justify-start sm:justify-center pt-[2cm] sm:pt-[1cm] z-20" style={{ maxWidth: '480px' }}>
-          <h1
-            className="text-white font-black tracking-tight leading-[0.95] break-words drop-shadow-[0_2px_20px_rgba(0,0,0,0.45)]"
-            style={{ fontSize: 'clamp(1.85rem, 4.5vw, 4.25rem)' }}
-          >
-            {showName}
-          </h1>
-          {hostName && (
-            <p className="text-white/90 text-sm sm:text-base md:text-xl mt-2 md:mt-4 font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
-              met {hostName}
-            </p>
+          {!hasVideo && (
+            <>
+              <h1
+                className="text-white font-black tracking-tight leading-[0.95] break-words drop-shadow-[0_2px_20px_rgba(0,0,0,0.45)]"
+                style={{ fontSize: 'clamp(1.85rem, 4.5vw, 4.25rem)' }}
+              >
+                {showName}
+              </h1>
+              {hostName && (
+                <p className="text-white/90 text-sm sm:text-base md:text-xl mt-2 md:mt-4 font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
+                  met {hostName}
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>
