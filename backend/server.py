@@ -10,7 +10,7 @@ import logging
 import httpx
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
 import asyncio
@@ -314,6 +314,48 @@ async def recent_tracks():
         {"_id": 0, "stored_at": 0},
     ).sort("time", -1).limit(500)
     return {"tracks": await cursor.to_list(length=500)}
+
+
+class TrackReport(BaseModel):
+    artist: str
+    title: str
+    started_at: Optional[str] = None
+    show: Optional[str] = ""
+    host: Optional[str] = ""
+
+
+@api_router.post("/now-playing/report")
+async def report_track(body: TrackReport):
+    """Browser-side reporter — used as a fallback when the production pod can
+    not reach clr.koodh.com directly (egress firewall). Any visitor's tab acts
+    as a relay: detected tracks get POSTed here and stored idempotently."""
+    artist = (body.artist or "").strip()
+    title = (body.title or "").strip()
+    if not title:
+        return {"stored": False, "reason": "empty title"}
+    if not artist and re.search(r"feelgood\s*station", title, re.I):
+        return {"stored": False, "reason": "filler"}
+    started = (body.started_at or "").strip()
+    key = f"{artist}|{title}|{started}"
+    doc = {
+        "_id": key,
+        "artist": artist,
+        "title": title,
+        "time": started or datetime.now(timezone.utc).isoformat(),
+        "show": (body.show or "").strip(),
+        "host": (body.host or "").strip(),
+        "stored_at": datetime.now(timezone.utc),
+    }
+    res = await db.recent_tracks.update_one(
+        {"_id": key}, {"$setOnInsert": doc}, upsert=True
+    )
+    cutoff = datetime.now(timezone.utc) - RETENTION
+    await db.recent_tracks.delete_many({"stored_at": {"$lt": cutoff}})
+    if res.upserted_id is not None:
+        POLLER_STATE["saves"] += 1
+        POLLER_STATE["last_success_at"] = datetime.now(timezone.utc).isoformat()
+        POLLER_STATE["last_track"] = {"artist": artist, "title": title, "key": key, "via": "browser"}
+    return {"stored": res.upserted_id is not None, "key": key}
 
 
 @api_router.get("/diagnostics/poller")

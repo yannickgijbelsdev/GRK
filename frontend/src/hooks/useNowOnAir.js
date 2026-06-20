@@ -319,6 +319,26 @@ export const useNowOnAir = (intervalMs = 10000) => {
             host: hostName,
           });
         }
+        // Browser-side reporter: the production pod can't reach clr.koodh.com
+        // (egress firewall), so each visitor's tab forwards the freshly-seen
+        // track to our backend. Idempotent on key, so duplicate reports from
+        // multiple users are safe.
+        try {
+          const base = process.env.REACT_APP_BACKEND_URL || '';
+          fetch(`${base}/api/now-playing/report`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'no-store',
+            keepalive: true,
+            body: JSON.stringify({
+              artist: parsed.artist,
+              title: parsed.title,
+              started_at: data.song_started_at || startedAt.toISOString(),
+              show: showName,
+              host: hostName,
+            }),
+          }).catch(() => {});
+        } catch { /* fire-and-forget */ }
       }
 
       // Fetch cover, then update both live track + latest history entry.
