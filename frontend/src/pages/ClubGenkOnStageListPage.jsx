@@ -4,7 +4,7 @@ import NewsListPage from './NewsListPage';
 const ClubGenkOnStageListPage = () => (
   <NewsListPage
     title="Club Genk On Stage"
-    subtitle="Alles wat er rond Club Genk gebeurt — sfeerverslagen, interviews en exclusieve coverage."
+    subtitle="Vind hier alles terug van Genk On Stage 2026 door de ogen van GRK."
     category="club-genk-on-stage"
     basePath="/club-genk-on-stage"
   />
