@@ -8,13 +8,23 @@ import CoverImage from '../components/CoverImage';
 import SEO from '../components/SEO';
 import { articleSlugPath } from '../lib/slug';
 
-// Remove the first <img> from the HTML body (we render it separately above the article)
-// and collapse the now-empty wrapper paragraphs.
-const stripFirstImage = (html) => {
+// Remove the leading hero <img> from the HTML body, but only when it actually
+// matches the article's image_url (otherwise we'd accidentally strip the inline
+// content image that the editor added inside a <figure>).
+const stripFirstImage = (html, heroSrc = '') => {
   if (!html) return '';
-  return html
-    // Drop the leading hero image.
-    .replace(/<img[^>]*>/i, '')
+  let out = html;
+  if (heroSrc) {
+    // Try to drop the hero image (and its wrapping figure if any).
+    const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(
+      `<figure[^>]*>\\s*<img[^>]*src=["']${escape(heroSrc)}["'][^>]*>\\s*(?:<figcaption[^>]*>[\\s\\S]*?<\\/figcaption>\\s*)?<\\/figure>|` +
+      `<img[^>]*src=["']${escape(heroSrc)}["'][^>]*>`,
+      'i'
+    );
+    out = out.replace(re, '');
+  }
+  return out
     // Drop the Clara-injected image credit paragraph — we render our own,
     // styled, non-hyperlinked copyright above the article date.
     .replace(/<p[^>]*class=["'][^"']*clara-image-credit[^"']*["'][^>]*>[\s\S]*?<\/p>/gi, '')
@@ -62,7 +72,7 @@ const NewsDetailPage = () => {
     return article.image_url || extractFirstImage(article.body);
   }, [article]);
 
-  const bodyHtml = useMemo(() => stripFirstImage(article?.body || ''), [article]);
+  const bodyHtml = useMemo(() => stripFirstImage(article?.body || '', heroImg), [article, heroImg]);
   const articleHasAudio = useMemo(() => detectAudio(article?.body || ''), [article]);
   const description = useMemo(() => {
     if (!article) return '';
