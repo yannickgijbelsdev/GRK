@@ -28,6 +28,14 @@ const stripFirstImage = (html, heroSrc = '') => {
     // Drop the Clara-injected image credit paragraph — we render our own,
     // styled, non-hyperlinked copyright above the article date.
     .replace(/<p[^>]*class=["'][^"']*clara-image-credit[^"']*["'][^>]*>[\s\S]*?<\/p>/gi, '')
+    // Strip the raw filename `title` and `alt` attributes from inline images —
+    // browsers expose those on hover as a tooltip ("123.jpg") which leaks the
+    // editor's local filename.
+    .replace(/<img\b([^>]*)>/gi, (m, attrs) =>
+      '<img' +
+        attrs.replace(/\s(?:title|alt)=(["'])[^"']*\1/gi, '') +
+      '>'
+    )
     // Clean up resulting empty paragraphs.
     .replace(/<p[^>]*>\s*<\/p>/gi, '');
 };
