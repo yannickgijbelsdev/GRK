@@ -114,6 +114,7 @@ CATEGORY_TO_PATH = {
     "nieuws": "nieuws-uit-de-buurt",
     "social-club": "social-club",
     "events-tickets": "events-tickets",
+    "club-genk-on-stage": "club-genk-on-stage",
 }
 SITE_URL = "https://grk.fm"
 DEFAULT_OG_IMAGE = f"{SITE_URL}/assets/grk-logo-fallback.png"
@@ -161,6 +162,11 @@ async def share_article_socialclub(slug: str):
 @app.get("/events-tickets/{slug}", response_class=HTMLResponse)
 async def share_article_events(slug: str):
     return await _render_share_html("events-tickets", slug)
+
+
+@app.get("/club-genk-on-stage/{slug}", response_class=HTMLResponse)
+async def share_article_clubgenk(slug: str):
+    return await _render_share_html("club-genk-on-stage", slug)
 
 
 async def _render_share_html(kind: str, slug: str):

@@ -26,6 +26,7 @@ const Header = () => {
 
   const isHome = location.pathname === '/';
   const navItems = [
+    { label: 'Club Genk On Stage', to: '/club-genk-on-stage' },
     { label: 'Nieuws uit de buurt', to: '/nieuws' },
     { label: 'Social Club', to: '/social-club' },
     { label: 'Events & Tickets', to: '/events-tickets' },

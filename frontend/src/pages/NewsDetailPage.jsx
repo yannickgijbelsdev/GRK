@@ -54,6 +54,9 @@ const deriveContext = (pathname) => {
   if (pathname && pathname.startsWith('/events-tickets')) {
     return { category: 'events-tickets', backTo: '/events-tickets', backLabel: 'Terug naar Events & Tickets', listTitle: 'Meer events', section: 'Events & Tickets' };
   }
+  if (pathname && pathname.startsWith('/club-genk-on-stage')) {
+    return { category: 'club-genk-on-stage', backTo: '/club-genk-on-stage', backLabel: 'Terug naar Club Genk On Stage', listTitle: 'Meer Club Genk On Stage', section: 'Club Genk On Stage' };
+  }
   return { category: 'nieuws-uit-de-buurt', backTo: '/nieuws', backLabel: 'Terug', listTitle: 'Ander nieuws', section: 'Nieuws uit de buurt' };
 };
 

@@ -161,6 +161,7 @@ export const useNewsArticle = (idOrSlug) => {
         fetchList('nieuws-uit-de-buurt'),
         fetchList('social-club'),
         fetchList('events-tickets'),
+        fetchList('club-genk-on-stage'),
       ]);
       const slug = slugify(idOrSlug);
       for (const list of candidates) {

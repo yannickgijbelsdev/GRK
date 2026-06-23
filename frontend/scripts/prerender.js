@@ -22,6 +22,7 @@ const CATEGORIES = [
   { kind: 'nieuws', path: 'nieuws-uit-de-buurt' },
   { kind: 'social-club', path: 'social-club' },
   { kind: 'events-tickets', path: 'events-tickets' },
+  { kind: 'club-genk-on-stage', path: 'club-genk-on-stage' },
 ];
 
 const get = (url) =>
