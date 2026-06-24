@@ -1,5 +1,6 @@
 import React from 'react';
 import NewsListPage from './NewsListPage';
+import ClubGenkOnStagePromo from '../components/ClubGenkOnStagePromo';
 
 const ClubGenkOnStageListPage = () => (
   <NewsListPage
@@ -7,6 +8,7 @@ const ClubGenkOnStageListPage = () => (
     subtitle="Beleef Genk On Stage 2026 door de ogen van GRK."
     category="club-genk-on-stage"
     basePath="/club-genk-on-stage"
+    afterHeader={<ClubGenkOnStagePromo />}
   />
 );
 

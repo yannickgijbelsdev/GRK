@@ -1,6 +1,7 @@
 import React from 'react';
 import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
+import ClubGenkOnStagePromo from '../components/ClubGenkOnStagePromo';
 import SEO from '../components/SEO';
 
 const HomePage = () => {
@@ -34,6 +35,7 @@ const HomePage = () => {
         </script>
       </SEO>
       <Hero />
+      <ClubGenkOnStagePromo />
       <NewsSection
         title="Club Genk On Stage"
         category="club-genk-on-stage"

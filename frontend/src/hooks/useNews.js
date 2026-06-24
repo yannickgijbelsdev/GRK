@@ -116,11 +116,13 @@ export const useArticleMeta = (article) => {
     article?.image_url || (cachedDetail ? extractFirstImage(cachedDetail.body) : '')
   );
   const [audio, setAudio] = useState(cachedDetail ? hasAudio(cachedDetail.body) : false);
+  const [isLiveblog, setIsLiveblog] = useState(
+    !!(article?.is_liveblog || cachedDetail?.is_liveblog)
+  );
 
   useEffect(() => {
     if (!article) return;
     let cancelled = false;
-    // Always fetch the detail in the background to determine audio presence.
     fetchOne(article.id).then((data) => {
       if (cancelled || !data) return;
       if (!article.image_url) {
@@ -128,11 +130,12 @@ export const useArticleMeta = (article) => {
         if (img) setThumbnail(img);
       }
       setAudio(hasAudio(data.body));
+      setIsLiveblog(!!data.is_liveblog);
     });
     return () => { cancelled = true; };
   }, [article]);
 
-  return { thumbnail, hasAudio: audio };
+  return { thumbnail, hasAudio: audio, isLiveblog };
 };
 
 /**

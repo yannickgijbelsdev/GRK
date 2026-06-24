@@ -4,15 +4,12 @@ import NewsCard from '../components/NewsCard';
 import SEO from '../components/SEO';
 import { useNewsArticles } from '../hooks/useNews';
 
-/**
- * Generic list page used for both "Nieuws uit de buurt" and "Social Club".
- * The card link target is derived from the `basePath` prop.
- */
 const NewsListPage = ({
   title = 'Nieuws uit de buurt',
   subtitle = 'Elke werkdag van 15u tot 16u en elke zondag van 17u tot 18u, hoor je het nieuws uit jouw buurt!',
   category = 'nieuws-uit-de-buurt',
   basePath = '/nieuws',
+  afterHeader = null,
 }) => {
   const { articles, loading } = useNewsArticles(category);
 
@@ -20,6 +17,7 @@ const NewsListPage = ({
     <>
       <SEO title={title} description={subtitle} url={`https://grk.fm${basePath}`} />
       <PageHeader title={title} subtitle={subtitle} />
+      {afterHeader}
       <section className="py-12 md:py-16 page-pad-bottom">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           {loading && articles.length === 0 ? (
