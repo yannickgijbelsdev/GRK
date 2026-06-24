@@ -1,48 +1,22 @@
 import React, { useState } from 'react';
 
 const PalmTreesBg = () => (
-  <svg
-    className="absolute inset-0 w-full h-full pointer-events-none"
-    viewBox="0 0 600 450"
-    preserveAspectRatio="xMidYMax meet"
-    aria-hidden="true"
-  >
-    <defs>
-      <radialGradient id="palmGlowWide" cx="50%" cy="100%" r="80%">
-        <stop offset="0%" stopColor="#4a8fdc" stopOpacity="0.35" />
-        <stop offset="100%" stopColor="#4a8fdc" stopOpacity="0" />
-      </radialGradient>
-    </defs>
-    <rect width="600" height="450" fill="url(#palmGlowWide)" />
-    {/* Left palm */}
-    <g stroke="#7fb5e8" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.85">
-      <path d="M60 450 Q54 340 44 200" />
-      <path d="M44 200 Q-4 176 -28 184" />
-      <path d="M44 200 Q-2 148 -16 110" />
-      <path d="M44 200 Q22 140 18 84" />
-      <path d="M44 200 Q56 132 70 84" />
-      <path d="M44 200 Q86 160 124 132" />
-      <path d="M44 200 Q92 200 134 218" />
-    </g>
-    {/* Right palm */}
-    <g stroke="#a4c9ed" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.9">
-      <path d="M544 450 Q540 348 534 232" />
-      <path d="M534 232 Q486 214 466 224" />
-      <path d="M534 232 Q500 184 488 146" />
-      <path d="M534 232 Q526 178 524 132" />
-      <path d="M534 232 Q550 180 564 146" />
-      <path d="M534 232 Q580 204 612 196" />
-      <path d="M534 232 Q580 240 618 260" />
-    </g>
-    {/* Mid palm */}
-    <g stroke="#5a8fc9" strokeWidth="4" strokeLinecap="round" fill="none" opacity="0.55">
-      <path d="M310 450 Q306 378 300 300" />
-      <path d="M300 300 Q272 290 254 300" />
-      <path d="M300 300 Q282 264 274 244" />
-      <path d="M300 300 Q314 264 322 244" />
-      <path d="M300 300 Q334 284 354 282" />
-    </g>
-  </svg>
+  <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <img
+      src="/assets/cgos-palms.png"
+      alt=""
+      loading="lazy"
+      className="absolute inset-0 w-full h-full object-cover opacity-45"
+      style={{ mixBlendMode: 'screen', filter: 'hue-rotate(-10deg) saturate(0.45) brightness(1.05)' }}
+    />
+    <div
+      className="absolute inset-0"
+      style={{
+        background:
+          'radial-gradient(120% 90% at 50% 100%, rgba(74,143,220,0.35) 0%, rgba(74,143,220,0) 60%), linear-gradient(180deg, rgba(6,42,74,0.4) 0%, rgba(6,42,74,0) 40%)',
+      }}
+    />
+  </div>
 );
 
 /**

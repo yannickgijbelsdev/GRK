@@ -1,59 +1,28 @@
 import React, { useState } from 'react';
 
 /**
- * Decorative palm fronds rendered in a slightly lighter blue than the panel
- * background. Sits behind the photo so the Hawaii vibe blends from the photo
- * into the panel.
+ * Decorative palm-fronds background. The PNG sits behind the photo and is
+ * blended (multiply / lightened with a tinted overlay) so it picks up the
+ * Hawaii vibe of the photo without competing with it.
  */
 const PalmTreesBg = () => (
-  <svg
-    className="absolute inset-0 w-full h-full pointer-events-none"
-    viewBox="0 0 400 200"
-    preserveAspectRatio="xMidYMid slice"
-    aria-hidden="true"
-  >
-    <defs>
-      <radialGradient id="palmGlow" cx="50%" cy="100%" r="80%">
-        <stop offset="0%" stopColor="#4a8fdc" stopOpacity="0.35" />
-        <stop offset="100%" stopColor="#4a8fdc" stopOpacity="0" />
-      </radialGradient>
-    </defs>
-    <rect width="400" height="200" fill="url(#palmGlow)" />
-    {/* Left palm tree */}
-    <g
-      stroke="#7fb5e8"
-      strokeWidth="3.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-      opacity="0.85"
-    >
-      <path d="M44 200 Q40 140 32 84" />
-      <path d="M32 84 Q4 70 -10 76" />
-      <path d="M32 84 Q4 56 -6 36" />
-      <path d="M32 84 Q20 50 16 18" />
-      <path d="M32 84 Q40 46 50 18" />
-      <path d="M32 84 Q60 64 84 50" />
-      <path d="M32 84 Q66 84 96 96" />
-    </g>
-    {/* Right palm tree */}
-    <g
-      stroke="#a4c9ed"
-      strokeWidth="3.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-      opacity="0.9"
-    >
-      <path d="M360 200 Q356 150 352 104" />
-      <path d="M352 104 Q322 92 308 98" />
-      <path d="M352 104 Q330 78 320 60" />
-      <path d="M352 104 Q346 70 344 42" />
-      <path d="M352 104 Q364 76 376 56" />
-      <path d="M352 104 Q386 86 408 84" />
-      <path d="M352 104 Q386 108 414 122" />
-    </g>
-  </svg>
+  <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <img
+      src="/assets/cgos-palms.png"
+      alt=""
+      loading="lazy"
+      className="absolute inset-0 w-full h-full object-cover opacity-45"
+      style={{ mixBlendMode: 'screen', filter: 'hue-rotate(-10deg) saturate(0.45) brightness(1.05)' }}
+    />
+    {/* Soft cyan gradient overlay so the palms blend into the dark base. */}
+    <div
+      className="absolute inset-0"
+      style={{
+        background:
+          'radial-gradient(120% 90% at 50% 100%, rgba(74,143,220,0.35) 0%, rgba(74,143,220,0) 60%), linear-gradient(180deg, rgba(6,42,74,0.4) 0%, rgba(6,42,74,0) 40%)',
+      }}
+    />
+  </div>
 );
 
 /**
