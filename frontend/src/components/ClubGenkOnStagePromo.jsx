@@ -8,7 +8,7 @@ import React from 'react';
  * The hero image is sourced from /assets/club-genk-on-stage.jpg — drop the
  * final asset there (or change `imageSrc` below) to update the visual.
  */
-const ClubGenkOnStagePromo = ({ imageSrc = '/assets/club-genk-on-stage.jpg' }) => {
+const ClubGenkOnStagePromo = ({ imageSrc = '/assets/club-genk-on-stage.png' }) => {
   // Fallback chain: if the .jpg isn't uploaded yet, fall back to the SVG
   // placeholder so the layout doesn't break.
   const [src, setSrc] = React.useState(imageSrc);
@@ -26,7 +26,7 @@ const ClubGenkOnStagePromo = ({ imageSrc = '/assets/club-genk-on-stage.jpg' }) =
               src={src}
               onError={onError}
               alt="Club Genk On Stage"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain p-6"
               loading="lazy"
             />
           </div>

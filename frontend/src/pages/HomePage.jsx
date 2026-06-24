@@ -1,7 +1,7 @@
 import React from 'react';
 import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
-import ClubGenkOnStagePromo from '../components/ClubGenkOnStagePromo';
+import ClubGenkOnStagePromoCard from '../components/ClubGenkOnStagePromoCard';
 import SEO from '../components/SEO';
 
 const HomePage = () => {
@@ -35,12 +35,12 @@ const HomePage = () => {
         </script>
       </SEO>
       <Hero />
-      <ClubGenkOnStagePromo />
       <NewsSection
         title="Club Genk On Stage"
         category="club-genk-on-stage"
         basePath="/club-genk-on-stage"
         moreLabel="Meer Club Genk On Stage"
+        leadingTile={<ClubGenkOnStagePromoCard />}
       />
       <NewsSection
         title="Nieuws uit de buurt"

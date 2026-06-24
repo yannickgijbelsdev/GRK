@@ -14,15 +14,20 @@ const NewsSection = ({
   showHeader = true,
   showMore = true,
   bottomSpacing = false,
+  leadingTile = null,           // ReactNode rendered as the first grid cell
+  leadingTileSpan = 1,          // How many columns the leading tile spans
 }) => {
   const { articles, loading } = useNewsArticles(category);
-  const items = articles.slice(0, limit);
+  // When a leading tile is shown it takes up `leadingTileSpan` cards worth of
+  // space, so render fewer articles to keep the grid balanced.
+  const articleLimit = leadingTile ? Math.max(0, limit - leadingTileSpan) : limit;
+  const items = articles.slice(0, articleLimit);
 
   return (
     <section className={`py-16 md:py-20 ${background ? 'bg-[#f0f4fa]' : ''} ${bottomSpacing ? 'page-pad-bottom' : ''}`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         {showHeader && <h2 className="text-[#062a4a] text-3xl md:text-4xl font-black mb-10">{title}</h2>}
-        {loading && items.length === 0 ? (
+        {loading && items.length === 0 && !leadingTile ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {Array.from({ length: limit }).map((_, i) => (
               <div key={i} className="bg-white rounded-2xl border border-[#d8e4f0] overflow-hidden animate-pulse">
@@ -36,6 +41,11 @@ const NewsSection = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {leadingTile && (
+              <div className={leadingTileSpan === 2 ? 'md:col-span-2' : ''}>
+                {leadingTile}
+              </div>
+            )}
             {items.map((item) => (
               <NewsCard key={item.id} article={item} basePath={basePath} />
             ))}
