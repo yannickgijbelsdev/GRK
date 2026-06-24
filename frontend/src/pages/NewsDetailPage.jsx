@@ -4,6 +4,7 @@ import { ArrowLeft, Share2, Volume2 } from 'lucide-react';
 import { useNewsArticle, useNewsArticles, extractFirstImage, hasAudio as detectAudio, articleDate } from '../hooks/useNews';
 import NewsCard from '../components/NewsCard';
 import NewsBody from '../components/NewsBody';
+import Liveblog from '../components/Liveblog';
 import CoverImage from '../components/CoverImage';
 import SEO from '../components/SEO';
 import { articleSlugPath } from '../lib/slug';
@@ -221,6 +222,8 @@ const NewsDetailPage = () => {
             </div>
           ) : notFound ? (
             <p className="text-[#4a6480] text-lg">Het artikel dat je zoekt bestaat niet of werd verwijderd. Ga terug naar het <Link to={ctx.backTo} className="font-semibold underline">overzicht</Link>.</p>
+          ) : article?.is_liveblog ? (
+            <Liveblog articleId={article.id} initialEntries={article.liveblog_entries || []} />
           ) : (
             <NewsBody html={bodyHtml} title={article?.title} />
           )}
