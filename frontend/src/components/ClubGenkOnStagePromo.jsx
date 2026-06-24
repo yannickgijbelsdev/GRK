@@ -6,7 +6,7 @@ const PalmTreesBg = () => (
       src="/assets/cgos-palms.png"
       alt=""
       loading="lazy"
-      className="absolute inset-0 w-full h-full object-cover opacity-45"
+      className="absolute inset-0 w-full h-full object-cover opacity-20"
       style={{ mixBlendMode: 'screen', filter: 'hue-rotate(-10deg) saturate(0.45) brightness(1.05)' }}
     />
     <div
