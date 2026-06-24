@@ -36,14 +36,8 @@ const NewsCard = ({ article, compact = false, basePath = '/nieuws' }) => {
         </div>
       </div>
       <div className={`${compact ? 'p-5' : 'p-6'} flex flex-col flex-1`}>
-        <h3 className={`text-[#062a4a] ${compact ? 'text-lg' : 'text-xl'} font-bold leading-snug hover-pulse line-clamp-3 flex items-start gap-2`}>
-          {isLiveblog && (
-            <LiveBadge size="tiny" className="mt-1 flex-shrink-0" />
-          )}
-          {hasAudio && (
-            <Volume2 size={compact ? 16 : 18} className="text-[#2a5d99] flex-shrink-0 mt-1" aria-hidden="true" />
-          )}
-          <span className="min-w-0">{article.title}</span>
+        <h3 className={`text-[#062a4a] ${compact ? 'text-lg' : 'text-xl'} font-bold leading-snug hover-pulse line-clamp-3`}>
+          {article.title}
         </h3>
         {date && (
           <p className="mt-2 text-[#4a6480] text-xs font-medium tracking-wide">{date}</p>
