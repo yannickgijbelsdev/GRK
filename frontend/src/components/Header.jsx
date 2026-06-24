@@ -6,7 +6,6 @@ const NEWS_CATEGORIES = [
   { label: 'Club Genk On Stage', to: '/club-genk-on-stage' },
   { label: 'Nieuws uit de buurt', to: '/nieuws' },
   { label: 'Social Club', to: '/social-club' },
-  { label: 'Events & Tickets', to: '/events-tickets' },
 ];
 
 const NEWS_PATHS = NEWS_CATEGORIES.map((c) => c.to);
@@ -61,6 +60,7 @@ const Header = () => {
   };
 
   const navItems = [
+    { label: 'Events & Tickets', to: '/events-tickets' },
     { label: "Programma's", to: '/programmering' },
     { label: 'Gedraaid', to: '/gedraaid' },
   ];
@@ -108,7 +108,7 @@ const Header = () => {
               aria-haspopup="menu"
               aria-expanded={newsOpen}
               data-testid="nav-news-toggle"
-              className={`hover-pulse text-white text-lg lg:text-xl font-medium inline-flex items-center gap-1.5 ${newsActive ? 'is-active' : ''}`}
+              className={`text-white text-lg lg:text-xl font-medium inline-flex items-center gap-1.5 whitespace-nowrap transition-transform duration-300 hover:scale-[1.06] ${newsActive ? 'scale-[1.06]' : ''}`}
             >
               Nieuws
               <ChevronDown
