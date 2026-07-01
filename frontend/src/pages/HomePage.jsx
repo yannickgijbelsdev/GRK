@@ -36,13 +36,6 @@ const HomePage = () => {
       </SEO>
       <Hero />
       <NewsSection
-        title="Club Genk On Stage"
-        category="club-genk-on-stage"
-        basePath="/club-genk-on-stage"
-        moreLabel="Meer Club Genk On Stage"
-        leadingTile={<ClubGenkOnStagePromoCard />}
-      />
-      <NewsSection
         title="Nieuws uit de buurt"
         category="nieuws-uit-de-buurt"
         basePath="/nieuws"

@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 
 const NEWS_CATEGORIES = [
-  { label: 'Club Genk On Stage', to: '/club-genk-on-stage' },
   { label: 'Nieuws uit de buurt', to: '/nieuws' },
   { label: 'Social Club', to: '/social-club' },
 ];
