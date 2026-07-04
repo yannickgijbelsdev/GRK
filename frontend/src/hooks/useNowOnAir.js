@@ -186,6 +186,50 @@ const fetchCover = async (artist, title) => {
   }
 };
 
+// Background cover backfill — walks the history and fetches iTunes artwork
+// for any entry that is still missing a cover. Runs at most one lookup at a
+// time to stay polite to the iTunes API (and to avoid CPU spikes on mobile).
+let backfillActive = false;
+const backfillMissingCovers = async () => {
+  if (backfillActive) return;
+  backfillActive = true;
+  try {
+    while (!backfillActive === false) {
+      const list = getHistory();
+      const missing = list.find((e) => !e.cover && e.title);
+      if (!missing) break;
+      const url = await fetchCover(missing.artist, missing.title);
+      // Update every entry with the same artist/title so covers appear across
+      // all matching rows on Gedraaid / Selected.
+      const key = coverKey(missing.artist, missing.title);
+      const next = getHistory().map((e) =>
+        !e.cover && coverKey(e.artist, e.title) === key ? { ...e, cover: url } : e
+      );
+      setHistoryAndNotify(next);
+      // If iTunes returned nothing, we still cache an empty string so we don't
+      // retry forever — the cache lookup above will short-circuit on the next
+      // pass.
+      if (!url) {
+        // Mark the entries so they're not scanned again in this session even
+        // though `cover` stays empty.
+        const stampKey = coverKey(missing.artist, missing.title);
+        const stamped = getHistory().map((e) =>
+          coverKey(e.artist, e.title) === stampKey && !e.cover ? { ...e, _coverTried: true } : e
+        );
+        setHistoryAndNotify(stamped);
+      }
+      // Small delay between requests.
+      await new Promise((res) => setTimeout(res, 600));
+      // Guard: if the next iteration would pick up the same title again
+      // (empty result), bail.
+      const stillMissing = getHistory().find((e) => !e.cover && !e._coverTried && e.title);
+      if (!stillMissing) break;
+    }
+  } finally {
+    backfillActive = false;
+  }
+};
+
 export const useNowOnAir = (intervalMs = 10000) => {
   const [show, setShow] = useState('');
   const [presenter, setPresenter] = useState({ name: '', image: '', checked: false });
@@ -215,13 +259,20 @@ export const useNowOnAir = (intervalMs = 10000) => {
         const json = await r.json();
         const remote = Array.isArray(json.tracks) ? json.tracks : [];
         if (!remote.length) return;
+        const cache = getCoverCache();
         const list = getHistory();
         const byKey = new Map();
         for (const e of list) byKey.set(minuteKey(e), e);
         let added = 0;
         for (const e of remote) {
           const k = minuteKey(e);
-          if (!byKey.has(k)) { byKey.set(k, { ...e, cover: '' }); added++; }
+          if (!byKey.has(k)) {
+            // Reuse any cached iTunes cover for this artist/title so freshly
+            // seeded remote tracks don't render as empty vinyls.
+            const cached = cache[coverKey(e.artist, e.title)] || '';
+            byKey.set(k, { ...e, cover: cached });
+            added++;
+          }
         }
         if (!added) return;
         const merged = pruneHistory(
@@ -230,9 +281,11 @@ export const useNowOnAir = (intervalMs = 10000) => {
           )
         );
         setHistoryAndNotify(merged);
+        backfillMissingCovers();
       } catch { /* offline ok */ }
     };
     mergeRemote();
+    backfillMissingCovers();
     const seedInterval = setInterval(mergeRemote, 60 * 1000);
     const onVis = () => { if (document.visibilityState === 'visible') mergeRemote(); };
     document.addEventListener('visibilitychange', onVis);
