@@ -57,7 +57,7 @@ const probeImage = (url) => {
 };
 const HISTORY_KEY = 'grk-recent-tracks';
 const HISTORY_LIMIT = 2000;
-const HISTORY_MAX_AGE_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
+const HISTORY_MAX_AGE_MS = 28 * 24 * 60 * 60 * 1000; // 28 days
 const COVER_CACHE_KEY = 'grk-cover-cache';
 
 const fetchJson = async (url) => {

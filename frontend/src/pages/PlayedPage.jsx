@@ -65,7 +65,7 @@ const PlayedPage = () => {
     // Always include today even when no entries yet
     set.add(todayKey());
     const arr = Array.from(set).sort().reverse(); // newest first
-    return arr.slice(0, 3);
+    return arr.slice(0, 28);
   }, [history]);
 
   // Ensure selectedDay is valid
@@ -84,7 +84,7 @@ const PlayedPage = () => {
 
   return (
     <>
-      <SEO title="Gedraaid" description="Welk nummer hoorden we daarstraks op GRK? Bekijk de laatste 3 dagen aan gedraaide nummers." url="https://grk.fm/gedraaid" />
+      <SEO title="Gedraaid" description="Welk nummer hoorden we daarstraks op GRK? Bekijk de laatste 4 weken aan gedraaide nummers." url="https://grk.fm/gedraaid" />
       <PageHeader title="Gedraaid" subtitle="Welk nummer was dat daarstraks weer? Je vindt het hier terug!" />
       <section className="py-12 md:py-16 page-pad-bottom">
         <div className="max-w-4xl mx-auto px-6 lg:px-10">

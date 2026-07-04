@@ -403,14 +403,14 @@ async def shutdown_db_client():
 
 
 # ---------------------------------------------------------------------------
-# Recent-tracks poller — keeps a server-side rolling 3-day history so mobile
+# Recent-tracks poller — keeps a server-side rolling 28-day history so mobile
 # browsers (Safari private mode, ITP) that can't persist localStorage still
 # see "Gedraaid" filled out.
 # ---------------------------------------------------------------------------
 NOW_JSON_URL = "https://clr.koodh.com/api/rds/grk/now-playing"
 SHOW_URL = "https://clr.koodh.com/api/rds/grk/live.json"
 PRESENTERS_URL = "https://clr.koodh.com/api/rds/grk/presenter.json"
-RETENTION = timedelta(days=3)
+RETENTION = timedelta(days=28)
 
 
 def _parse_track(raw: str):
