@@ -321,16 +321,22 @@ export const useNowOnAir = (intervalMs = 10000) => {
         lastShowKey = nextShowKey;
         lastImageBust = String(Date.now());
       }
-      const candidateUrl = lastImageBust
-        ? `${PRESENTER_IMAGE_URL}?v=${lastImageBust}`
-        : PRESENTER_IMAGE_URL;
 
-      // Probe the presenter image — only expose URL when it actually loads (200).
-      const probed = await probeImage(candidateUrl);
-      if (cancelled) return;
+      // No presenter → skip the image entirely, no matter what the API image
+      // endpoint returns. Prevents a leftover default image from being shown
+      // while the show has no host attached.
+      let nextImage = '';
+      if (presenterText) {
+        const candidateUrl = lastImageBust
+          ? `${PRESENTER_IMAGE_URL}?v=${lastImageBust}`
+          : PRESENTER_IMAGE_URL;
+        const probed = await probeImage(candidateUrl);
+        if (cancelled) return;
+        if (probed) nextImage = candidateUrl;
+      }
+
       setPresenter((prev) => {
         const nextName = presenterText || '';
-        const nextImage = probed ? candidateUrl : '';
         if (prev.name === nextName && prev.image === nextImage && prev.checked) return prev;
         return { name: nextName, image: nextImage, checked: true };
       });
