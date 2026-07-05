@@ -187,43 +187,42 @@ const fetchCover = async (artist, title) => {
 };
 
 // Background cover backfill — walks the history and fetches iTunes artwork
-// for any entry that is still missing a cover. Runs at most one lookup at a
-// time to stay polite to the iTunes API (and to avoid CPU spikes on mobile).
+// for any entry that is still missing a cover. Runs up to 4 lookups in
+// parallel so bigger playlists get filled in quickly.
 let backfillActive = false;
 const backfillMissingCovers = async () => {
   if (backfillActive) return;
   backfillActive = true;
+  const attempted = new Set();
   try {
-    while (!backfillActive === false) {
+    while (true) {
       const list = getHistory();
-      const missing = list.find((e) => !e.cover && e.title);
-      if (!missing) break;
-      const url = await fetchCover(missing.artist, missing.title);
-      // Update every entry with the same artist/title so covers appear across
-      // all matching rows on Gedraaid / Selected.
-      const key = coverKey(missing.artist, missing.title);
-      const next = getHistory().map((e) =>
-        !e.cover && coverKey(e.artist, e.title) === key ? { ...e, cover: url } : e
-      );
-      setHistoryAndNotify(next);
-      // If iTunes returned nothing, we still cache an empty string so we don't
-      // retry forever — the cache lookup above will short-circuit on the next
-      // pass.
-      if (!url) {
-        // Mark the entries so they're not scanned again in this session even
-        // though `cover` stays empty.
-        const stampKey = coverKey(missing.artist, missing.title);
-        const stamped = getHistory().map((e) =>
-          coverKey(e.artist, e.title) === stampKey && !e.cover ? { ...e, _coverTried: true } : e
-        );
-        setHistoryAndNotify(stamped);
+      // Collect unique artist|title keys that still need a cover.
+      const targets = [];
+      const seen = new Set();
+      for (const e of list) {
+        if (e.cover || !e.title) continue;
+        const k = coverKey(e.artist, e.title);
+        if (attempted.has(k) || seen.has(k)) continue;
+        seen.add(k);
+        targets.push({ artist: e.artist, title: e.title, key: k });
+        if (targets.length >= 4) break;
       }
-      // Small delay between requests.
-      await new Promise((res) => setTimeout(res, 600));
-      // Guard: if the next iteration would pick up the same title again
-      // (empty result), bail.
-      const stillMissing = getHistory().find((e) => !e.cover && !e._coverTried && e.title);
-      if (!stillMissing) break;
+      if (!targets.length) break;
+      targets.forEach((t) => attempted.add(t.key));
+
+      // Fetch this batch in parallel.
+      const results = await Promise.all(
+        targets.map(async (t) => ({ key: t.key, url: await fetchCover(t.artist, t.title) }))
+      );
+
+      // Apply all covers in one go.
+      const next = getHistory().map((e) => {
+        if (e.cover) return e;
+        const match = results.find((r) => r.key === coverKey(e.artist, e.title));
+        return match && match.url ? { ...e, cover: match.url } : e;
+      });
+      setHistoryAndNotify(next);
     }
   } finally {
     backfillActive = false;
