@@ -7,7 +7,7 @@ export const slugify = (text) => {
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // strip diacritics
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 80);
+    .slice(0, 160);
 };
 
 // UUID v4-style regex (matches the IDs returned by the news API)

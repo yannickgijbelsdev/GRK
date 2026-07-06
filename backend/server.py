@@ -126,7 +126,7 @@ def _slugify(text: str) -> str:
     text = text.lower()
     text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
     text = re.sub(r"[\s_-]+", "-", text).strip("-")
-    return text[:80]
+    return text[:160]
 
 
 def _strip_html(s: str) -> str:
@@ -185,6 +185,20 @@ async def _render_share_html(kind: str, slug: str):
             (a for a in items if _slugify(a.get("title")) == slug),
             None,
         )
+        if not article:
+            # Legacy fallback: URLs that were generated when slugs were capped
+            # at 80 chars are shorter than the current canonical slug — match
+            # via prefix on either side so old share links keep resolving.
+            article = next(
+                (
+                    a for a in items
+                    if slug and _slugify(a.get("title")) and (
+                        _slugify(a.get("title")).startswith(slug)
+                        or slug.startswith(_slugify(a.get("title")))
+                    )
+                ),
+                None,
+            )
         if not article:
             # Article unknown — fall back to the bare SPA so the route still works.
             return HTMLResponse(_load_spa_index(), headers={"Cache-Control": "no-store"})

@@ -168,7 +168,17 @@ export const useNewsArticle = (idOrSlug) => {
       ]);
       const slug = slugify(idOrSlug);
       for (const list of candidates) {
-        const found = (list || []).find((a) => slugify(a.title) === slug);
+        // Exact match on the current slug (up to 160 chars).
+        let found = (list || []).find((a) => slugify(a.title) === slug);
+        // Legacy fallback: URLs generated when we still capped slugs at 80
+        // chars stripped-past the trailing "-". Match by prefix so bookmarks
+        // from the old scheme keep working.
+        if (!found) {
+          found = (list || []).find((a) => {
+            const s = slugify(a.title);
+            return s && slug && (s.startsWith(slug) || slug.startsWith(s));
+          });
+        }
         if (found) return fetchOne(found.id);
       }
       return null;
