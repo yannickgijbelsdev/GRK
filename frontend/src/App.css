@@ -512,6 +512,11 @@ html { scroll-behavior: smooth; }
 .hero-show-video {
   width: min(90vw, 1100px);
   max-width: calc(100vw - 32px);
+  /* Never grow so tall that the video overlaps the fixed header. */
+  max-height: calc(100vh - 200px);
+  /* Shift the vertical center down so the top edge always sits below the
+     header, even on shorter viewports. */
+  padding-top: 40px;
 }
 .show-video-frame {
   position: relative;
@@ -523,6 +528,12 @@ html { scroll-behavior: smooth; }
     0 0 0 1px rgba(255, 255, 255, 0.06) inset,
     0 0 0 3px rgba(74, 143, 220, 0.45);
   aspect-ratio: 16 / 9;
+  /* Cap the frame height so the video shrinks proportionally when there is
+     less vertical room than the width would need. */
+  max-height: calc(100vh - 240px);
+  width: 100%;
+  max-width: fit-content;
+  margin: 0 auto;
 }
 .show-video-iframe,
 .show-video-iframe-wrap iframe {

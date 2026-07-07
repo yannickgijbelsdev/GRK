@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useShowVideo } from '../hooks/useShowVideo';
 
 /**
- * StickyShowVideo — floats a compact preview of the live show video to the
- * bottom-right corner once the user scrolls past the hero. On wide viewports
- * it sits at the same vertical baseline as the audio StickyPlayer (matches
- * the request: "op dezelfde hoogte"). On narrower screens where the audio
- * player would overlap, it stacks above the player instead.
+ * StickyShowVideo — floats a compact preview of the live show video near the
+ * bottom of the viewport once the user scrolls past the hero.
+ *
+ * Layout: the audio StickyPlayer is 1024px wide, centered, with ~16px margin.
+ * The video card is 240px wide. For the video to sit directly next to the
+ * player without overflowing the viewport, the viewport must be at least
+ * 1024 + 2×16 + 2×(240+16) = ~1568px wide. Below that, we stack the video
+ * above the player.
  */
-const SIDE_BY_SIDE_MIN_WIDTH = 1280; // px
+const SIDE_BY_SIDE_MIN_WIDTH = 1568; // px
 
 const StickyShowVideo = () => {
   const video = useShowVideo();
@@ -36,14 +39,17 @@ const StickyShowVideo = () => {
 
   if (!video) return null;
 
-  // On wide screens: align vertically with the audio player (same `bottom`).
+  // On wide screens: sit immediately to the right of the (centered, 1024px
+  // wide) audio player. Formula: right = 50% − (halfPlayer + gap + videoWidth)
+  //   = 50% − (512 + 16 + 240) = 50% − 768px.
   // On narrower screens: stack above the audio player so nothing overlaps.
   const bottom = sideBySide ? 16 + footerOffset : 16 + footerOffset + 110;
+  const rightStyle = sideBySide ? 'calc(50% - 768px)' : '16px';
 
   return (
     <div
-      className={`fixed z-50 transition-all duration-500 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0 pointer-events-none'}`}
-      style={{ right: '16px', bottom: `${bottom}px` }}
+      className={`fixed z-40 transition-all duration-500 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-24 opacity-0 pointer-events-none'}`}
+      style={{ right: rightStyle, bottom: `${bottom}px` }}
       data-testid="sticky-show-video"
     >
       <div className="sticky-show-video-frame">
