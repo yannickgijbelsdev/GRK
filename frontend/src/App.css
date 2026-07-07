@@ -510,7 +510,7 @@ html { scroll-behavior: smooth; }
 /* Replaces the presenter image / vinyl when the show video API has data.    */
 /* ------------------------------------------------------------------------- */
 .hero-show-video {
-  width: min(82vw, 720px);
+  width: min(90vw, 1100px);
   max-width: calc(100vw - 32px);
 }
 .show-video-frame {
@@ -536,7 +536,7 @@ html { scroll-behavior: smooth; }
   height: 100%;
 }
 @media (max-width: 640px) {
-  .hero-show-video { width: min(94vw, 520px); }
+  .hero-show-video { width: 96vw; }
 }
 
 /* ------------------------------------------------------------------------- */
