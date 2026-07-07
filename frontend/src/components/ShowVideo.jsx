@@ -15,8 +15,10 @@ const ShowVideo = ({ embedUrl, embedHtml, title = '' }) => {
       style={{
         position: 'absolute',
         left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
+        // Anchor the video a fixed distance below the top of the hero so it
+        // always sits below the fixed header (which is ~136px tall).
+        top: '160px',
+        transform: 'translateX(-50%)',
       }}
     >
       <div className="show-video-frame">

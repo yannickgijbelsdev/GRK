@@ -37,25 +37,34 @@ const Hero = () => {
       className="relative overflow-visible"
       style={{
         background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 45%,#1f5499 80%,#2c6db8 100%)',
-        height: '68vh',
-        minHeight: '600px',
+        // Regular hero uses a fixed viewport height. When the livestream video
+        // is up, grow the hero enough to comfortably fit the video (which is
+        // anchored 160px from the top) plus a small bottom breathing room.
+        height: hasVideo ? 'auto' : '68vh',
+        minHeight: hasVideo
+          ? 'calc(min(92vw, 1280px) * 9 / 16 + 200px)'
+          : '600px',
       }}
     >
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="blend-sphere" />
-        {[600, 900, 1200, 1500, 1800].map((size, i) => (
-          <div
-            key={`f-${i}`}
-            className="blend-ring-flash"
-            style={{
-              width: `${size}px`,
-              height: `${size}px`,
-              marginLeft: `-${size / 2}px`,
-              marginTop: `-${size / 2}px`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Decorative blend sphere + concentric rings. Hidden entirely when the
+          livestream video is active so the video sits on a clean background. */}
+      {!hasVideo && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <div className="blend-sphere" />
+          {[600, 900, 1200, 1500, 1800].map((size, i) => (
+            <div
+              key={`f-${i}`}
+              className="blend-ring-flash"
+              style={{
+                width: `${size}px`,
+                height: `${size}px`,
+                marginLeft: `-${size / 2}px`,
+                marginTop: `-${size / 2}px`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Livestream video — only when an embed is configured for the current
           show. Replaces the presenter / vinyl visual completely. */}
