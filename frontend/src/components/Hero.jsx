@@ -42,7 +42,7 @@ const Hero = () => {
         // anchored 160px from the top) plus a small bottom breathing room.
         height: hasVideo ? 'auto' : '68vh',
         minHeight: hasVideo
-          ? 'calc(min(92vw, 1280px) * 9 / 16 + 200px)'
+          ? 'calc(min(92vw, 1280px) * 9 / 16 + 320px)'
           : '600px',
       }}
     >
