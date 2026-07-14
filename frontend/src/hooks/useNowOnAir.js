@@ -27,7 +27,10 @@ const probeImage = (url) => {
     img.onload = () => {
       try {
         const w = img.naturalWidth, h = img.naturalHeight;
-        if (!w || !h) { probeCache.set(url, false); return resolve(false); }
+        // Tiny placeholder images (e.g. the 1×1 transparent PNG the origin
+        // serves when no presenter is attached to the show) → treat as
+        // "no image" so the hero can fall back to the vinyl record.
+        if (!w || !h || (w < 32 && h < 32)) { probeCache.set(url, false); return resolve(false); }
         // Downsample for cheap analysis (max 64×64).
         const scale = Math.min(64 / w, 64 / h, 1);
         const cw = Math.max(1, Math.round(w * scale));
