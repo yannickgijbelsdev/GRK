@@ -100,8 +100,23 @@ const Footer = () => {
         </div>
       </div>
       <div className="relative border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 text-xs text-white/60">
-          &copy; {new Date().getFullYear()} GRK &mdash; the feelgood station.
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex items-center justify-between gap-4 text-xs text-white/60">
+          <span>&copy; {new Date().getFullYear()} GRK &mdash; the feelgood station.</span>
+          <a
+            href="https://koodh.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="opacity-75 hover:opacity-100 transition-opacity"
+            aria-label="Koodh"
+            data-testid="footer-koodh-logo"
+          >
+            <img
+              src="/assets/koodh-logo.png"
+              alt="Koodh"
+              className="h-5 md:h-6 w-auto"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
+          </a>
         </div>
       </div>
     </footer>

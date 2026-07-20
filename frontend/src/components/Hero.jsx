@@ -149,26 +149,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-
-      {/* Made by Koodh — small credit tucked into the bottom-right of the hero */}
-      <a
-        href="https://koodh.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md ring-1 ring-white/15 transition-colors duration-200 group"
-        data-testid="hero-made-by-koodh"
-        aria-label="Made by Koodh"
-      >
-        <span className="text-white/70 group-hover:text-white text-xs font-medium tracking-wide transition-colors">
-          Made by
-        </span>
-        <img
-          src="/assets/koodh-logo.png"
-          alt="Koodh"
-          className="h-4 md:h-5 w-auto opacity-90 group-hover:opacity-100 transition-opacity"
-          style={{ filter: 'brightness(0) invert(1)' }}
-        />
-      </a>
     </section>
   );
 };
