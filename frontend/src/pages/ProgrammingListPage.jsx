@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { Repeat, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import SEO from '../components/SEO';
-import CoverImage from '../components/CoverImage';
 import { useDaySchedule } from '../hooks/useSchedule';
 
 // Map between Dutch UI labels and the API path used by clr.koodh.com
@@ -205,29 +204,46 @@ const ProgrammingListPage = () => {
               <p>Geen geprogrammeerde uitzendingen. We draaien non-stop muziek voor je!</p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {shows.map((s, idx) => (
-                <div
-                  key={`${s.start_time}-${idx}`}
-                  data-testid="schedule-row"
-                  className="block bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-[#e4ecf5]"
-                >
-                  <div className="flex items-center gap-4 md:gap-6 p-4 md:p-5">
-                    <div className="flex-shrink-0 w-24 md:w-32 text-[#4a6480] font-semibold text-sm md:text-base tabular-nums">
-                      {fmtTime(s.start_time)} - {fmtTime(s.end_time)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[#062a4a] text-lg md:text-xl font-bold leading-tight truncate">{s.show_name}</div>
-                      {s.presenter_names && (
-                        <div className="text-[#4a6480] text-sm md:text-base mt-0.5 truncate">met {s.presenter_names}</div>
-                      )}
-                    </div>
-                    <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden">
-                      <CoverImage src={s.presenter_image_url || s.image} alt={s.show_name} />
+            <div className="space-y-8 pt-10 md:pt-14">
+              {shows.map((s, idx) => {
+                const imgUrl = s.presenter_image_url || s.image || '';
+                return (
+                  <div
+                    key={`${s.start_time}-${idx}`}
+                    data-testid="schedule-row"
+                    className="relative bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-[#e4ecf5]"
+                  >
+                    <div className="flex items-end gap-4 md:gap-6 p-4 md:p-5 pr-6 md:pr-8">
+                      <div className="flex-shrink-0 w-24 md:w-32 text-[#4a6480] font-semibold text-sm md:text-base tabular-nums pb-1">
+                        {fmtTime(s.start_time)} - {fmtTime(s.end_time)}
+                      </div>
+                      <div className="flex-1 min-w-0 pb-1">
+                        <div className="text-[#062a4a] text-lg md:text-xl font-bold leading-tight truncate">{s.show_name}</div>
+                        {s.presenter_names && (
+                          <div className="text-[#4a6480] text-sm md:text-base mt-0.5 truncate">met {s.presenter_names}</div>
+                        )}
+                      </div>
+                      <div className="flex-shrink-0 self-end w-24 h-32 md:w-32 md:h-40 -mt-10 md:-mt-14 relative pointer-events-none">
+                        {imgUrl ? (
+                          <img
+                            src={imgUrl}
+                            alt={s.show_name}
+                            draggable={false}
+                            className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.18)]"
+                          />
+                        ) : (
+                          <img
+                            src="/assets/grk-logo-fallback.png"
+                            alt={s.show_name}
+                            draggable={false}
+                            className="absolute inset-0 w-full h-full object-contain object-bottom opacity-70"
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
