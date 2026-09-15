@@ -1,0 +1,32 @@
+{
+  "summary": "Frontend-only verification for GRK livestream fixes. Verified StickyShowVideo removal, .show-video-frame box-shadow cleaned, PersistentPlayer presenter-cutout conditional rendering, no horizontal overflow, Programma's regression. Livestream iframe (hero) was NOT present on this run (backend show has no video configured), so tests 2/3 (iframe stability + muted params) are N/A at runtime but code review confirms ShowVideo.jsx uses withMutedParams(muted=1&mute=1&autoplay=1) and useShowVideo does not setVideo(null) on transient errors. Presenter cutout not rendered in DOM because current show has empty presenter.image — this is the correct TEST6 fallback path; code guards render with {presenter.image && (...)}.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: manually verify tests 2/3/5 when Koodh has a livestream video and a show with presenter image is on air (couldn't be reproduced during this run — no video and no presenter photo on current show)."
+  ],
+  "critical_code_review_comments": [
+    "PersistentPlayer.jsx conditional rendering is correct: cutout only when presenter.image truthy; fallback CoverImage remains in rounded square when !presenter.image.",
+    "ShowVideo.jsx correctly appends muted=1&mute=1&autoplay=1 through withMutedParams.",
+    "App.css .show-video-frame simplified to a single soft drop shadow only (verified via getComputedStyle).",
+    "App.js no longer imports/renders StickyShowVideo (only StickyPlayer)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100% for testable acceptance criteria (4/4 runtime-verifiable); 3/7 acceptance items are N/A due to no livestream + no presenter image on current show, but their code paths are code-reviewed and correct."},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "During this run: no hero livestream iframe (data-testid='show-livestream-iframe') existed and PersistentPlayer's presenter.image was empty, so tests 2/3/5 could not be exercised at runtime. When a show with video + presenter image is live, re-run to confirm (a) hero iframe DOM node persists across scroll, (b) src contains muted=1, (c) [data-testid=persistent-player-presenter-cutout] appears with img.top < card.top and object-cover object-bottom classes.",
+  "runtime_verifications": {
+    "TEST1_no_sticky_video": "PASS — no [data-testid=sticky-show-video] before or after scroll; only 1 iframe present, and it is unrelated (no src attribute — likely from a third-party embed shell).",
+    "TEST4_no_blue_outline": "PASS — .show-video-frame computed box-shadow is exactly 'rgba(0, 0, 0, 0.55) 0px 24px 60px -10px' (no 74,143,220 blue and no 0px 0px 0px 3px ring).",
+    "TEST6_fallback_when_no_presenter_image": "PASS — persistent-player-presenter-cutout not rendered when presenter.image is empty (verified in DOM over 16s of isShowView cycling).",
+    "TEST7_no_horizontal_overflow": "PASS — desktop 1920 body=1920 client=1920; mobile 390 body=390 client=390.",
+    "TEST8_programmas_regression": "PASS — /programmas loads (title 'GRK - the feelgood station', images render)."
+  }
+}

@@ -20,6 +20,14 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Livestream video fixes + presenter cutout in floating player
+- **StickyShowVideo verwijderd** (uit `App.js`): dubbele iframe met dezelfde src was de oorzaak van "refreshed die de hele tijd tijdens de scroll" + dubbele audio.
+- **Hero video muted**: `ShowVideo.jsx` appends `muted=1&mute=1&autoplay=1` aan `embedUrl`. Audio komt nu enkel uit de radiostream, geen doubling meer.
+- **useShowVideo stabielder**: `setVideo(null)` niet meer aangeroepen bij netwerk-hikjes tussen 60s polls; nieuwe object alleen als embedUrl/embedHtml daadwerkelijk veranderen → geen unnecessary iframe unmount/remount.
+- **Video outline weg**: `.show-video-frame` box-shadow gestript naar enkel de zachte drop shadow (blauwe 3px ring en witte 1px inset verwijderd).
+- **PersistentPlayer presenter cutout**: aparte absoluut-gepositioneerde `<div>` met `object-cover object-bottom` steekt boven het player-kaartje uit — alleen wanneer `presenter.image` bestaat. Bij ontbrekende foto blijft het GRK logo in het rounded square.
+- Getest door testing_agent (iteration_8.json): 100% pass op alle runtime-testbare items (4/4); overige 3 afhankelijk van live-video/presenter (code-reviewed, correct).
+
 ### 2026-02-16 — Programma's spacing + geen logo-fallback
 - Rij-spacing `space-y-8` → `space-y-14` (56px gap tussen elk programma).
 - GRK logo fallback verwijderd: shows zonder presenter foto laten nu de rechterkant leeg (geen placeholder).
