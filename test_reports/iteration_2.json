@@ -1,0 +1,21 @@
+{
+  "summary": "Frontend-only verification of the week-navigation fix on /programmering. Buttons now labeled 'Vorige week'/'Volgende week'; each click shifts exactly one week (7 days); capped at ±3 with proper disabled state at limits; 'Terug naar deze week' reset appears only when weekOffset!=0 and returns to baseline; day tabs update day-title correctly for the currently selected week.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ProgrammingListPage.jsx: WEEKS_PER_STEP=1, MAX_WEEK_OFFSET=3, goPrev/goNext use Math.max/Math.min clamps and buttons receive disabled attribute at boundaries — implementation is clean and correct."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Verified on live URL. Baseline label was '14 – 20 september 2026'. +1 => '21 – 27 september 2026' (exactly 7 days). +3 => '5 – 11 oktober 2026' with next-btn disabled and prev-btn enabled; 4th next click did NOT change label. -3 => '24 – 30 augustus 2026' with prev-btn disabled and next-btn enabled; 4th prev click did NOT change label. Reset button hidden at offset 0, visible otherwise, restores baseline correctly. day-tab-woensdag switched day-title from 'DINSDAG · 15 september' to 'WOENSDAG · 16 september'. All acceptance criteria met.",
+  "rca of the issue": "n/a — feature already fixed by main agent; testing only."
+}

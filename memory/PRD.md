@@ -21,10 +21,10 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 
 ## Changelog (recentste eerst)
 ### 2026-02-16 — Weeknavigatie op Programma's
-- `Vorige 3 weken` / `Volgende 3 weken` knoppen toegevoegd aan `ProgrammingListPage.jsx` met een centraal week-range label (bv. "14 – 20 september 2026") en een "Terug naar deze week" reset.
-- Dag-titel toont nu ook de specifieke datum voor de gekozen week (bv. "DINSDAG · 25 augustus").
-- Wanneer je van deze week wegnavigeert verschijnt een subtiele hint dat de shows wekelijks terugkeren (Koodh API biedt geen datum-specifiek endpoint).
-- Verified visueel op 1920×800 en 390×844 — geen horizontal overflow.
+- `Vorige week` / `Volgende week` knoppen aan weerszijden van een centrale weekrange (bv. "14 – 20 september 2026"), met een "Terug naar deze week" reset.
+- Elke klik verspringt **één week**, gelimiteerd tot **±3 weken** van vandaag. Knoppen krijgen automatisch `disabled` state (opacity-60 / cursor-not-allowed) op de limiet.
+- Dag-titel toont voortaan ook de specifieke datum (bv. "DINSDAG · 25 augustus"). Kleine hint verschijnt bij toekomst/verleden om te verduidelijken dat het schema wekelijks terugkeert (Koodh API biedt geen datum-specifiek endpoint).
+- Getest door testing_agent (iteration_2.json): 100% pass — één-week stappen, ±3 boundary klopt, reset werkt, day tabs updaten datum.
 
 ### 2026-02-16 — Selected verborgen + Gedraaid server-authoritative
 - `Selected` link verwijderd uit hoofd-nav (desktop, mobile menu) en footer link-row. Route blijft actief voor oude URLs.
