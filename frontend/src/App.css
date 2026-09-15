@@ -59,7 +59,7 @@
   left: 50%;
   top: 50%;
   border-radius: 9999px;
-  border: 4px solid rgba(255,255,255,0.5);
+  border: 2px solid rgba(255,255,255,0.5);
   pointer-events: none;
   mix-blend-mode: soft-light;
   animation: blendRingFlash 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -101,7 +101,7 @@
   left: 50%;
   top: 50%;
   border-radius: 9999px;
-  border: 4px solid rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.18);
   pointer-events: none;
   mix-blend-mode: soft-light;
   animation: blendRingFlash 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -113,7 +113,7 @@
   left: 50%;
   top: 50%;
   border-radius: 9999px;
-  border: 4px solid rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.18);
   pointer-events: none;
   mix-blend-mode: soft-light;
   animation: blendRingFlash 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;

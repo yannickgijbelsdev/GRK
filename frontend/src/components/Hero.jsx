@@ -34,7 +34,7 @@ const Hero = () => {
 
   return (
     <section
-      className="relative overflow-visible"
+      className="relative overflow-x-clip"
       style={{
         background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 45%,#1f5499 80%,#2c6db8 100%)',
         // Regular hero uses a fixed viewport height. When the livestream video
@@ -86,7 +86,7 @@ const Hero = () => {
           <VinylRecord
             cover={track.cover}
             alt={track.title || ''}
-            style={{ width: 'min(58vh, 460px)', height: 'min(58vh, 460px)' }}
+            style={{ width: 'min(58vh, 460px, 68vw)', height: 'min(58vh, 460px, 68vw)' }}
           />
         </div>
       )}

@@ -36,7 +36,7 @@ const AppPromoBanner = () => {
 
   return (
     <div
-      className="mb-2 mx-auto max-w-5xl rounded-2xl shadow-2xl ring-1 ring-black/10 overflow-hidden"
+      className="mt-2 mx-auto max-w-5xl rounded-2xl shadow-2xl ring-1 ring-black/10 overflow-hidden"
       style={{ background: 'linear-gradient(135deg,#062a4a 0%,#1f5499 100%)' }}
       data-testid="app-promo-banner"
     >

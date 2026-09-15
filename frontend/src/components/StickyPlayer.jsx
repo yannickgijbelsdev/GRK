@@ -38,8 +38,8 @@ const StickyPlayer = () => {
       data-testid="sticky-player"
     >
       <div className="pointer-events-auto max-w-5xl mx-auto">
-        <AppPromoBanner />
         <PersistentPlayer />
+        <AppPromoBanner />
       </div>
     </div>
   );
