@@ -20,6 +20,14 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Presenter foto's op Programma's
+- Rij-layout herwerkt: geen donkerblauwe rounded-xl vierkant meer rond de presenter foto's; foto's blenden nu direct in het witte vak (transparante achtergrond, `object-contain object-bottom`, soft drop shadow).
+- Groter formaat: `w-32 h-40` op desktop (128×160px, was 64-80px), `w-24 h-32` op mobiel.
+- Foto's steken bovenaan uit het vak (`-mt-14` desktop / `-mt-10` mobiel) — heads poking out.
+- Rij-spacing `space-y-8` en container `pt-10 md:pt-14` zodat de eerste rij niet tegen de daglabel botst.
+- Geen CoverImage meer in deze pagina — fallback naar faded GRK logo bij missende presenter.
+- Getest door testing_agent (iteration_5.json): 100% pass — 6/6 acceptance criteria (rows render, oude square weg, ≥90px img width, 23-35px poke-out, geen horizontal overflow desktop en mobiel).
+
 ### 2026-02-16 — Ringen terug op 2px + mobiele UX fixes
 - Reverted `.blend-ring-flash`, `.header-ring`, `.footer-ring` van 4px → 2px (was te dik voor de gebruiker).
 - Hero sectie: `overflow-visible` → `overflow-x-clip` en vinyl width `min(58vh, 460px)` → `min(58vh, 460px, 68vw)` zodat op mobiel de plaat compacter is (~265px op 390px viewport) en niet meer horizontaal overflowt.
