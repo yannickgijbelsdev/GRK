@@ -20,6 +20,15 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Programma's spacing + geen logo-fallback
+- Rij-spacing `space-y-8` → `space-y-14` (56px gap tussen elk programma).
+- GRK logo fallback verwijderd: shows zonder presenter foto laten nu de rechterkant leeg (geen placeholder).
+- Getest door testing_agent (iteration_7.json): 100% pass — 56px gap gemeten, 0 fallback bij missende afbeelding, geen overflow, tekst blijft verticaal gecentreerd.
+
+### 2026-02-16 — Presenter foto's op Programma's (v3, "in het vak")
+- Absolute-gepositioneerde image slot met `bottom-0` + `overflow-hidden`; `object-cover object-bottom` zodat de presenter écht tegen de onderkant van het vak plakt, met head boven het vak.
+- Row `min-h-[90px] md:min-h-[110px]` en `items-center` → text weer netjes gecentreerd.
+
 ### 2026-02-16 — Presenter foto's op Programma's
 - Rij-layout herwerkt: geen donkerblauwe rounded-xl vierkant meer rond de presenter foto's; foto's blenden nu direct in het witte vak (transparante achtergrond, `object-contain object-bottom`, soft drop shadow).
 - Groter formaat: `w-32 h-40` op desktop (128×160px, was 64-80px), `w-24 h-32` op mobiel.
