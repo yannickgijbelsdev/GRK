@@ -16,7 +16,8 @@ const WEEKDAYS = [
   { id: 'zondag',    label: 'Zondag',    long: 'ZONDAG',    dowMon: 6 },
 ];
 
-const WEEKS_PER_STEP = 3;
+const WEEKS_PER_STEP = 1;
+const MAX_WEEK_OFFSET = 3;
 
 const getCurrentDayId = () => {
   const map = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
@@ -80,6 +81,11 @@ const ProgrammingListPage = () => {
     return addDays(getCurrentWeekMonday(), weekOffset * 7);
   }, [weekOffset]);
 
+  const canGoBack = weekOffset > -MAX_WEEK_OFFSET;
+  const canGoForward = weekOffset < MAX_WEEK_OFFSET;
+  const goPrev = () => setWeekOffset((o) => Math.max(-MAX_WEEK_OFFSET, o - WEEKS_PER_STEP));
+  const goNext = () => setWeekOffset((o) => Math.min(MAX_WEEK_OFFSET, o + WEEKS_PER_STEP));
+
   const activeDate = useMemo(() => addDays(weekMonday, day.dowMon), [weekMonday, day.dowMon]);
   const weekRangeLabel = useMemo(() => fmtWeekRange(weekMonday), [weekMonday]);
   const activeDateLabel = useMemo(() => fmtDayDate(activeDate), [activeDate]);
@@ -95,12 +101,17 @@ const ProgrammingListPage = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <button
               type="button"
-              onClick={() => setWeekOffset((o) => o - WEEKS_PER_STEP)}
+              onClick={goPrev}
+              disabled={!canGoBack}
               data-testid="week-prev-btn"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#d8e4f0] text-[#062a4a] font-semibold shadow-sm hover:shadow-md hover:border-[#2a5d99] transition-all duration-200 self-start md:self-auto"
+              className={`inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border font-semibold shadow-sm transition-all duration-200 self-start md:self-auto ${
+                canGoBack
+                  ? 'border-[#d8e4f0] text-[#062a4a] hover:shadow-md hover:border-[#2a5d99] cursor-pointer'
+                  : 'border-[#e4ecf5] text-[#a4b6ca] cursor-not-allowed opacity-60'
+              }`}
             >
-              <ChevronLeft size={18} className="text-[#2a5d99]" />
-              Vorige 3 weken
+              <ChevronLeft size={18} className={canGoBack ? 'text-[#2a5d99]' : 'text-[#a4b6ca]'} />
+              Vorige week
             </button>
 
             <div className="text-center order-first md:order-none">
@@ -126,12 +137,17 @@ const ProgrammingListPage = () => {
 
             <button
               type="button"
-              onClick={() => setWeekOffset((o) => o + WEEKS_PER_STEP)}
+              onClick={goNext}
+              disabled={!canGoForward}
               data-testid="week-next-btn"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#d8e4f0] text-[#062a4a] font-semibold shadow-sm hover:shadow-md hover:border-[#2a5d99] transition-all duration-200 self-end md:self-auto"
+              className={`inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border font-semibold shadow-sm transition-all duration-200 self-end md:self-auto ${
+                canGoForward
+                  ? 'border-[#d8e4f0] text-[#062a4a] hover:shadow-md hover:border-[#2a5d99] cursor-pointer'
+                  : 'border-[#e4ecf5] text-[#a4b6ca] cursor-not-allowed opacity-60'
+              }`}
             >
-              Volgende 3 weken
-              <ChevronRight size={18} className="text-[#2a5d99]" />
+              Volgende week
+              <ChevronRight size={18} className={canGoForward ? 'text-[#2a5d99]' : 'text-[#a4b6ca]'} />
             </button>
           </div>
 
