@@ -61,7 +61,6 @@ const Header = () => {
 
   const navItems = [
     { label: 'Events & Tickets', to: '/events-tickets' },
-    { label: 'Selected', to: '/selected' },
     { label: "Programma's", to: '/programmering' },
     { label: 'Gedraaid', to: '/gedraaid' },
   ];

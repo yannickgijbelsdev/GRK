@@ -80,7 +80,6 @@ const Footer = () => {
             <Link to="/club-genk-on-stage" className="hover-pulse text-white">Club Genk On Stage</Link>
             <Link to="/social-club" className="hover-pulse text-white">Social Club</Link>
             <Link to="/events-tickets" className="hover-pulse text-white">Events &amp; Tickets</Link>
-            <Link to="/selected" className="hover-pulse text-white">Selected</Link>
             <Link to="/programmering" className="hover-pulse text-white">Programma&apos;s</Link>
             <Link to="/gedraaid" className="hover-pulse text-white">Gedraaid</Link>
           </div>

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import PageHeader from '../components/PageHeader';
 import SEO from '../components/SEO';
 import { Clock, Search, Music2, Radio } from 'lucide-react';
-import { useNowOnAir } from '../hooks/useNowOnAir';
+import { useRecentPlays } from '../hooks/useRecentPlays';
 import CoverImage from '../components/CoverImage';
 import {
   Select,
@@ -54,7 +54,7 @@ const dayLabel = (key) => {
 };
 
 const PlayedPage = () => {
-  const { history } = useNowOnAir();
+  const { tracks: history, loading } = useRecentPlays();
   const [query, setQuery] = useState('');
   const [selectedDay, setSelectedDay] = useState(todayKey());
 
@@ -120,11 +120,13 @@ const PlayedPage = () => {
           {filtered.length === 0 && (
             <div className="text-center py-16 text-[#4a6480]">
               <Music2 size={32} className="mx-auto mb-3 text-[#2a5d99]" />
-              {history.length === 0
-                ? 'Even geduld — we verzamelen wat er nu draait.'
-                : isToday
-                  ? 'Nog niets gedraaid vandaag dat aan je zoekopdracht voldoet.'
-                  : 'Geen nummers gevonden voor deze dag.'}
+              {loading && history.length === 0
+                ? 'Even geduld — we halen de recent gedraaide nummers op…'
+                : history.length === 0
+                  ? 'Nog geen nummers geregistreerd. De server houdt ze automatisch bij zodra ze draaien.'
+                  : isToday
+                    ? 'Nog niets gedraaid vandaag dat aan je zoekopdracht voldoet.'
+                    : 'Geen nummers gevonden voor deze dag.'}
             </div>
           )}
 
