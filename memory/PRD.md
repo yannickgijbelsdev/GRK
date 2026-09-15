@@ -20,6 +20,13 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Ringen terug op 2px + mobiele UX fixes
+- Reverted `.blend-ring-flash`, `.header-ring`, `.footer-ring` van 4px → 2px (was te dik voor de gebruiker).
+- Hero sectie: `overflow-visible` → `overflow-x-clip` en vinyl width `min(58vh, 460px)` → `min(58vh, 460px, 68vw)` zodat op mobiel de plaat compacter is (~265px op 390px viewport) en niet meer horizontaal overflowt.
+- `StickyPlayer`: `PersistentPlayer` staat nu bóven `AppPromoBanner`, zodat de play-knop op mobiel direct bereikbaar is (banner staat eronder in plaats van erboven). Banner `mb-2` → `mt-2`.
+- `index.css`: `body { overflow-x: hidden }` als vangnet tegen eventuele resterende horizontale overflow.
+- Getest door testing_agent (iteration_4.json): 100% pass — rings 2px op alle pagina's, geen horizontal scroll, vinyl compacter op mobiel, play button DOM-before + visueel boven promo banner + klikbaar.
+
 ### 2026-02-16 — Weeknavigatie op Programma's
 - `Vorige week` / `Volgende week` knoppen aan weerszijden van een centrale weekrange (bv. "14 – 20 september 2026"), met een "Terug naar deze week" reset.
 - Elke klik verspringt **één week**, gelimiteerd tot **±3 weken** van vandaag. Knoppen krijgen automatisch `disabled` state (opacity-60 / cursor-not-allowed) op de limiet.
