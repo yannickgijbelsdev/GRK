@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Repeat } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Repeat, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import SEO from '../components/SEO';
 import CoverImage from '../components/CoverImage';
@@ -7,27 +7,83 @@ import { useDaySchedule } from '../hooks/useSchedule';
 
 // Map between Dutch UI labels and the API path used by clr.koodh.com
 const WEEKDAYS = [
-  { id: 'maandag',   label: 'Maandag',   long: 'MAANDAG' },
-  { id: 'dinsdag',   label: 'Dinsdag',   long: 'DINSDAG' },
-  { id: 'woensdag',  label: 'Woensdag',  long: 'WOENSDAG' },
-  { id: 'donderdag', label: 'Donderdag', long: 'DONDERDAG' },
-  { id: 'vrijdag',   label: 'Vrijdag',   long: 'VRIJDAG' },
-  { id: 'zaterdag',  label: 'Zaterdag',  long: 'ZATERDAG' },
-  { id: 'zondag',    label: 'Zondag',    long: 'ZONDAG' },
+  { id: 'maandag',   label: 'Maandag',   long: 'MAANDAG',   dowMon: 0 },
+  { id: 'dinsdag',   label: 'Dinsdag',   long: 'DINSDAG',   dowMon: 1 },
+  { id: 'woensdag',  label: 'Woensdag',  long: 'WOENSDAG',  dowMon: 2 },
+  { id: 'donderdag', label: 'Donderdag', long: 'DONDERDAG', dowMon: 3 },
+  { id: 'vrijdag',   label: 'Vrijdag',   long: 'VRIJDAG',   dowMon: 4 },
+  { id: 'zaterdag',  label: 'Zaterdag',  long: 'ZATERDAG',  dowMon: 5 },
+  { id: 'zondag',    label: 'Zondag',    long: 'ZONDAG',    dowMon: 6 },
 ];
 
+const WEEKS_PER_STEP = 3;
+
 const getCurrentDayId = () => {
-  // 0 = Sunday → zondag, 1 = Monday → maandag, …
   const map = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
   return map[new Date().getDay()];
 };
 
+// Monday of the current week, at local midnight
+const getCurrentWeekMonday = () => {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const dow = now.getDay(); // 0=Sun..6=Sat
+  const daysSinceMon = (dow + 6) % 7; // Mon=0..Sun=6
+  now.setDate(now.getDate() - daysSinceMon);
+  return now;
+};
+
+const addDays = (d, n) => {
+  const c = new Date(d);
+  c.setDate(c.getDate() + n);
+  return c;
+};
+
 const fmtTime = (t) => (t || '').slice(0, 5).replace(/^0/, ''); // "08:00" → "8:00"
+
+const fmtDayDate = (date) => {
+  try {
+    return new Intl.DateTimeFormat('nl-NL', {
+      day: 'numeric',
+      month: 'long',
+    }).format(date);
+  } catch {
+    return '';
+  }
+};
+
+const fmtWeekRange = (monday) => {
+  const sunday = addDays(monday, 6);
+  try {
+    const dfShort = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long' });
+    const dfLong = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+    const sameMonth = monday.getMonth() === sunday.getMonth() && monday.getFullYear() === sunday.getFullYear();
+    if (sameMonth) {
+      return `${monday.getDate()} – ${dfLong.format(sunday)}`;
+    }
+    const sameYear = monday.getFullYear() === sunday.getFullYear();
+    return sameYear
+      ? `${dfShort.format(monday)} – ${dfLong.format(sunday)}`
+      : `${dfLong.format(monday)} – ${dfLong.format(sunday)}`;
+  } catch {
+    return '';
+  }
+};
 
 const ProgrammingListPage = () => {
   const [activeDay, setActiveDay] = useState(getCurrentDayId());
+  const [weekOffset, setWeekOffset] = useState(0); // in weeks (multiples of WEEKS_PER_STEP)
   const day = WEEKDAYS.find((d) => d.id === activeDay) || WEEKDAYS[0];
   const { shows, loading } = useDaySchedule(activeDay);
+
+  const weekMonday = useMemo(() => {
+    return addDays(getCurrentWeekMonday(), weekOffset * 7);
+  }, [weekOffset]);
+
+  const activeDate = useMemo(() => addDays(weekMonday, day.dowMon), [weekMonday, day.dowMon]);
+  const weekRangeLabel = useMemo(() => fmtWeekRange(weekMonday), [weekMonday]);
+  const activeDateLabel = useMemo(() => fmtDayDate(activeDate), [activeDate]);
+  const showRecurringHint = weekOffset !== 0;
 
   return (
     <>
@@ -35,6 +91,50 @@ const ProgrammingListPage = () => {
       <PageHeader title="Programma's" subtitle="Hier vind je de hele programmatie terug." />
       <section className="py-12 md:py-16 page-pad-bottom bg-white">
         <div className="max-w-5xl mx-auto px-6 lg:px-10">
+          {/* Week navigation */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <button
+              type="button"
+              onClick={() => setWeekOffset((o) => o - WEEKS_PER_STEP)}
+              data-testid="week-prev-btn"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#d8e4f0] text-[#062a4a] font-semibold shadow-sm hover:shadow-md hover:border-[#2a5d99] transition-all duration-200 self-start md:self-auto"
+            >
+              <ChevronLeft size={18} className="text-[#2a5d99]" />
+              Vorige 3 weken
+            </button>
+
+            <div className="text-center order-first md:order-none">
+              <div className="text-[#4a6480] uppercase tracking-widest text-xs md:text-sm font-semibold">Week van</div>
+              <div
+                data-testid="week-range-label"
+                className="text-[#062a4a] text-lg md:text-xl font-bold tabular-nums"
+              >
+                {weekRangeLabel}
+              </div>
+              {weekOffset !== 0 && (
+                <button
+                  type="button"
+                  onClick={() => setWeekOffset(0)}
+                  data-testid="week-reset-btn"
+                  className="mt-1 inline-flex items-center gap-1.5 text-[#2a5d99] hover:text-[#062a4a] text-xs font-semibold"
+                >
+                  <RotateCcw size={13} />
+                  Terug naar deze week
+                </button>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setWeekOffset((o) => o + WEEKS_PER_STEP)}
+              data-testid="week-next-btn"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border border-[#d8e4f0] text-[#062a4a] font-semibold shadow-sm hover:shadow-md hover:border-[#2a5d99] transition-all duration-200 self-end md:self-auto"
+            >
+              Volgende 3 weken
+              <ChevronRight size={18} className="text-[#2a5d99]" />
+            </button>
+          </div>
+
           {/* Day tabs */}
           <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-10">
             {WEEKDAYS.map((d) => (
@@ -53,8 +153,21 @@ const ProgrammingListPage = () => {
             ))}
           </div>
 
-          {/* Day title */}
-          <h2 className="text-[#062a4a] text-3xl md:text-5xl font-black tracking-tight mb-8 mt-12">{day.long}</h2>
+          {/* Day title with date */}
+          <div className="mb-8 mt-12">
+            <h2
+              data-testid="day-title"
+              className="text-[#062a4a] text-3xl md:text-5xl font-black tracking-tight"
+            >
+              {day.long}
+              <span className="text-[#2a5d99] font-black"> · {activeDateLabel}</span>
+            </h2>
+            {showRecurringHint && (
+              <p className="mt-2 text-[#4a6480] text-sm md:text-base">
+                Dit is onze vaste weekprogrammatie — de shows keren wekelijks op deze uren terug.
+              </p>
+            )}
+          </div>
 
           {/* Schedule cards */}
           {loading && shows.length === 0 ? (
