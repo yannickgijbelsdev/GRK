@@ -1,5 +1,14 @@
 import React from 'react';
 
+// Append parameters that ask the embed provider (Vimeo/YouTube/iframe) to
+// autoplay muted. The audio stream is the primary source; the hero video is
+// visual-only so we don't want its own audio track competing with it.
+const withMutedParams = (url) => {
+  if (!url) return url;
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}muted=1&mute=1&autoplay=1`;
+};
+
 /**
  * ShowVideo — gestileerde iframe-wrapper voor de Vimeo/iframe livestream van
  * de huidige show. Verschijnt centraal in de hero op de plek waar normaal de
@@ -9,6 +18,7 @@ const ShowVideo = ({ embedUrl, embedHtml, title = '' }) => {
   // Prefer the explicit embed URL so we control sizing/iframe attrs. Only fall
   // back to the raw embed_html when there is no direct URL.
   const useRawHtml = !embedUrl && !!embedHtml;
+  const src = withMutedParams(embedUrl);
   return (
     <div
       className="hero-show-video pointer-events-auto z-[7]"
@@ -29,7 +39,7 @@ const ShowVideo = ({ embedUrl, embedHtml, title = '' }) => {
           />
         ) : (
           <iframe
-            src={embedUrl}
+            src={src}
             title={title || 'Livestream'}
             className="show-video-iframe"
             frameBorder="0"

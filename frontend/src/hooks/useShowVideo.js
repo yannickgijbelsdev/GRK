@@ -55,26 +55,40 @@ export const useShowVideo = () => {
     const showId = findCurrentShowId(shows);
     let cancelled = false;
     const fetchVideo = async () => {
+      // No show ⇒ definitively clear the video state.
       if (!showId) { seenIdRef.current = ''; setVideo(null); return; }
+      // Show changed ⇒ clear the previous video so we don't briefly show the
+      // wrong stream. Same show ⇒ keep the last known video visible while we
+      // re-fetch; this prevents the iframe from unmounting/reloading on
+      // transient network hiccups every 60s.
+      if (seenIdRef.current !== showId) {
+        seenIdRef.current = showId;
+        setVideo(null);
+      }
       try {
         const r = await fetch(`${VIDEO_API}/${showId}`, { cache: 'no-store' });
-        if (!r.ok) {
-          if (!cancelled) setVideo(null);
-          return;
-        }
+        if (!r.ok) return; // keep last state on transient failure
         const data = await r.json();
         if (cancelled) return;
         const url = data?.embed_code || '';
         const html = data?.embed_html || '';
         if (!url && !html) { setVideo(null); return; }
-        setVideo({
-          embedUrl: url || null,
-          embedHtml: html || '',
-          platform: data?.platform || 'iframe',
-          title: data?.show_title || '',
+        setVideo((prev) => {
+          // Only replace the video object when something meaningful changed —
+          // otherwise React sees the same reference and skips a re-render,
+          // which keeps the iframe DOM node stable (no reload on scroll).
+          if (prev && prev.embedUrl === (url || null) && prev.embedHtml === (html || '')) {
+            return prev;
+          }
+          return {
+            embedUrl: url || null,
+            embedHtml: html || '',
+            platform: data?.platform || 'iframe',
+            title: data?.show_title || '',
+          };
         });
       } catch {
-        if (!cancelled) setVideo(null);
+        // Network error ⇒ keep last known state, do NOT clear the iframe.
       }
     };
     fetchVideo();

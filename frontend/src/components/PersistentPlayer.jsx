@@ -28,23 +28,41 @@ const PersistentPlayer = () => {
 
   return (
     <div className="relative max-w-5xl mx-auto px-4 md:px-6">
-      <div className="bg-white rounded-2xl shadow-2xl p-3 md:p-5 flex items-center gap-3 md:gap-6 ring-1 ring-black/5">
+      <div className="relative bg-white rounded-2xl shadow-2xl p-3 md:p-5 flex items-center gap-3 md:gap-6 ring-1 ring-black/5">
         {/* Cover / Presenter image (cross-faded) */}
-        <div className="relative flex-shrink-0 w-14 h-14 md:w-20 md:h-20 rounded-xl overflow-hidden">
-          {/* Track cover */}
-          <div
-            className="absolute inset-0 transition-opacity duration-500"
-            style={{ opacity: isShowView ? 0 : 1 }}
-          >
-            <CoverImage src={track.cover} alt={trackTitle} />
+        <div className="relative flex-shrink-0 w-14 h-14 md:w-20 md:h-20">
+          {/* Rounded square holds the track cover + logo-fallback for presenter-less shows */}
+          <div className="absolute inset-0 rounded-xl overflow-hidden">
+            <div
+              className="absolute inset-0 transition-opacity duration-500"
+              style={{ opacity: isShowView ? 0 : 1 }}
+            >
+              <CoverImage src={track.cover} alt={trackTitle} />
+            </div>
+            {!presenter.image && (
+              <div
+                className="absolute inset-0 transition-opacity duration-500"
+                style={{ opacity: isShowView ? 1 : 0 }}
+              >
+                <CoverImage src="" alt={hostName} />
+              </div>
+            )}
           </div>
-          {/* Presenter image (falls back to GRK logo when API has none) */}
-          <div
-            className="absolute inset-0 transition-opacity duration-500"
-            style={{ opacity: isShowView ? 1 : 0 }}
-          >
-            <CoverImage src={presenter.image} alt={hostName} />
-          </div>
+          {/* Presenter cutout — pokes above the player card, only when a real image is available */}
+          {presenter.image && (
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 overflow-hidden transition-opacity duration-500"
+              style={{ height: 'calc(100% + 2.25rem)', opacity: isShowView ? 1 : 0 }}
+              data-testid="persistent-player-presenter-cutout"
+            >
+              <img
+                src={presenter.image}
+                alt={hostName}
+                draggable={false}
+                className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
+              />
+            </div>
+          )}
         </div>
 
         <button

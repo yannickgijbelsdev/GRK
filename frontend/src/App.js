@@ -6,7 +6,6 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import CookieBanner from './components/CookieBanner';
 import StickyPlayer from './components/StickyPlayer';
-import StickyShowVideo from './components/StickyShowVideo';
 import ScrollToTop from './components/ScrollToTop';
 import { PlayerProvider } from './context/PlayerContext';
 import { CookieConsentProvider } from './context/CookieConsentContext';
@@ -56,7 +55,6 @@ function App() {
             </main>
             <Footer />
             <StickyPlayer />
-            <StickyShowVideo />
             <CookieBanner />
           </BrowserRouter>
         </PlayerProvider>
