@@ -204,7 +204,7 @@ const ProgrammingListPage = () => {
               <p>Geen geprogrammeerde uitzendingen. We draaien non-stop muziek voor je!</p>
             </div>
           ) : (
-            <div className="space-y-8 pt-12 md:pt-16">
+            <div className="space-y-14 pt-12 md:pt-16">
               {shows.map((s, idx) => {
                 const imgUrl = s.presenter_image_url || s.image || '';
                 return (
@@ -224,17 +224,19 @@ const ProgrammingListPage = () => {
                         )}
                       </div>
                     </div>
-                    <div
-                      className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-28 md:w-40 overflow-hidden"
-                      style={{ height: 'calc(100% + 3rem)' }}
-                    >
-                      <img
-                        src={imgUrl || '/assets/grk-logo-fallback.png'}
-                        alt={s.show_name}
-                        draggable={false}
-                        className={`absolute inset-x-0 bottom-0 w-full h-full ${imgUrl ? 'object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.18)]' : 'object-contain object-bottom opacity-70 p-3'}`}
-                      />
-                    </div>
+                    {imgUrl && (
+                      <div
+                        className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-28 md:w-40 overflow-hidden"
+                        style={{ height: 'calc(100% + 3rem)' }}
+                      >
+                        <img
+                          src={imgUrl}
+                          alt={s.show_name}
+                          draggable={false}
+                          className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.18)]"
+                        />
+                      </div>
+                    )}
                   </div>
                 );
               })}
