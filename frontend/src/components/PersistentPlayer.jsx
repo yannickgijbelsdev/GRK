@@ -52,7 +52,7 @@ const PersistentPlayer = () => {
           {presenter.image && (
             <div
               className="pointer-events-none absolute inset-x-0 bottom-0 overflow-hidden transition-opacity duration-500"
-              style={{ height: 'calc(100% + 2.25rem)', opacity: isShowView ? 1 : 0 }}
+              style={{ height: 'calc(100% + 3.25rem)', opacity: isShowView ? 1 : 0 }}
               data-testid="persistent-player-presenter-cutout"
             >
               <img

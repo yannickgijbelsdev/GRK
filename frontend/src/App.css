@@ -23,6 +23,18 @@
   pointer-events: none;
   opacity: 1;
 }
+/* Mobile: shrink the dark sphere so the concentric rings around the vinyl
+   stay visible against the lighter gradient outside the sphere. On desktop
+   the hero is wide enough that the rings extend past the sphere naturally;
+   on mobile a full-viewport sphere hides everything. */
+@media (max-width: 767px) {
+  .blend-sphere {
+    width: 340px;
+    height: 340px;
+    margin-left: -170px;
+    margin-top: -170px;
+  }
+}
 
 /* Ripple rings that emerge from the sphere edge and expand outward, fading out */
 @keyframes blendRipple {
@@ -63,6 +75,15 @@
   pointer-events: none;
   mix-blend-mode: soft-light;
   animation: blendRingFlash 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+/* Mobile: soft-light blend goes invisible against the very dark navy behind
+   the vinyl, so switch to a direct white border with lower alpha — still
+   subtle but actually visible. */
+@media (max-width: 767px) {
+  .blend-ring-flash {
+    border-color: rgba(255,255,255,0.28);
+    mix-blend-mode: normal;
+  }
 }
 
 /* Legacy ring (kept for page-header circles) */
