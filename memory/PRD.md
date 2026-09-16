@@ -20,6 +20,11 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Mobile rings zichtbaar + presenter cutout groter in floating player
+- **Mobile hero rings zichtbaar**: `.blend-sphere` op mobiel gekrompen van 820×820 → 340×340; `.blend-ring-flash` op mobiel `mix-blend-mode: normal` met `border-color: rgba(255,255,255,0.38)` (was 0.5 met soft-light — onzichtbaar op donkere navy). Desktop blijft ongewijzigd.
+- **Presenter cutout in floating player groter**: `calc(100% + 2.25rem)` → `calc(100% + 3.25rem)` zodat hoofden meer ruimte hebben om netjes boven het kaartje uit te steken op mobiel.
+- Getest door testing_agent (iteration_9.json): 100% pass op meetbare items — mobile mixBlendMode=normal, sphere 340, borderColor 0.38, geen desktop regressie, geen horizontal overflow.
+
 ### 2026-02-16 — Livestream video fixes + presenter cutout in floating player
 - **StickyShowVideo verwijderd** (uit `App.js`): dubbele iframe met dezelfde src was de oorzaak van "refreshed die de hele tijd tijdens de scroll" + dubbele audio.
 - **Hero video muted**: `ShowVideo.jsx` appends `muted=1&mute=1&autoplay=1` aan `embedUrl`. Audio komt nu enkel uit de radiostream, geen doubling meer.

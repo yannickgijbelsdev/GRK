@@ -81,7 +81,7 @@
    subtle but actually visible. */
 @media (max-width: 767px) {
   .blend-ring-flash {
-    border-color: rgba(255,255,255,0.28);
+    border-color: rgba(255,255,255,0.38);
     mix-blend-mode: normal;
   }
 }
