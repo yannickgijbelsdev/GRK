@@ -59,7 +59,7 @@ const PersistentPlayer = () => {
                 src={presenter.image}
                 alt={hostName}
                 draggable={false}
-                className="absolute inset-x-0 bottom-0 w-full h-full object-contain object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
+                className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
               />
             </div>
           )}
