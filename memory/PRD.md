@@ -20,6 +20,10 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Presenter cutout niet meer afgesneden
+- Cutout container in `PersistentPlayer.jsx` uitgebreid: `-inset-x-3 md:-inset-x-4` (breder dan het slot) en `overflow-visible`. Img switch van `object-cover` → `object-contain object-bottom` zodat de presenter aspect ratio behouden blijft — geen crop meer aan boven/zijkanten.
+- Getest door testing_agent (iteration_10.json): 100% pass op mobile 390 én desktop 1920. Cutout mobile 80×108 (+24 vs slot), desktop 112×132 (+32 vs slot), poke-out 32-36px, object-fit=contain, geen horizontal overflow.
+
 ### 2026-02-16 — Mobile rings zichtbaar + presenter cutout groter in floating player
 - **Mobile hero rings zichtbaar**: `.blend-sphere` op mobiel gekrompen van 820×820 → 340×340; `.blend-ring-flash` op mobiel `mix-blend-mode: normal` met `border-color: rgba(255,255,255,0.38)` (was 0.5 met soft-light — onzichtbaar op donkere navy). Desktop blijft ongewijzigd.
 - **Presenter cutout in floating player groter**: `calc(100% + 2.25rem)` → `calc(100% + 3.25rem)` zodat hoofden meer ruimte hebben om netjes boven het kaartje uit te steken op mobiel.

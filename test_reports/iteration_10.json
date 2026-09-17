@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend-only verification of the presenter cutout crop fix on the persistent floating player. All 6 requested checks passed on both mobile (390x844) and desktop (1920x1080). The current live show now has presenter.image, so the cutout element renders and could be measured live (unlike previous iteration).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PersistentPlayer.jsx correctly uses object-contain + object-bottom on the presenter <img> and overflow-visible with -inset-x-3 md:-inset-x-4 on the cutout container. Aspect ratio preserved, no cropping."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100% (all 6 checks passed on mobile & desktop)"},
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Base URL https://blend-launch.preview.emergentagent.com. isShowView toggles every 7s, wait >=8s after scroll for cutout opacity to reach 1. Measurements confirmed: mobile cutout 80x108 (slot 56+24 wider), pokes 36px above card; desktop cutout 112x132 (slot 80+32 wider), pokes 32px above card. object-fit=contain, object-position=50% 100%, overflow=visible on both. Mobile rings: 5 .blend-ring-flash, mixBlendMode=normal, borderColor rgba(255,255,255,0.38), .blend-sphere width=340. scrollWidth==innerWidth on both viewports (no horizontal overflow).",
+  "detailed_measurements": {
+    "mobile_390x844": {"cutout_width": 80, "slot_width": 56, "diff": 24, "overflow": "visible", "object_fit": "contain", "object_position": "50% 100%", "poke_above_card_px": 36, "scrollWidth_eq_innerWidth": true, "ring_count": 5, "ring_mix_blend_mode": "normal", "ring_border_color": "rgba(255, 255, 255, 0.38)", "sphere_width": 340},
+    "desktop_1920x1080": {"cutout_width": 112, "slot_width": 80, "diff": 32, "overflow": "visible", "object_fit": "contain", "object_position": "50% 100%", "poke_above_card_px": 32, "scrollWidth_eq_innerWidth": true}
+  }
+}
