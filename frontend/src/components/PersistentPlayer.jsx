@@ -51,7 +51,7 @@ const PersistentPlayer = () => {
           {/* Presenter cutout — pokes above the player card, only when a real image is available */}
           {presenter.image && (
             <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 overflow-hidden transition-opacity duration-500"
+              className="pointer-events-none absolute -inset-x-3 md:-inset-x-4 bottom-0 overflow-visible transition-opacity duration-500"
               style={{ height: 'calc(100% + 3.25rem)', opacity: isShowView ? 1 : 0 }}
               data-testid="persistent-player-presenter-cutout"
             >
@@ -59,7 +59,7 @@ const PersistentPlayer = () => {
                 src={presenter.image}
                 alt={hostName}
                 draggable={false}
-                className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
+                className="absolute inset-x-0 bottom-0 w-full h-full object-contain object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
               />
             </div>
           )}
