@@ -20,6 +20,11 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Presenter cutout: geen crop meer op arms
+- Card layout restructured: `bg-white rounded-2xl ring-1` wrapper met (1) absolute presenter cutout BEFORE (2) inner `relative z-10 p-3 md:p-5 flex items-center gap-3 md:gap-6` row.
+- Cutout `-left-3 md:-left-4 bottom-0 w-24 md:w-36` (breder + iets naar links dan card) met `object-cover object-bottom`. Container aspect dichter bij het landscape source zorgt voor minder horizontale crop; DOM ordering + `z-10` op de flex row zorgen dat de play-knop natuurlijk bovenop stapelt zonder overlap-issues.
+- Getest door testing_agent (iteration_14.json): 100% pass — 0px feet gap, 52px poke-out, play knop klikbaar, geen horizontal overflow, mobile rings ongewijzigd.
+
 ### 2026-02-16 — Presenter plakt tegen bottom van floating player
 - Cutout uit de kleine slot gelicht en verplaatst naar directe absolute child van de player card. `left-1 md:left-3 bottom-0 w-20 md:w-28` + height `calc(100% + 3.25rem)`.
 - Resultaat: voeten plakken exact tegen de bottom van het kaartje (delta 0px), hoofd steekt 52px boven het kaartje uit — identiek aan Programma's pagina gedrag.
