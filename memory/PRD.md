@@ -20,6 +20,11 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — PageHeader rings responsive
+- Ring sizes in `PageHeader.jsx` van vaste px `[500, 800, 1100, 1400, 1700]` → responsive `min(desk px, vw%)` met paren `[{500,55}, {800,90}, {1100,130}, {1400,170}, {1700,210}]`.
+- Op mobiel (390px) resulteren de vw-waarden in 214/351/507/663/819px → alle 5 rings zichtbaar in plaats van 1. Desktop 1920+ blijft cap op de oorspronkelijke desktop-groottes.
+- Getest door testing_agent (iteration_15.json): 100% pass — 5 rings zichtbaar op mobile, desktop geen regressie, animatie blijft draaien.
+
 ### 2026-02-16 — Presenter cutout: geen crop meer op arms
 - Card layout restructured: `bg-white rounded-2xl ring-1` wrapper met (1) absolute presenter cutout BEFORE (2) inner `relative z-10 p-3 md:p-5 flex items-center gap-3 md:gap-6` row.
 - Cutout `-left-3 md:-left-4 bottom-0 w-24 md:w-36` (breder + iets naar links dan card) met `object-cover object-bottom`. Container aspect dichter bij het landscape source zorgt voor minder horizontale crop; DOM ordering + `z-10` op de flex row zorgen dat de play-knop natuurlijk bovenop stapelt zonder overlap-issues.
