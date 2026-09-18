@@ -1,0 +1,32 @@
+{
+  "summary": "Verified persistent player presenter cutout fix (w-28/w-36 + object-contain + object-bottom). NO-CROPPING and FEET-ON-BOTTOM pass, but HEAD-POKES-ABOVE-CARD and NO-OVERLAP-WITH-PLAY-BUTTON FAIL because the actual presenter image being served (https://images.weserv.nl/?url=clr.koodh.com/api/rds/grk/image.jpg) is a LANDSCAPE image (2048x1151, AR 1.78), not a portrait cutout. With object-contain in a portrait-oriented container, the image is scaled down to fit the container width, resulting in a squat image (~81px tall desktop, ~63px mobile) anchored at the bottom of the container. The drawn image therefore sits entirely INSIDE the card (never poking above card top by 20px+) and visually extends behind the play button.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "PersistentPlayer presenter cutout", "issue": "HEAD does not poke above card top. Drawn image top is ~39px BELOW card top on desktop and ~25px BELOW card top on mobile (want >=20px ABOVE). Cause: source presenter image is landscape 2048x1151 (AR=1.78); object-contain scales it to fit the ~144x172 (desktop) / ~112x140 (mobile) portrait-ish container, so rendered height is only ~81/63px anchored at the bottom.", "selector": "[data-testid=persistent-player-presenter-cutout] img", "priority": "HIGH"},
+      {"component": "PersistentPlayer presenter cutout", "issue": "Cutout drawn image visually overlaps the play button horizontally: drawn.right = container.right = 620px (desktop) / 136px (mobile) while play.left = 596px / 104px. cutout.right < play.left assertion FAILS on both viewports.", "selector": "[data-testid=persistent-player-presenter-cutout]", "priority": "HIGH"},
+      {"component": "PersistentPlayer presenter cutout", "issue": "object-position computed value is '50% 100%' (from Tailwind object-bottom). Test spec asks for it to 'contain \"bottom\"' as a string, but browsers resolve object-bottom to '50% 100%'. Semantically equivalent (bottom-anchored) but the literal substring check fails. Consider using object-position: 'center bottom' inline style if that assertion is strictly required."}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Persistent player (both viewports)", "issues": ["With current landscape source image, presenter appears as a small figure crammed at bottom-left of card rather than a large cutout with head extending above. The user-visible improvement (no cropped arms) is achieved but the intended aesthetic (head popping above) is lost."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "The fix cannot achieve both (no cropping) AND (head pokes above card) with the currently served landscape image (2048x1151). Options for main agent: (a) Use a portrait/transparent-PNG presenter cutout source (tall aspect ratio) so object-contain fills the portrait container height and pokes above card; (b) Revert to object-cover with object-position: '50% top' or 'right top' so arms remain, but risk minor cropping; (c) Use a fixed-height (e.g., height: card_height + 80px) with object-contain + object-top so image aligns to top of container instead of bottom; (d) Serve a dedicated cutout URL rather than the same landscape headshot.",
+    "Constrain the cutout container's right edge so it cannot bleed under the play button (e.g., use max-width and place it as a flex sibling, or clip via right offset)."
+  ],
+  "critical_code_review_comments": [
+    "PersistentPlayer.jsx L104-115: With object-contain, the <img> element's bounding rect (h-full) is misleading—drawn pixel bounds depend on source aspect ratio. Any 'head above card' claim needs to consider naturalWidth/naturalHeight, not the element box.",
+    "The presenter image URL (clr.koodh.com/api/rds/grk/image.jpg) appears to return a landscape headshot rather than a portrait cutout. If this API is not under the frontend's control, the design must accommodate landscape sources."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "50% (3/6 core cutout assertions pass; regression tests pass)"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "Presenter cutout source URL returned during test: https://images.weserv.nl/?url=clr.koodh.com/api/rds/grk/image.jpg (2048x1151, landscape). To reproduce: scroll to y=600 on homepage, wait for isShowView cycle (~7s), then measure [data-testid=persistent-player-presenter-cutout] img. Regression rings (mobile) work: 5 blend-ring-flash divs found with border rgba(255,255,255,0.38) and mixBlendMode 'normal'. No video sticky element present. Cookie banner ('Accepteer alles') must be dismissed first. domcontentloaded (not networkidle) required because iTunes CORS errors keep network busy indefinitely.",
+  "rca of the issue": "Bug fix widened cutout container (w-28/w-36) and switched to object-contain to avoid cropping. However the source presenter image is LANDSCAPE (2048x1151, AR 1.78). object-contain in a portrait-ish container (~144x172 desktop / ~112x140 mobile, AR ~0.83) shrinks the image to width-fit, yielding rendered dimensions ~144x81 / ~112x63. With object-bottom, the tiny image sits at the bottom of the container—entirely inside the card, never poking above. Additionally, since the container's right edge (144/112) extends past the play button's left edge (596/104 → cutout ends at 620/136), the image visually overlaps the play button area. FIX-PATHS: (1) Ship a portrait cutout PNG at the source URL, (2) Use object-cover with object-position tuned to preserve arms (e.g., '50% top'), or (3) Absolutely position container to the LEFT of the cover slot only, with a max width that guarantees cutout.right < play.left."
+}

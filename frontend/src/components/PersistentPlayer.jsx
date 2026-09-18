@@ -28,27 +28,46 @@ const PersistentPlayer = () => {
 
   return (
     <div className="relative max-w-5xl mx-auto px-4 md:px-6">
-      <div className="relative bg-white rounded-2xl shadow-2xl p-3 md:p-5 flex items-center gap-3 md:gap-6 ring-1 ring-black/5">
-        {/* Cover / Presenter image (cross-faded) */}
-        <div className="relative flex-shrink-0 w-14 h-14 md:w-20 md:h-20">
-          {/* Rounded square holds the track cover + logo-fallback for presenter-less shows */}
-          <div className="absolute inset-0 rounded-xl overflow-hidden">
-            <div
-              className="absolute inset-0 transition-opacity duration-500"
-              style={{ opacity: isShowView ? 0 : 1 }}
-            >
-              <CoverImage src={track.cover} alt={trackTitle} />
-            </div>
-            {!presenter.image && (
+      <div className="relative bg-white rounded-2xl shadow-2xl ring-1 ring-black/5">
+        {/* Presenter cutout — anchored to the card's bottom edge so the feet
+            plakken against the card bottom. Placed BEFORE the flex row so
+            the play button + text (rendered later in DOM) naturally stack on
+            top of any horizontal overlap on the left side of the card. */}
+        {presenter.image && (
+          <div
+            className="pointer-events-none absolute -left-3 md:-left-4 bottom-0 w-24 md:w-36 overflow-visible transition-opacity duration-500"
+            style={{ height: 'calc(100% + 3.25rem)', opacity: isShowView ? 1 : 0 }}
+            data-testid="persistent-player-presenter-cutout"
+          >
+            <img
+              src={presenter.image}
+              alt={hostName}
+              draggable={false}
+              className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
+            />
+          </div>
+        )}
+        <div className="relative z-10 p-3 md:p-5 flex items-center gap-3 md:gap-6">
+          {/* Cover / Presenter image (cross-faded) */}
+          <div className="relative flex-shrink-0 w-14 h-14 md:w-20 md:h-20">
+            {/* Rounded square holds the track cover + logo-fallback for presenter-less shows */}
+            <div className="absolute inset-0 rounded-xl overflow-hidden">
               <div
                 className="absolute inset-0 transition-opacity duration-500"
-                style={{ opacity: isShowView ? 1 : 0 }}
+                style={{ opacity: isShowView ? 0 : 1 }}
               >
-                <CoverImage src="" alt={hostName} />
+                <CoverImage src={track.cover} alt={trackTitle} />
               </div>
-            )}
+              {!presenter.image && (
+                <div
+                  className="absolute inset-0 transition-opacity duration-500"
+                  style={{ opacity: isShowView ? 1 : 0 }}
+                >
+                  <CoverImage src="" alt={hostName} />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
         <button
           onClick={toggle}
@@ -94,26 +113,8 @@ const PersistentPlayer = () => {
           </div>
         </div>
 
-        <VolumeControl value={volume} onChange={setVolume} muted={muted} onToggleMute={toggleMute} />
-
-        {/* Presenter cutout — anchored to the card's bottom edge so the feet
-            plakken against the card bottom, just like on the Programma's page.
-            Positioned absolute directly on the card so it isn't limited to
-            the small cover slot's vertical space. */}
-        {presenter.image && (
-          <div
-            className="pointer-events-none absolute left-0 md:left-1 bottom-0 w-28 md:w-36 overflow-visible transition-opacity duration-500"
-            style={{ height: 'calc(100% + 3.25rem)', opacity: isShowView ? 1 : 0 }}
-            data-testid="persistent-player-presenter-cutout"
-          >
-            <img
-              src={presenter.image}
-              alt={hostName}
-              draggable={false}
-              className="absolute inset-x-0 bottom-0 w-full h-full object-contain object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
-            />
-          </div>
-        )}
+          <VolumeControl value={volume} onChange={setVolume} muted={muted} onToggleMute={toggleMute} />
+        </div>
       </div>
     </div>
   );
