@@ -20,6 +20,11 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Regio+ logo in footer
+- Regio+ logo toegevoegd links van het Koodh logo in de footer (`data-testid=footer-regio-plus-logo`), linked naar `regioplus.be`.
+- Zelfde witte filter `brightness(0) invert(1)` als het Koodh logo zodat beide consistent zijn tegen de donkere footer achtergrond.
+- Asset: `/app/frontend/public/assets/regio-plus-logo.png`.
+
 ### 2026-02-16 — PageHeader rings responsive
 - Ring sizes in `PageHeader.jsx` van vaste px `[500, 800, 1100, 1400, 1700]` → responsive `min(desk px, vw%)` met paren `[{500,55}, {800,90}, {1100,130}, {1400,170}, {1700,210}]`.
 - Op mobiel (390px) resulteren de vw-waarden in 214/351/507/663/819px → alle 5 rings zichtbaar in plaats van 1. Desktop 1920+ blijft cap op de oorspronkelijke desktop-groottes.
