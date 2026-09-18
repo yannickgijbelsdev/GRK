@@ -20,6 +20,12 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 ## Changelog (recentste eerst)
+### 2026-02-16 — Regio+ logo transparant + wit
+- Bron PNG had een witte achtergrond (geen alpha) → CSS `brightness(0) invert(1)` maakte alles wit inclusief bg = wit blok.
+- Fix: `regio-plus-logo.png` server-side hersampled via Python PIL — near-white pixels (RGB>220) op alpha 0 gezet en overige opaque pixels gerepainted naar zuiver wit (255,255,255,α).
+- Resultaat: ~8% opaque pixels (het logo), 92% transparant. CSS filter blijft `brightness(0) invert(1)` en toont een net wit Regio+ logo.
+- Getest door testing_agent (iteration_16.json): 100% pass — 11.96× meer transparent dan opaque, alle 20 samples zuiver wit, links van Koodh, geen overflow.
+
 ### 2026-02-16 — Regio+ logo in footer
 - Regio+ logo toegevoegd links van het Koodh logo in de footer (`data-testid=footer-regio-plus-logo`), linked naar `regioplus.be`.
 - Zelfde witte filter `brightness(0) invert(1)` als het Koodh logo zodat beide consistent zijn tegen de donkere footer achtergrond.
