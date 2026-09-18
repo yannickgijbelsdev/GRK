@@ -6,17 +6,25 @@ const PageHeader = ({ title, subtitle }) => {
       className="relative overflow-hidden pt-32 pb-16 md:pt-40 md:pb-24"
       style={{ background: 'linear-gradient(180deg,#062a4a 0%,#0a3a6b 60%,#1f5499 100%)' }}
     >
-      {/* Full-width flashing rings — same rhythm as the home page */}
+      {/* Full-width flashing rings — same rhythm as the home page.
+          Sizes scale with viewport so multiple rings stay visible on mobile
+          instead of only the smallest one poking through. */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {[500, 800, 1100, 1400, 1700].map((size, i) => (
+        {[
+          { desk: 500,  vw: 55  },
+          { desk: 800,  vw: 90  },
+          { desk: 1100, vw: 130 },
+          { desk: 1400, vw: 170 },
+          { desk: 1700, vw: 210 },
+        ].map((r, i) => (
           <div
             key={`f-${i}`}
             className="blend-ring-flash"
             style={{
-              width: `${size}px`,
-              height: `${size}px`,
-              marginLeft: `-${size / 2}px`,
-              marginTop: `-${size / 2}px`,
+              width: `min(${r.desk}px, ${r.vw}vw)`,
+              height: `min(${r.desk}px, ${r.vw}vw)`,
+              marginLeft: `calc(min(${r.desk}px, ${r.vw}vw) / -2)`,
+              marginTop: `calc(min(${r.desk}px, ${r.vw}vw) / -2)`,
             }}
           />
         ))}
