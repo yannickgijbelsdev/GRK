@@ -99,27 +99,27 @@ const Footer = () => {
         </div>
       </div>
       <div className="relative border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex items-center justify-between gap-4 text-xs text-white/60">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-xs text-white/60">
           <span>&copy; {new Date().getFullYear()} GRK &mdash; the feelgood station.</span>
           <div className="flex items-center gap-5 md:gap-7">
             <img
               src="/assets/regio-plus-logo.png"
               alt="Regio+"
-              className="h-6 md:h-7 w-auto opacity-75"
+              className="h-5 md:h-7 w-auto opacity-75 flex-shrink-0"
               data-testid="footer-regio-plus-logo"
             />
             <a
               href="https://koodh.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="opacity-75 hover:opacity-100 transition-opacity"
+              className="opacity-75 hover:opacity-100 transition-opacity flex-shrink-0"
               aria-label="Koodh"
               data-testid="footer-koodh-logo"
             >
               <img
                 src="/assets/koodh-logo.png"
                 alt="Koodh"
-                className="h-5 md:h-6 w-auto"
+                className="h-4 md:h-6 w-auto"
                 style={{ filter: 'brightness(0) invert(1)' }}
               />
             </a>
