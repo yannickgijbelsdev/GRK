@@ -7,6 +7,53 @@ import CoverImage from './CoverImage';
 import VinylRecord from './VinylRecord';
 import ShowVideo from './ShowVideo';
 
+// Deterministic PRNG so each ring keeps the same wobble shape across renders.
+const mulberry32 = (a) => () => {
+  a |= 0; a = (a + 0x6D2B79F5) | 0;
+  let t = a;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+// Build an "imperfect circle" as an SVG path centered on (0,0). We combine a
+// handful of low-frequency sinusoids with random phases so the outline gently
+// bulges/wobbles instead of being a mathematically perfect circle. Points are
+// dense enough (128) that the outline reads as a smooth curve.
+const wobblyRingPath = (r, seed, wobble = 4) => {
+  const rand = mulberry32(seed);
+  const harmonics = [
+    { k: 2 + Math.floor(rand() * 2), a: 0.6 + rand() * 0.4, p: rand() * Math.PI * 2 },
+    { k: 3 + Math.floor(rand() * 3), a: 0.35 + rand() * 0.35, p: rand() * Math.PI * 2 },
+    { k: 5 + Math.floor(rand() * 3), a: 0.18 + rand() * 0.22, p: rand() * Math.PI * 2 },
+  ];
+  const points = 128;
+  let d = '';
+  for (let i = 0; i < points; i++) {
+    const angle = (i / points) * Math.PI * 2;
+    let off = 0;
+    for (const h of harmonics) off += h.a * Math.sin(angle * h.k + h.p);
+    const rr = r + off * wobble;
+    const x = (Math.cos(angle) * rr).toFixed(2);
+    const y = (Math.sin(angle) * rr).toFixed(2);
+    d += (i === 0 ? 'M ' : ' L ') + x + ' ' + y;
+  }
+  return d + ' Z';
+};
+
+const HERO_RINGS = [
+  { r: 130.5, sw: 2   },
+  { r: 154,   sw: 1.4 },
+  { r: 169.5, sw: 1   },
+  { r: 194.5, sw: 1   },
+  { r: 221.5, sw: 1   },
+  { r: 242.5, sw: 1   },
+  { r: 261.5, sw: 1   },
+  { r: 305,   sw: 1.4 },
+  { r: 357,   sw: 1.4 },
+  { r: 396,   sw: 1.4 },
+];
+
 const fmtTime = (d) => {
   if (!d) return '';
   // Format in Europe/Brussels timezone
@@ -59,47 +106,15 @@ const Hero = () => {
             viewBox="0 0 1366 768"
             preserveAspectRatio="xMidYMid slice"
           >
-            <defs>
-              {/* Subtle wobble so the rings feel hand-drawn instead of
-                  perfect mathematical circles. */}
-              <filter id="heroRingWobble" x="-5%" y="-5%" width="110%" height="110%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="2" seed="7" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
-              </filter>
-            </defs>
-            <g fill="none" stroke="rgba(255,255,255,0.22)" strokeLinecap="round" filter="url(#heroRingWobble)">
-              {[
-                { r: 130.5, sw: 2 },
-                { r: 154,   sw: 1.4 },
-                { r: 169.5, sw: 1 },
-                { r: 194.5, sw: 1 },
-                { r: 221.5, sw: 1 },
-                { r: 242.5, sw: 1 },
-                { r: 261.5, sw: 1 },
-                { r: 305,   sw: 1.4 },
-                { r: 357,   sw: 1.4 },
-                { r: 396,   sw: 1.4 },
-              ].map(({ r, sw }, i) => (
-                <circle key={i} cx="683" cy="384" r={r} strokeWidth={sw}>
-                  <animate
-                    attributeName="r"
-                    values={`${r};${r + 8};${r}`}
-                    dur="5.5s"
-                    begin={`${i * 0.45}s`}
-                    repeatCount="indefinite"
-                    calcMode="spline"
-                    keySplines="0.4 0 0.2 1;0.4 0 0.2 1"
-                    keyTimes="0;0.5;1"
-                  />
-                  <animate
-                    attributeName="stroke-opacity"
-                    values="0.6;1;0.6"
-                    dur="5.5s"
-                    begin={`${i * 0.45}s`}
-                    repeatCount="indefinite"
-                    keyTimes="0;0.5;1"
-                  />
-                </circle>
+            <g transform="translate(683 384)" fill="none" stroke="rgba(255,255,255,0.28)" strokeLinecap="round">
+              {HERO_RINGS.map(({ r, sw }, i) => (
+                <g
+                  key={i}
+                  className="hero-ring-pulse"
+                  style={{ animationDelay: `${i * 0.45}s` }}
+                >
+                  <path d={wobblyRingPath(r, i * 17 + 3, r < 200 ? 3 : 4.5)} strokeWidth={sw} />
+                </g>
               ))}
             </g>
           </svg>
