@@ -36,7 +36,8 @@ const Hero = () => {
     <section
       className="relative overflow-x-clip"
       style={{
-        background: '#0e2e44 url(/assets/hero-banner.png) center/cover no-repeat',
+        background:
+          'url(/assets/hero-banner.png) center/cover no-repeat, linear-gradient(180deg,#062a4a 0%,#0a3a6b 45%,#1f5499 80%,#2c6db8 100%)',
         // Regular hero uses a fixed viewport height. When the livestream video
         // is up, grow the hero enough to comfortably fit the video (which is
         // anchored 160px from the top) plus a small bottom breathing room.
