@@ -59,7 +59,15 @@ const Hero = () => {
             viewBox="0 0 1366 768"
             preserveAspectRatio="xMidYMid slice"
           >
-            <g fill="none" stroke="rgba(255,255,255,0.22)" strokeLinecap="round">
+            <defs>
+              {/* Subtle wobble so the rings feel hand-drawn instead of
+                  perfect mathematical circles. */}
+              <filter id="heroRingWobble" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.006" numOctaves="2" seed="7" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+            </defs>
+            <g fill="none" stroke="rgba(255,255,255,0.22)" strokeLinecap="round" filter="url(#heroRingWobble)">
               {[
                 { r: 130.5, sw: 2 },
                 { r: 154,   sw: 1.4 },
