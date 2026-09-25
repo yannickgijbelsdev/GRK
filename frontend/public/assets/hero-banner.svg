@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1366 768" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <g fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" vector-effect="non-scaling-stroke">
+    <circle cx="683" cy="384" r="130.5" stroke-width="3"/>
+    <circle cx="683" cy="384" r="154"   stroke-width="2"/>
+    <circle cx="683" cy="384" r="169.5"/>
+    <circle cx="683" cy="384" r="194.5"/>
+    <circle cx="683" cy="384" r="221.5"/>
+    <circle cx="683" cy="384" r="242.5"/>
+    <circle cx="683" cy="384" r="261.5"/>
+    <circle cx="683" cy="384" r="305"   stroke-width="2"/>
+    <circle cx="683" cy="384" r="357"   stroke-width="2"/>
+    <circle cx="683" cy="384" r="396"   stroke-width="2"/>
+  </g>
+</svg>
