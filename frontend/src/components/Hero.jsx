@@ -60,7 +60,7 @@ const Hero = () => {
             viewBox={heroRings.viewBox.join(' ')}
             preserveAspectRatio="xMidYMid slice"
           >
-            <g fill="none" stroke="rgba(255,255,255,0.32)" strokeLinecap="round">
+            <g fill="none" stroke="rgba(255,255,255,0.16)" strokeLinecap="round">
               {heroRings.rings.map((ring, i) => (
                 <g
                   key={i}
