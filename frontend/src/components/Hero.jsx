@@ -37,7 +37,7 @@ const Hero = () => {
       className="relative overflow-x-clip"
       style={{
         background:
-          'url(/assets/hero-banner.svg) center/cover no-repeat, linear-gradient(180deg,#062a4a 0%,#0a3a6b 45%,#1f5499 80%,#2c6db8 100%)',
+          'linear-gradient(180deg,#062a4a 0%,#0a3a6b 45%,#1f5499 80%,#2c6db8 100%)',
         // Regular hero uses a fixed viewport height. When the livestream video
         // is up, grow the hero enough to comfortably fit the video (which is
         // anchored 160px from the top) plus a small bottom breathing room.
@@ -47,6 +47,57 @@ const Hero = () => {
           : '600px',
       }}
     >
+      {/* Decorative dark sphere + softly pulsing concentric rings.
+          Each ring uses SMIL to grow/pulse from the inside outward
+          via a staggered animation delay. Hidden while the livestream
+          video is up so the video sits on a clean background. */}
+      {!hasVideo && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <div className="blend-sphere" />
+          <svg
+            className="absolute inset-0 w-full h-full"
+            viewBox="0 0 1366 768"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <g fill="none" stroke="rgba(255,255,255,0.22)" strokeLinecap="round">
+              {[
+                { r: 130.5, sw: 2 },
+                { r: 154,   sw: 1.4 },
+                { r: 169.5, sw: 1 },
+                { r: 194.5, sw: 1 },
+                { r: 221.5, sw: 1 },
+                { r: 242.5, sw: 1 },
+                { r: 261.5, sw: 1 },
+                { r: 305,   sw: 1.4 },
+                { r: 357,   sw: 1.4 },
+                { r: 396,   sw: 1.4 },
+              ].map(({ r, sw }, i) => (
+                <circle key={i} cx="683" cy="384" r={r} strokeWidth={sw}>
+                  <animate
+                    attributeName="r"
+                    values={`${r};${r + 8};${r}`}
+                    dur="5.5s"
+                    begin={`${i * 0.45}s`}
+                    repeatCount="indefinite"
+                    calcMode="spline"
+                    keySplines="0.4 0 0.2 1;0.4 0 0.2 1"
+                    keyTimes="0;0.5;1"
+                  />
+                  <animate
+                    attributeName="stroke-opacity"
+                    values="0.6;1;0.6"
+                    dur="5.5s"
+                    begin={`${i * 0.45}s`}
+                    repeatCount="indefinite"
+                    keyTimes="0;0.5;1"
+                  />
+                </circle>
+              ))}
+            </g>
+          </svg>
+        </div>
+      )}
+
       {/* Livestream video — only when an embed is configured for the current
           show. Replaces the presenter / vinyl visual completely. */}
       {hasVideo && (
