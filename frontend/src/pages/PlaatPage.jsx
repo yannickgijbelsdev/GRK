@@ -257,6 +257,9 @@ const PlaatPage = () => {
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl text-sm">{error}</div>
               )}
+              <p className="text-xs text-[#4a6480] leading-relaxed" data-testid="request-song-disclaimer">
+                Door dit formulier in te vullen stem je in met het gebruik ervan tijdens de uitzending van Levensloop Genk 2026.
+              </p>
               <button
                 type="submit"
                 disabled={submitting}
