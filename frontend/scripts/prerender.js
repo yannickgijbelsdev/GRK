@@ -157,7 +157,7 @@ const main = async () => {
       const trimmed = excerpt.length > 220 ? excerpt.slice(0, 217) + '…' : excerpt;
       const url = `${SITE_URL}/${cat.kind}/${slug}`;
       const html = inject(indexHtml, {
-        title: `${detail.title} — GRK`,
+        title: `GRK | ${detail.title}`,
         description: trimmed,
         image,
         url,

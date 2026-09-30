@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-const SITE_NAME = 'GRK — the feelgood station';
+const SITE_NAME = 'GRK | the feelgood station';
 const SITE_DESC = 'GRK is de stadsradio van Genk. We zenden uit op 107.4 FM, op DAB+ in Limburg en via radioplayer.be. Luister live, lees het nieuws uit jouw buurt en ontdek onze programma\'s.';
 const SITE_KEYWORDS = [
   'GRK',
@@ -37,7 +37,7 @@ const SEO = ({
   noindex = false,
   children,
 }) => {
-  const fullTitle = title ? `${title} — GRK` : SITE_NAME;
+  const fullTitle = title ? `GRK | ${title}` : SITE_NAME;
   const desc = description || SITE_DESC;
   const img = image || DEFAULT_IMAGE;
   const canonical = url || (typeof window !== 'undefined' ? window.location.href.split('?')[0] : SITE_URL);
