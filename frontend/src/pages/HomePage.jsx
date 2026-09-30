@@ -2,7 +2,25 @@ import React from 'react';
 import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
 import ClubGenkOnStagePromoCard from '../components/ClubGenkOnStagePromoCard';
+import LevensloopCountdown from '../components/LevensloopCountdown';
+import { useNewsArticles } from '../hooks/useNews';
 import SEO from '../components/SEO';
+
+const LevensloopHomeSection = () => {
+  const { articles } = useNewsArticles('levensloop-genk');
+  const hasArticles = articles && articles.length > 0;
+  return (
+    <NewsSection
+      title="Levensloop Genk"
+      category="levensloop-genk"
+      basePath="/nieuws/levensloop-genk"
+      moreLabel="Meer over Levensloop Genk"
+      titleAdornment={hasArticles ? <LevensloopCountdown variant="inline" /> : null}
+      emptyState={<LevensloopCountdown variant="block" />}
+      showMore={hasArticles}
+    />
+  );
+};
 
 const HomePage = () => {
   return (
@@ -35,6 +53,7 @@ const HomePage = () => {
         </script>
       </SEO>
       <Hero />
+      <LevensloopHomeSection />
       <NewsSection
         title="Nieuws uit de buurt"
         category="nieuws-uit-de-buurt"

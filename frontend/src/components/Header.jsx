@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react';
 
 const NEWS_CATEGORIES = [
   { label: 'Club Genk On Stage', to: '/club-genk-on-stage' },
+  { label: 'Levensloop Genk', to: '/nieuws/levensloop-genk' },
   { label: 'Nieuws uit de buurt', to: '/nieuws' },
   { label: 'Social Club', to: '/social-club' },
 ];

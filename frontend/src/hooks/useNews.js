@@ -165,6 +165,7 @@ export const useNewsArticle = (idOrSlug) => {
         fetchList('social-club'),
         fetchList('events-tickets'),
         fetchList('club-genk-on-stage'),
+        fetchList('levensloop-genk'),
       ]);
       const slug = slugify(idOrSlug);
       for (const list of candidates) {

@@ -16,18 +16,28 @@ const NewsSection = ({
   bottomSpacing = false,
   leadingTile = null,           // ReactNode rendered as the first grid cell
   leadingTileSpan = 1,          // How many columns the leading tile spans
+  titleAdornment = null,        // ReactNode shown next to the section title
+  emptyState = null,            // ReactNode rendered when no articles are available
 }) => {
   const { articles, loading } = useNewsArticles(category);
   // When a leading tile is shown it takes up `leadingTileSpan` cards worth of
   // space, so render fewer articles to keep the grid balanced.
   const articleLimit = leadingTile ? Math.max(0, limit - leadingTileSpan) : limit;
   const items = articles.slice(0, articleLimit);
+  const isEmpty = !loading && items.length === 0 && !leadingTile;
 
   return (
     <section className={`py-16 md:py-20 ${background ? 'bg-[#f0f4fa]' : ''} ${bottomSpacing ? 'page-pad-bottom' : ''}`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        {showHeader && <h2 className="text-[#062a4a] text-3xl md:text-4xl font-black mb-10">{title}</h2>}
-        {loading && items.length === 0 && !leadingTile ? (
+        {showHeader && (
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
+            <h2 className="text-[#062a4a] text-3xl md:text-4xl font-black">{title}</h2>
+            {titleAdornment && <div className="flex-shrink-0">{titleAdornment}</div>}
+          </div>
+        )}
+        {isEmpty && emptyState ? (
+          emptyState
+        ) : loading && items.length === 0 && !leadingTile ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {Array.from({ length: limit }).map((_, i) => (
               <div key={i} className="bg-white rounded-2xl border border-[#d8e4f0] overflow-hidden animate-pulse">
@@ -51,7 +61,7 @@ const NewsSection = ({
             ))}
           </div>
         )}
-        {showMore && (
+        {showMore && !isEmpty && (
           <div className="flex justify-end mt-8">
             <Link to={basePath} className="inline-flex items-center gap-2 text-[#062a4a] font-semibold hover:gap-3 transition-all">
               {moreLabel}
