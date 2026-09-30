@@ -17,6 +17,7 @@ import SocialClubListPage from './pages/SocialClubListPage';
 import EventsTicketsListPage from './pages/EventsTicketsListPage';
 import ClubGenkOnStageListPage from './pages/ClubGenkOnStageListPage';
 import LevensloopGenkListPage from './pages/LevensloopGenkListPage';
+import PlaatPage from './pages/PlaatPage';
 import ProgrammingListPage from './pages/ProgrammingListPage';
 import PlayedPage from './pages/PlayedPage';
 import SelectedPage from './pages/SelectedPage';
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/club-genk-on-stage/:id" element={<NewsDetailPage />} />
                 <Route path="/nieuws/levensloop-genk" element={<LevensloopGenkListPage />} />
                 <Route path="/nieuws/levensloop-genk/:id" element={<NewsDetailPage />} />
+                <Route path="/plaat" element={<PlaatPage />} />
                 <Route path="/tickets" element={<Navigate to="/events-tickets" replace />} />
                 <Route path="/tickets/*" element={<Navigate to="/events-tickets" replace />} />
                 <Route path="/programmering" element={<ProgrammingListPage />} />

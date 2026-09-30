@@ -3,19 +3,26 @@ import Hero from '../components/Hero';
 import NewsSection from '../components/NewsSection';
 import ClubGenkOnStagePromoCard from '../components/ClubGenkOnStagePromoCard';
 import LevensloopCountdown from '../components/LevensloopCountdown';
+import RequestSongButton from '../components/RequestSongButton';
 import { useNewsArticles } from '../hooks/useNews';
 import SEO from '../components/SEO';
 
 const LevensloopHomeSection = () => {
   const { articles } = useNewsArticles('levensloop-genk');
   const hasArticles = articles && articles.length > 0;
+  const adornment = (
+    <div className="flex flex-col md:flex-row md:items-center gap-3">
+      {hasArticles && <LevensloopCountdown variant="inline" />}
+      <RequestSongButton />
+    </div>
+  );
   return (
     <NewsSection
       title="Levensloop Genk"
       category="levensloop-genk"
       basePath="/nieuws/levensloop-genk"
       moreLabel="Meer over Levensloop Genk"
-      titleAdornment={hasArticles ? <LevensloopCountdown variant="inline" /> : null}
+      titleAdornment={adornment}
       emptyState={<LevensloopCountdown variant="block" />}
       showMore={hasArticles}
     />
