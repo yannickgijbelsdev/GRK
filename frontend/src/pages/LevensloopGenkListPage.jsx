@@ -20,7 +20,7 @@ const LevensloopGenkListPage = () => {
   return (
     <NewsListPage
       title="Levensloop Genk"
-      subtitle="Alles over Levensloop Genk — het jaarlijkse hoop-evenement waarin we samen de strijd tegen kanker steunen."
+      subtitle="24 uur live vanuit het Atlas College in Genk. Luister, kijk en steun Levensloop Genk, want samen staan we sterk voor de strijd tegen kanker."
       category="levensloop-genk"
       basePath="/nieuws/levensloop-genk"
       afterHeader={afterHeader}
