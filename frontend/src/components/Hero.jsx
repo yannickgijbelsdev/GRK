@@ -156,7 +156,7 @@ const Hero = () => {
               data-testid="hero-last-played"
               onClick={() => setPeekOpen((v) => !v)}
               aria-label="Zonet gedraaid tonen"
-              className={`absolute left-2 right-2 bottom-full z-0 bg-white rounded-2xl shadow-md ring-1 ring-black/5 px-3 py-2 flex items-center gap-3 text-left transition-transform duration-300 ease-out origin-[50%_100%] md:group-hover:shadow-xl ${peekOpen ? '-translate-y-3 scale-[1.06]' : 'translate-y-[calc(100%-24px)]'} md:group-hover:-translate-y-3 md:group-hover:scale-[1.06]`}
+              className={`absolute left-2 right-2 bottom-full z-0 bg-white rounded-2xl shadow-md ring-1 ring-black/5 px-3 py-2 mb-1 flex items-center gap-3 text-left transition-transform duration-300 ease-out origin-bottom md:group-hover:shadow-xl ${peekOpen ? 'translate-y-0 scale-[1.06]' : 'translate-y-[calc(100%-24px)]'} md:group-hover:translate-y-0 md:group-hover:scale-[1.06]`}
             >
               <div className="flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-lg overflow-hidden">
                 <CoverImage src={prevTrack.cover} alt={prevTrack.title || ''} />
