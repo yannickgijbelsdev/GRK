@@ -21,7 +21,14 @@ const fmtTime = (d) => {
 
 const Hero = () => {
   const { playing, toggle } = usePlayer();
-  const { show, presenter, track } = useNowOnAir();
+  const { show, presenter, track, history } = useNowOnAir();
+  // "Zonet gedraaid" — the most recent entry in history whose artist/title
+  // differs from the current one on air.
+  const prevTrack = React.useMemo(() => {
+    if (!history || !history.length) return null;
+    const cur = `${(track?.artist || '').toLowerCase()}|${(track?.title || '').toLowerCase()}`;
+    return history.find((t) => `${(t.artist || '').toLowerCase()}|${(t.title || '').toLowerCase()}` !== cur) || null;
+  }, [history, track]);
   const showVideo = useShowVideo();
   const hasVideo = !!showVideo;
 
@@ -136,27 +143,50 @@ const Hero = () => {
       </div>
 
       <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 z-30 px-4 w-full max-w-fit">
-        <div className="bg-white rounded-2xl shadow-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 ring-1 ring-black/5">
-          <div className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden" aria-hidden="true">
-            <CoverImage src={track.cover} alt={trackTitle} />
-          </div>
-          <button
-            onClick={toggle}
-            aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-            className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform"
-            style={{ background: 'linear-gradient(135deg,#2a5d99 0%,#4b8fcc 100%)' }}
-          >
-            {playing ? <Pause size={20} fill="white" /> : <Play size={20} fill="white" className="ml-0.5" />}
-          </button>
-          <div className="min-w-0 pr-3">
-            <div className="text-[10px] uppercase tracking-wider font-semibold text-[#2a5d99]">
-              Nu speelt{startedAt ? ` · sinds ${startedAt}` : ''}
+        <div className="flex flex-col items-stretch gap-2 w-full max-w-md mx-auto">
+          {prevTrack && (
+            <div
+              data-testid="hero-last-played"
+              className="bg-white/60 backdrop-blur-md border border-white/50 rounded-2xl shadow-lg px-3 py-2 flex items-center gap-3"
+            >
+              <div className="flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-lg overflow-hidden">
+                <CoverImage src={prevTrack.cover} alt={prevTrack.title || ''} />
+              </div>
+              <div className="min-w-0 pr-2">
+                <div className="text-[9px] uppercase tracking-wider font-semibold text-[#2a5d99]">
+                  Zonet gedraaid
+                </div>
+                <div className="text-[#062a4a] text-sm font-semibold leading-tight truncate">
+                  {prevTrack.title}
+                </div>
+                <div className="text-[#4a6480] text-xs leading-tight truncate">
+                  {prevTrack.artist}
+                </div>
+              </div>
             </div>
-            <div className="text-[#062a4a] text-base md:text-lg font-bold leading-tight truncate max-w-[280px] mt-0.5">
-              {trackTitle}
+          )}
+          <div className="bg-white rounded-2xl shadow-2xl p-3 md:p-4 flex items-center gap-3 md:gap-4 ring-1 ring-black/5">
+            <div className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden" aria-hidden="true">
+              <CoverImage src={track.cover} alt={trackTitle} />
             </div>
-            <div className="text-[#4a6480] text-xs md:text-sm leading-tight truncate max-w-[280px]">
-              {trackArtist}
+            <button
+              onClick={toggle}
+              aria-label={playing ? 'Pauzeren' : 'Afspelen'}
+              className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform"
+              style={{ background: 'linear-gradient(135deg,#2a5d99 0%,#4b8fcc 100%)' }}
+            >
+              {playing ? <Pause size={20} fill="white" /> : <Play size={20} fill="white" className="ml-0.5" />}
+            </button>
+            <div className="min-w-0 pr-3 flex-1">
+              <div className="text-[10px] uppercase tracking-wider font-semibold text-[#2a5d99]">
+                Nu speelt{startedAt ? ` · sinds ${startedAt}` : ''}
+              </div>
+              <div className="text-[#062a4a] text-base md:text-lg font-bold leading-tight truncate max-w-[280px] mt-0.5">
+                {trackTitle}
+              </div>
+              <div className="text-[#4a6480] text-xs md:text-sm leading-tight truncate max-w-[280px]">
+                {trackArtist}
+              </div>
             </div>
           </div>
         </div>
