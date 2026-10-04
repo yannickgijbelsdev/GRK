@@ -134,7 +134,7 @@ const Hero = () => {
             <>
               <h1
                 className="text-white font-black tracking-tight leading-[0.95] break-words drop-shadow-[0_2px_20px_rgba(0,0,0,0.45)]"
-                style={{ fontSize: 'clamp(1.85rem, 4.5vw, 4.25rem)' }}
+                style={{ fontSize: 'clamp(2.6rem, 6vw, 4.25rem)' }}
               >
                 {showName}
               </h1>
@@ -156,13 +156,13 @@ const Hero = () => {
               data-testid="hero-last-played"
               onClick={() => setPeekOpen((v) => !v)}
               aria-label="Zonet gedraaid tonen"
-              className={`absolute left-2 right-2 bottom-full z-0 bg-white rounded-2xl shadow-md ring-1 ring-black/5 px-3 py-2 flex items-center gap-3 text-left transition-all duration-300 ease-out md:group-hover:px-4 md:group-hover:py-3 md:group-hover:gap-4 md:group-hover:shadow-xl ${peekOpen ? '-translate-y-3' : 'translate-y-[calc(100%-24px)]'} md:group-hover:-translate-y-3`}
+              className={`absolute left-2 right-2 bottom-full z-0 bg-white rounded-2xl shadow-md ring-1 ring-black/5 px-3 py-2 flex items-center gap-3 text-left transition-transform duration-300 ease-out origin-[50%_100%] md:group-hover:shadow-xl ${peekOpen ? '-translate-y-3 scale-[1.06]' : 'translate-y-[calc(100%-24px)]'} md:group-hover:-translate-y-3 md:group-hover:scale-[1.06]`}
             >
-              <div className="flex-shrink-0 w-9 h-9 md:w-10 md:h-10 md:group-hover:w-14 md:group-hover:h-14 rounded-lg md:group-hover:rounded-xl overflow-hidden transition-all duration-300 ease-out">
+              <div className="flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-lg overflow-hidden">
                 <CoverImage src={prevTrack.cover} alt={prevTrack.title || ''} />
               </div>
               <div className="min-w-0 pr-2 flex-1">
-                <div className="text-[9px] md:group-hover:text-[10px] uppercase tracking-wider font-semibold text-[#2a5d99] flex items-center gap-1.5 transition-all duration-300">
+                <div className="text-[9px] uppercase tracking-wider font-semibold text-[#2a5d99] flex items-center gap-1.5">
                   <span>Zonet gedraaid</span>
                   {prevTrackTime && (
                     <span className="text-[#4a6480] font-medium normal-case tracking-normal tabular-nums">
@@ -170,10 +170,10 @@ const Hero = () => {
                     </span>
                   )}
                 </div>
-                <div className="text-[#062a4a] text-sm md:group-hover:text-base md:group-hover:md:text-lg md:group-hover:font-bold font-semibold leading-tight truncate transition-all duration-300">
+                <div className="text-[#062a4a] text-sm font-semibold leading-tight truncate">
                   {prevTrack.title}
                 </div>
-                <div className="text-[#4a6480] text-xs md:group-hover:text-sm leading-tight truncate transition-all duration-300">
+                <div className="text-[#4a6480] text-xs leading-tight truncate">
                   {prevTrack.artist}
                 </div>
               </div>
