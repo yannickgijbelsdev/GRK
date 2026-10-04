@@ -1,10 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { Repeat, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { Repeat, ChevronLeft, ChevronRight, RotateCcw, Calendar as CalendarIcon } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import SEO from '../components/SEO';
 import { useDaySchedule } from '../hooks/useSchedule';
+import { Calendar } from '../components/ui/calendar';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '../components/ui/popover';
 
-// Map between Dutch UI labels and the API path used by clr.koodh.com
+// Map between Dutch UI labels and the API path used by clr.koodh.com.
+// GRK publishes a fixed weekly schedule (same shows every week), so the
+// per-day endpoint keyed on the Dutch weekday name is our source of truth.
+// Navigation lets the visitor skim up to ±28 days around today while the
+// shown schedule remains the recurring weekly programming.
 const WEEKDAYS = [
   { id: 'maandag',   label: 'Maandag',   long: 'MAANDAG',   dowMon: 0 },
   { id: 'dinsdag',   label: 'Dinsdag',   long: 'DINSDAG',   dowMon: 1 },
@@ -14,30 +24,46 @@ const WEEKDAYS = [
   { id: 'zaterdag',  label: 'Zaterdag',  long: 'ZATERDAG',  dowMon: 5 },
   { id: 'zondag',    label: 'Zondag',    long: 'ZONDAG',    dowMon: 6 },
 ];
+const DAY_IDS = WEEKDAYS.map((d) => d.id);
+// Hard cap: visitors can jump up to 28 days backward and 28 days forward
+// relative to today. Any attempt to go further is clamped by `clampDate`.
+const MAX_DAY_OFFSET = 28;
 
-const WEEKS_PER_STEP = 1;
-const MAX_WEEK_OFFSET = 3;
-
-const getCurrentDayId = () => {
-  const map = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
-  return map[new Date().getDay()];
-};
-
-// Monday of the current week, at local midnight
-const getCurrentWeekMonday = () => {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const dow = now.getDay(); // 0=Sun..6=Sat
-  const daysSinceMon = (dow + 6) % 7; // Mon=0..Sun=6
-  now.setDate(now.getDate() - daysSinceMon);
-  return now;
+// Local midnight for a date (strips time, uses browser TZ which is what
+// visitors expect for "today").
+const atMidnight = (d) => {
+  const c = new Date(d);
+  c.setHours(0, 0, 0, 0);
+  return c;
 };
 
 const addDays = (d, n) => {
-  const c = new Date(d);
+  const c = atMidnight(d);
   c.setDate(c.getDate() + n);
   return c;
 };
+
+const diffDays = (a, b) => Math.round((atMidnight(a) - atMidnight(b)) / 86400000);
+
+const todayMidnight = () => atMidnight(new Date());
+
+const clampDate = (d) => {
+  const diff = diffDays(d, todayMidnight());
+  if (diff > MAX_DAY_OFFSET) return addDays(todayMidnight(), MAX_DAY_OFFSET);
+  if (diff < -MAX_DAY_OFFSET) return addDays(todayMidnight(), -MAX_DAY_OFFSET);
+  return atMidnight(d);
+};
+
+// Monday of the week containing `date` (local midnight).
+const mondayOf = (date) => {
+  const d = atMidnight(date);
+  const dow = d.getDay(); // 0=Sun..6=Sat
+  const daysSinceMon = (dow + 6) % 7; // Mon=0..Sun=6
+  d.setDate(d.getDate() - daysSinceMon);
+  return d;
+};
+
+const dayIdFor = (date) => DAY_IDS[(date.getDay() + 6) % 7]; // Mon=0..Sun=6
 
 const fmtTime = (t) => (t || '').slice(0, 5).replace(/^0/, ''); // "08:00" → "8:00"
 
@@ -47,6 +73,19 @@ const fmtDayDate = (date) => {
       day: 'numeric',
       month: 'long',
     }).format(date);
+  } catch {
+    return '';
+  }
+};
+
+const fmtDayWithWeekday = (date) => {
+  try {
+    const s = new Intl.DateTimeFormat('nl-NL', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+    }).format(date);
+    return s.charAt(0).toUpperCase() + s.slice(1);
   } catch {
     return '';
   }
@@ -71,24 +110,37 @@ const fmtWeekRange = (monday) => {
 };
 
 const ProgrammingListPage = () => {
-  const [activeDay, setActiveDay] = useState(getCurrentDayId());
-  const [weekOffset, setWeekOffset] = useState(0); // in weeks (multiples of WEEKS_PER_STEP)
-  const day = WEEKDAYS.find((d) => d.id === activeDay) || WEEKDAYS[0];
-  const { shows, loading } = useDaySchedule(activeDay);
+  // activeDate is the authoritative state. activeDay is derived from it.
+  const [activeDate, setActiveDateRaw] = useState(() => todayMidnight());
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const setActiveDate = (d) => setActiveDateRaw(clampDate(d));
 
-  const weekMonday = useMemo(() => {
-    return addDays(getCurrentWeekMonday(), weekOffset * 7);
-  }, [weekOffset]);
+  const activeDayId = useMemo(() => dayIdFor(activeDate), [activeDate]);
+  const day = WEEKDAYS.find((d) => d.id === activeDayId) || WEEKDAYS[0];
+  const { shows, loading } = useDaySchedule(activeDayId);
 
-  const canGoBack = weekOffset > -MAX_WEEK_OFFSET;
-  const canGoForward = weekOffset < MAX_WEEK_OFFSET;
-  const goPrev = () => setWeekOffset((o) => Math.max(-MAX_WEEK_OFFSET, o - WEEKS_PER_STEP));
-  const goNext = () => setWeekOffset((o) => Math.min(MAX_WEEK_OFFSET, o + WEEKS_PER_STEP));
+  const weekMonday = useMemo(() => mondayOf(activeDate), [activeDate]);
+  const todayOffset = useMemo(() => diffDays(activeDate, todayMidnight()), [activeDate]);
 
-  const activeDate = useMemo(() => addDays(weekMonday, day.dowMon), [weekMonday, day.dowMon]);
+  const canGoBack = todayOffset > -MAX_DAY_OFFSET;
+  const canGoForward = todayOffset < MAX_DAY_OFFSET;
+  const goPrevDay = () => setActiveDate(addDays(activeDate, -1));
+  const goNextDay = () => setActiveDate(addDays(activeDate, 1));
+  const goPrevWeek = () => setActiveDate(addDays(activeDate, -7));
+  const goNextWeek = () => setActiveDate(addDays(activeDate, 7));
+  const goToday = () => setActiveDate(todayMidnight());
+
+  const canGoPrevWeek = todayOffset - 7 >= -MAX_DAY_OFFSET;
+  const canGoNextWeek = todayOffset + 7 <= MAX_DAY_OFFSET;
+
   const weekRangeLabel = useMemo(() => fmtWeekRange(weekMonday), [weekMonday]);
   const activeDateLabel = useMemo(() => fmtDayDate(activeDate), [activeDate]);
-  const showRecurringHint = weekOffset !== 0;
+  const isToday = todayOffset === 0;
+  const showRecurringHint = !isToday;
+
+  // Range constraints for the datepicker — ±28 days around today.
+  const minPickDate = useMemo(() => addDays(todayMidnight(), -MAX_DAY_OFFSET), []);
+  const maxPickDate = useMemo(() => addDays(todayMidnight(), MAX_DAY_OFFSET), []);
 
   return (
     <>
@@ -100,16 +152,16 @@ const ProgrammingListPage = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <button
               type="button"
-              onClick={goPrev}
-              disabled={!canGoBack}
+              onClick={goPrevWeek}
+              disabled={!canGoPrevWeek}
               data-testid="week-prev-btn"
               className={`inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border font-semibold shadow-sm transition-all duration-200 self-start md:self-auto ${
-                canGoBack
+                canGoPrevWeek
                   ? 'border-[#d8e4f0] text-[#062a4a] hover:shadow-md hover:border-[#2a5d99] cursor-pointer'
                   : 'border-[#e4ecf5] text-[#a4b6ca] cursor-not-allowed opacity-60'
               }`}
             >
-              <ChevronLeft size={18} className={canGoBack ? 'text-[#2a5d99]' : 'text-[#a4b6ca]'} />
+              <ChevronLeft size={18} className={canGoPrevWeek ? 'text-[#2a5d99]' : 'text-[#a4b6ca]'} />
               Vorige week
             </button>
 
@@ -121,68 +173,133 @@ const ProgrammingListPage = () => {
               >
                 {weekRangeLabel}
               </div>
-              {weekOffset !== 0 && (
-                <button
-                  type="button"
-                  onClick={() => setWeekOffset(0)}
-                  data-testid="week-reset-btn"
-                  className="mt-1 inline-flex items-center gap-1.5 text-[#2a5d99] hover:text-[#062a4a] text-xs font-semibold"
-                >
-                  <RotateCcw size={13} />
-                  Terug naar deze week
-                </button>
-              )}
+              <div className="mt-1 flex items-center justify-center gap-3 flex-wrap">
+                <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      data-testid="date-picker-btn"
+                      className="inline-flex items-center gap-1.5 text-[#2a5d99] hover:text-[#062a4a] text-xs font-semibold"
+                    >
+                      <CalendarIcon size={13} />
+                      Kies een datum
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="center" className="w-auto p-0" data-testid="date-picker-popover">
+                    <Calendar
+                      mode="single"
+                      selected={activeDate}
+                      onSelect={(d) => {
+                        if (d) {
+                          setActiveDate(d);
+                          setPickerOpen(false);
+                        }
+                      }}
+                      disabled={(d) => d < minPickDate || d > maxPickDate}
+                      initialFocus
+                      weekStartsOn={1}
+                    />
+                  </PopoverContent>
+                </Popover>
+                {!isToday && (
+                  <button
+                    type="button"
+                    onClick={goToday}
+                    data-testid="week-reset-btn"
+                    className="inline-flex items-center gap-1.5 text-[#2a5d99] hover:text-[#062a4a] text-xs font-semibold"
+                  >
+                    <RotateCcw size={13} />
+                    Vandaag
+                  </button>
+                )}
+              </div>
             </div>
 
             <button
               type="button"
-              onClick={goNext}
-              disabled={!canGoForward}
+              onClick={goNextWeek}
+              disabled={!canGoNextWeek}
               data-testid="week-next-btn"
               className={`inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white border font-semibold shadow-sm transition-all duration-200 self-end md:self-auto ${
-                canGoForward
+                canGoNextWeek
                   ? 'border-[#d8e4f0] text-[#062a4a] hover:shadow-md hover:border-[#2a5d99] cursor-pointer'
                   : 'border-[#e4ecf5] text-[#a4b6ca] cursor-not-allowed opacity-60'
               }`}
             >
               Volgende week
-              <ChevronRight size={18} className={canGoForward ? 'text-[#2a5d99]' : 'text-[#a4b6ca]'} />
+              <ChevronRight size={18} className={canGoNextWeek ? 'text-[#2a5d99]' : 'text-[#a4b6ca]'} />
             </button>
           </div>
 
           {/* Day tabs */}
           <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-10">
-            {WEEKDAYS.map((d) => (
-              <button
-                key={d.id}
-                onClick={() => setActiveDay(d.id)}
-                data-testid={`day-tab-${d.id}`}
-                className={`px-4 md:px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-200 ${
-                  activeDay === d.id
-                    ? 'bg-white shadow-md text-[#062a4a] scale-105'
-                    : 'text-[#4a6480] hover:text-[#062a4a] hover:bg-[#f0f4fa]'
-                }`}
-              >
-                {d.label}
-              </button>
-            ))}
+            {WEEKDAYS.map((d) => {
+              const date = addDays(weekMonday, d.dowMon);
+              const clamped = clampDate(date);
+              const outOfRange = diffDays(date, clamped) !== 0;
+              return (
+                <button
+                  key={d.id}
+                  onClick={() => !outOfRange && setActiveDate(date)}
+                  disabled={outOfRange}
+                  data-testid={`day-tab-${d.id}`}
+                  className={`px-4 md:px-5 py-2.5 rounded-2xl font-bold text-sm md:text-base transition-all duration-200 ${
+                    activeDayId === d.id && !outOfRange
+                      ? 'bg-white shadow-md text-[#062a4a] scale-105'
+                      : outOfRange
+                        ? 'text-[#c4cfdc] cursor-not-allowed'
+                        : 'text-[#4a6480] hover:text-[#062a4a] hover:bg-[#f0f4fa]'
+                  }`}
+                >
+                  {d.label}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Day title with date */}
-          <div className="mb-8 mt-12">
+          {/* Day title with date + per-day arrows */}
+          <div className="mb-8 mt-12 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={goPrevDay}
+              disabled={!canGoBack}
+              data-testid="day-prev-btn"
+              aria-label="Vorige dag"
+              className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border flex items-center justify-center shadow-sm transition-all ${
+                canGoBack
+                  ? 'border-[#d8e4f0] text-[#2a5d99] hover:shadow-md hover:border-[#2a5d99] cursor-pointer'
+                  : 'border-[#e4ecf5] text-[#a4b6ca] cursor-not-allowed opacity-60'
+              }`}
+            >
+              <ChevronLeft size={20} />
+            </button>
             <h2
               data-testid="day-title"
-              className="text-[#062a4a] text-3xl md:text-5xl font-black tracking-tight"
+              className="text-[#062a4a] text-2xl md:text-5xl font-black tracking-tight text-center flex-1 min-w-0"
             >
-              {day.long}
+              <span className="truncate">{day.long}</span>
               <span className="text-[#2a5d99] font-black"> · {activeDateLabel}</span>
             </h2>
-            {showRecurringHint && (
-              <p className="mt-2 text-[#4a6480] text-sm md:text-base">
-                Dit is onze vaste weekprogrammatie — de shows keren wekelijks op deze uren terug.
-              </p>
-            )}
+            <button
+              type="button"
+              onClick={goNextDay}
+              disabled={!canGoForward}
+              data-testid="day-next-btn"
+              aria-label="Volgende dag"
+              className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full bg-white border flex items-center justify-center shadow-sm transition-all ${
+                canGoForward
+                  ? 'border-[#d8e4f0] text-[#2a5d99] hover:shadow-md hover:border-[#2a5d99] cursor-pointer'
+                  : 'border-[#e4ecf5] text-[#a4b6ca] cursor-not-allowed opacity-60'
+              }`}
+            >
+              <ChevronRight size={20} />
+            </button>
           </div>
+          {showRecurringHint && (
+            <p className="-mt-6 mb-8 text-[#4a6480] text-sm md:text-base text-center">
+              Dit is onze vaste weekprogrammatie — de shows keren wekelijks op deze uren terug.
+            </p>
+          )}
 
           {/* Schedule cards */}
           {loading && shows.length === 0 ? (
