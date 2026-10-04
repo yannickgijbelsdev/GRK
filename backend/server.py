@@ -326,14 +326,42 @@ def _inject_meta(html_src: str, *, title: str, description: str, image: str, url
         out = new_out
     return out
 
+def _parse_dt(val):
+    """Best-effort parse of a datetime (datetime or ISO string) to UTC."""
+    if isinstance(val, datetime):
+        return val if val.tzinfo else val.replace(tzinfo=timezone.utc)
+    if isinstance(val, str) and val:
+        try:
+            dt = datetime.fromisoformat(val.replace("Z", "+00:00"))
+            return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+        except Exception:
+            return None
+    return None
+
+
 @api_router.get("/now-playing/recent")
 async def recent_tracks():
     cutoff = datetime.now(timezone.utc) - RETENTION
     cursor = db.recent_tracks.find(
         {"stored_at": {"$gte": cutoff}},
         {"_id": 0, "stored_at": 0},
-    ).sort("time", -1).limit(500)
-    return {"tracks": await cursor.to_list(length=500)}
+    ).sort("time", -1).limit(2000)
+    tracks = await cursor.to_list(length=2000)
+    # Defense in depth: collapse adjacent same-artist/title entries whose
+    # "time" is within the dedupe window, in case any slipped through at
+    # ingest (older rows, replay, etc.).
+    dedup = []
+    for t in tracks:
+        if dedup:
+            last = dedup[-1]
+            if (last.get("artist") or "").lower() == (t.get("artist") or "").lower() \
+                    and (last.get("title") or "").lower() == (t.get("title") or "").lower():
+                a = _parse_dt(last.get("time"))
+                b = _parse_dt(t.get("time"))
+                if a and b and abs(a - b) < DEDUPE_WINDOW:
+                    continue
+        dedup.append(t)
+    return {"tracks": dedup[:500]}
 
 
 class TrackReport(BaseModel):
@@ -348,7 +376,12 @@ class TrackReport(BaseModel):
 async def report_track(body: TrackReport):
     """Browser-side reporter — used as a fallback when the production pod can
     not reach clr.koodh.com directly (egress firewall). Any visitor's tab acts
-    as a relay: detected tracks get POSTed here and stored idempotently."""
+    as a relay: detected tracks get POSTed here and stored idempotently.
+
+    Dedupe: if the exact same artist+title was already stored within
+    DEDUPE_WINDOW, skip the insert. This prevents multiple browser-relays
+    (or a slightly different ``started_at`` across tabs) from writing two
+    rows for a single play of the same song."""
     artist = (body.artist or "").strip()
     title = (body.title or "").strip()
     if not title:
@@ -356,20 +389,32 @@ async def report_track(body: TrackReport):
     if not artist and re.search(r"feelgood\s*station", title, re.I):
         return {"stored": False, "reason": "filler"}
     started = (body.started_at or "").strip()
+    now = datetime.now(timezone.utc)
+    recent_cutoff = now - DEDUPE_WINDOW
+    existing = await db.recent_tracks.find_one(
+        {
+            "artist": artist,
+            "title": title,
+            "stored_at": {"$gte": recent_cutoff},
+        },
+        {"_id": 1},
+    )
+    if existing is not None:
+        return {"stored": False, "reason": "dedupe"}
     key = f"{artist}|{title}|{started}"
     doc = {
         "_id": key,
         "artist": artist,
         "title": title,
-        "time": started or datetime.now(timezone.utc).isoformat(),
+        "time": started or now.isoformat(),
         "show": (body.show or "").strip(),
         "host": (body.host or "").strip(),
-        "stored_at": datetime.now(timezone.utc),
+        "stored_at": now,
     }
     res = await db.recent_tracks.update_one(
         {"_id": key}, {"$setOnInsert": doc}, upsert=True
     )
-    cutoff = datetime.now(timezone.utc) - RETENTION
+    cutoff = now - RETENTION
     await db.recent_tracks.delete_many({"stored_at": {"$lt": cutoff}})
     if res.upserted_id is not None:
         POLLER_STATE["saves"] += 1
@@ -425,6 +470,7 @@ NOW_JSON_URL = "https://clr.koodh.com/api/rds/grk/now-playing"
 SHOW_URL = "https://clr.koodh.com/api/rds/grk/live.json"
 PRESENTERS_URL = "https://clr.koodh.com/api/rds/grk/presenter.json"
 RETENTION = timedelta(days=28)
+DEDUPE_WINDOW = timedelta(minutes=3)
 
 
 def _parse_track(raw: str):
@@ -535,6 +581,17 @@ async def _poll_now_playing():
                 "host": host_name,
                 "stored_at": datetime.now(timezone.utc),
             }
+            # Skip if we already stored the same artist+title within the
+            # dedupe window — avoids duplicates across pod restarts / replicas
+            # and lines up with the browser-relay dedupe check.
+            dup_cutoff = datetime.now(timezone.utc) - DEDUPE_WINDOW
+            dup = await db.recent_tracks.find_one(
+                {"artist": artist, "title": title, "stored_at": {"$gte": dup_cutoff}},
+                {"_id": 1},
+            )
+            if dup is not None:
+                await asyncio.sleep(10)
+                continue
             res = await db.recent_tracks.update_one({"_id": key}, {"$setOnInsert": doc}, upsert=True)
             if res.upserted_id is not None:
                 POLLER_STATE["saves"] += 1
@@ -556,11 +613,43 @@ async def lifespan(_app: FastAPI):
         await db.recent_tracks.create_index("stored_at")
     except Exception:
         logger.exception("index create failed")
+    try:
+        await _dedupe_existing_tracks()
+    except Exception:
+        logger.exception("dedupe cleanup failed")
     task = asyncio.create_task(_poll_now_playing())
     try:
         yield
     finally:
         task.cancel()
+
+
+async def _dedupe_existing_tracks():
+    """One-time cleanup: scan the stored history and delete rows whose
+    artist+title already appears within DEDUPE_WINDOW of an earlier row.
+    Keeps the oldest row for a given play."""
+    cursor = db.recent_tracks.find(
+        {},
+        {"artist": 1, "title": 1, "time": 1, "stored_at": 1},
+    ).sort("stored_at", 1)
+    seen = {}
+    to_delete = []
+    async for doc in cursor:
+        a = (doc.get("artist") or "").strip().lower()
+        t = (doc.get("title") or "").strip().lower()
+        when = _parse_dt(doc.get("stored_at")) or _parse_dt(doc.get("time"))
+        if not when:
+            continue
+        key = (a, t)
+        prev = seen.get(key)
+        if prev is not None and (when - prev) < DEDUPE_WINDOW:
+            to_delete.append(doc["_id"])
+            # keep `prev` as the reference so a long cluster collapses to one
+            continue
+        seen[key] = when
+    if to_delete:
+        await db.recent_tracks.delete_many({"_id": {"$in": to_delete}})
+        logger.info("dedupe cleanup removed %s rows", len(to_delete))
 
 
 app.router.lifespan_context = lifespan

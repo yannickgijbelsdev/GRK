@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Play, Pause } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Play, Pause, ListMusic } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import CoverImage from './CoverImage';
@@ -112,6 +113,16 @@ const PersistentPlayer = () => {
             </div>
           </div>
         </div>
+
+          <Link
+            to="/gedraaid"
+            aria-label="Laatste gedraaide nummers"
+            title="Laatste gedraaide nummers"
+            data-testid="persistent-player-history-link"
+            className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition"
+          >
+            <ListMusic size={20} />
+          </Link>
 
           <VolumeControl value={volume} onChange={setVolume} muted={muted} onToggleMute={toggleMute} />
         </div>

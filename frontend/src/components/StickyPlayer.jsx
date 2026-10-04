@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { History } from 'lucide-react';
 import PersistentPlayer from './PersistentPlayer';
 import AppPromoBanner from './AppPromoBanner';
 
@@ -41,16 +39,6 @@ const StickyPlayer = () => {
     >
       <div className="pointer-events-auto max-w-5xl mx-auto">
         <PersistentPlayer />
-        <div className="mt-2 flex justify-center">
-          <Link
-            to="/gedraaid"
-            data-testid="sticky-player-history-btn"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur border border-white/70 shadow-md text-[#062a4a] text-xs md:text-sm font-semibold hover:bg-white transition-colors"
-          >
-            <History size={14} className="text-[#2a5d99]" />
-            Laatste gedraaide nummers
-          </Link>
-        </div>
         <AppPromoBanner />
       </div>
     </div>
