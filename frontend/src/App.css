@@ -503,43 +503,37 @@ html { scroll-behavior: smooth; }
 }
 
 
-/* Hero presenter image — responsive sizing/positioning */
+/* Hero presenter image — responsive sizing/positioning.
+   Approach: the <img> is positioned absolutely inside a full-width container.
+   The image's `height: 100%` + `width: auto` keeps its natural aspect, so the
+   whole thing scales with the hero. Horizontal centring uses the *subject*,
+   not the whole image — the GRK source PNGs are landscape 768×512 with the
+   person's centre at ~23.5% from the left edge, so shifting the img left by
+   that much drops the subject exactly on the container centre line. This is
+   fully fluid: on mobile, tablet, desktop or ultrawide the person sits
+   centred under the menu with no px tweaks. */
 .hero-presenter {
   position: absolute;
-  bottom: 0;
-  /* Centered column, width tuned so object-fit:cover scales the subject
-     up without blowing it to full viewport width. */
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(560px, 72vw);
-  top: 2.5rem;
+  inset: 5rem 0 0 0; /* top: 5rem, right/bottom/left: 0 */
   overflow: hidden;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .hero-presenter {
+    inset: 2.5rem 0 0 0;
+  }
 }
 .hero-presenter img {
-  width: 100%;
+  position: absolute;
+  bottom: 0;
   height: 100%;
-  object-fit: cover;
-  /* Source photos are landscape 768×512 PNGs with the subject on the
-     left (~x=180). After cover-scale (height-anchored, ×≈1.1) the subject
-     lives around rendered X=198. Shifting the image right by 82px lands
-     them in the centre of a 560-wide container. */
-  object-position: 82px 100%;
-}
-/* Mobile: drop the image just under the menu row (header is ~5rem tall) */
-@media (max-width: 767px) {
-  .hero-presenter {
-    top: 5rem;
-    width: 100%;
-    left: 0;
-    transform: none;
-  }
-  .hero-presenter img {
-    object-fit: cover;
-    /* Same subject-centring strategy as desktop, tuned for a narrower
-       container: subject sits at rendered X≈183, want container-centre
-       at ≈195 → shift image right by ~12px. */
-    object-position: 12px 100%;
-  }
+  width: auto;
+  /* Centre the SUBJECT: image left at container-50%, then shift the whole
+     img left by 23.5% of its own width — that's exactly the horizontal
+     distance from the image's left edge to the subject. */
+  left: 50%;
+  transform: translateX(-23.5%);
+  max-width: none;
 }
 
 
