@@ -509,13 +509,20 @@ html { scroll-behavior: smooth; }
   bottom: 0;
   left: 0;
   right: 0;
-  /* Start the image as high as possible so object-fit:contain can scale it up
-     until the head sits just under the floating menu. */
+  /* Container spans the full hero below the floating menu. Overflow is
+     hidden so the img's upward transform:scale is cropped at the top edge
+     (keeps the head from poking through the header). */
   top: 3rem;
+  overflow: hidden;
 }
 .hero-presenter img {
   width: 100%;
   height: 100%;
+  /* Scale the whole image upward from its bottom edge. The feet stay
+     anchored to the hero's bottom (where the player sits) and the head
+     grows up to just under the menu. */
+  transform: scale(1.35);
+  transform-origin: 50% 100%;
 }
 /* Mobile: drop the image just under the menu row (header is ~5rem tall) */
 @media (max-width: 767px) {
@@ -525,6 +532,7 @@ html { scroll-behavior: smooth; }
   .hero-presenter img {
     object-fit: cover;
     object-position: 50% top;
+    transform: none;
   }
 }
 /* Desktop & up: full available height (below menu), contain so the entire
