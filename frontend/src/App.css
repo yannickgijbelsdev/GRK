@@ -507,42 +507,38 @@ html { scroll-behavior: smooth; }
 .hero-presenter {
   position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
-  /* Container spans the full hero below the floating menu. Overflow is
-     hidden so the img's upward transform:scale is cropped at the top edge
-     (keeps the head from poking through the header). */
-  top: 3rem;
+  /* Centered column, width tuned so object-fit:cover scales the subject
+     up without blowing it to full viewport width. */
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(560px, 72vw);
+  top: 2.5rem;
   overflow: hidden;
 }
 .hero-presenter img {
   width: 100%;
   height: 100%;
-  /* Scale the whole image upward from its bottom edge. The feet stay
-     anchored to the hero's bottom (where the player sits) and the head
-     grows up to just under the menu. */
-  transform: scale(1.35);
-  transform-origin: 50% 100%;
+  object-fit: cover;
+  /* Source photos are landscape 768×512 PNGs with the subject on the
+     left (~x=180). After cover-scale (height-anchored, ×≈1.1) the subject
+     lives around rendered X=198. Shifting the image right by 82px lands
+     them in the centre of a 560-wide container. */
+  object-position: 82px 100%;
 }
 /* Mobile: drop the image just under the menu row (header is ~5rem tall) */
 @media (max-width: 767px) {
   .hero-presenter {
     top: 5rem;
+    width: 100%;
+    left: 0;
+    transform: none;
   }
   .hero-presenter img {
     object-fit: cover;
-    object-position: 50% top;
-    transform: none;
-  }
-}
-/* Desktop & up: full available height (below menu), contain so the entire
-   presenter shows and never overlaps the header. */
-@media (min-width: 768px) {
-  .hero-presenter img {
-    object-fit: contain;
-    object-position: 50% bottom;
-
-
+    /* Same subject-centring strategy as desktop, tuned for a narrower
+       container: subject sits at rendered X≈183, want container-centre
+       at ≈195 → shift image right by ~12px. */
+    object-position: 12px 100%;
   }
 }
 
