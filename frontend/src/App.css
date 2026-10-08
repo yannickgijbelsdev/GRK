@@ -511,7 +511,7 @@ html { scroll-behavior: smooth; }
   right: 0;
   /* Start the image as high as possible so object-fit:contain can scale it up
      until the head sits just under the floating menu. */
-  top: 5rem;
+  top: 3rem;
 }
 .hero-presenter img {
   width: 100%;
@@ -520,7 +520,7 @@ html { scroll-behavior: smooth; }
 /* Mobile: drop the image just under the menu row (header is ~5rem tall) */
 @media (max-width: 767px) {
   .hero-presenter {
-    top: calc(5rem + 1cm);
+    top: 5rem;
   }
   .hero-presenter img {
     object-fit: cover;
