@@ -526,7 +526,10 @@ html { scroll-behavior: smooth; }
 .hero-presenter img {
   position: absolute;
   bottom: 0;
-  height: 100%;
+  /* Image is sized larger than the container (125%) so the subject fills
+     more of the hero. Overflow is clipped by the container, which is
+     anchored just below the floating menu. */
+  height: 125%;
   width: auto;
   /* Centre the SUBJECT: image left at container-50%, then shift the whole
      img left by 23.5% of its own width — that's exactly the horizontal
