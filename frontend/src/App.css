@@ -530,9 +530,12 @@ html { scroll-behavior: smooth; }
   width: auto;
   /* Centre the SUBJECT: image left at container-50%, then shift the whole
      img left by 23.5% of its own width — that's exactly the horizontal
-     distance from the image's left edge to the subject. */
+     distance from the image's left edge to the subject.
+     Vertical 13% pushes the img down so the ~13% transparent band under
+     the subject in the source PNG falls past the banner, keeping the
+     subject's shoulders flush against the hero bottom instead of floating. */
   left: 50%;
-  transform: translateX(-23.5%);
+  transform: translate(-23.5%, 13%);
   max-width: none;
 }
 
