@@ -615,17 +615,21 @@ html { scroll-behavior: smooth; }
 }
 
 /* Full-photo mode for the schedule rows: the entire presenter image sits
-   inside the row card, never cropped at the top, bottom or sides. No
-   translate, no scale — object-fit contain centers the subject. */
+   inside the (slightly over-tall) wrapper, feet pinned to the card bottom
+   and head rising above the card. No translate, no scale — object-fit
+   contain + max-width keep the image proportional and un-cropped. */
+.presenter-stack--contain {
+  align-items: flex-end;
+}
 .presenter-stack--contain .presenter-stack-img,
 .presenter-stack--contain[data-count="2"] .presenter-stack-img,
 .presenter-stack--contain[data-count="3"] .presenter-stack-img {
   transform: none;
   height: 100%;
+  width: auto;
+  max-width: 100%;
   max-height: 100%;
-}
-.presenter-stack--contain {
-  align-items: center;
+  object-fit: contain;
 }
 
 

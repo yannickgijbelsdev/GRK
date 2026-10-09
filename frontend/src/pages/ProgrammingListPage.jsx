@@ -125,11 +125,12 @@ const ScheduleRowPresenter = ({ show }) => {
   const slots = liveSlots.length > 0 ? liveSlots : (fallbackUrl ? [fallbackUrl] : []);
   if (slots.length === 0) return null;
   return (
-    // Full presenter photo visible within the row — never cropped at top or
-    // bottom. The wrapper matches the row height exactly (no overflow trick,
-    // no scale boost) so the full body fits inside the card.
+    // Container is taller than the card so the presenter head can rise
+    // above the card, while the image bottom (feet) still sits exactly on
+    // the card's bottom edge. No clip-path, so nothing is cropped.
     <div
-      className="pointer-events-none absolute right-3 md:right-6 top-0 bottom-0 w-24 md:w-32"
+      className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-32 md:w-40"
+      style={{ height: 'calc(100% + 2.5rem)' }}
       aria-hidden="true"
     >
       <PresenterStack slots={slots} className="presenter-stack--contain" />

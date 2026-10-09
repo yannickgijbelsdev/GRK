@@ -20,11 +20,11 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 
-### 2026-02-16 — Schedule-rij toont volledige presenter-foto (niet afgekapt)
-- `ScheduleRowPresenter` (`ProgrammingListPage.jsx`): wrapper geswitcht van `bottom:0 w-28 md:w-40 + clipPath(-500px) + boost` → `top:0 bottom:0 w-24 md:w-32` zonder overflow-trick. De presenter past nu volledig in de kaart.
-- Nieuwe `.presenter-stack--contain` modifier in `App.css`: zet `transform: none`, `height: 100%`, `align-items: center`. Hele foto (hoofd t/m voeten) blijft binnen de kaart; `object-fit: contain` centreert de onderwerp.
-- Hero + sticky player behouden de `--boost` modifier (bewust uitstekend hoofd).
-- Gevalideerd via screenshot tool op 1920×800 en 390×844 (Mike, Hadewig, Johan allemaal volledig zichtbaar).
+### 2026-02-16 — Schedule-rij toont volledige presenter-foto (hoofd uitstekend, niets afgekapt)
+- `ScheduleRowPresenter` (`ProgrammingListPage.jsx`): wrapper nu `bottom:0 w-32 md:w-40` met `height: calc(100% + 2.5rem)` zodat de container 40px boven de kaart uitsteekt — hoofd komt eruit — zonder clip-path. Geen top-anchor meer, geen boost.
+- `.presenter-stack--contain` modifier aangepast: `align-items: flex-end` zodat de voeten op de kaart-bodem landen; `transform: none`, `height: 100%`, `width: auto`, `max-width: 100%`, `max-height: 100%`, `object-fit: contain` zodat de hele foto proportioneel in de container past.
+- Hero + sticky player behouden `--boost` (uitstekend hoofd + bodem geclipt).
+- Gevalideerd op 1920×800 én 390×844 — Mike, Hadewig en Johan allemaal met hoofd boven de kaart én volledige lichaam zichtbaar.
 
 ### 2026-02-16 — Live video iframe stopt met refreshen op grk.fm
 - **Oorzaak**: `useShowVideo` haalde geen `embed_url` uit de API-response (die alleen `embed_html` levert) en viel terug op `dangerouslySetInnerHTML`. Elke parent-render maakte een nieuw `{__html}` object → React zag een reference-change → zette de innerHTML opnieuw → iframe-DOM werd gesloopt en opnieuw gebouwd → de live stream reconnectte constant. Scroll-events in `StickyShowVideo` triggerden tientallen re-renders per seconde en dus continu reloaden.
