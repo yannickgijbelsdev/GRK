@@ -5,6 +5,7 @@ import { usePlayer } from '../context/PlayerContext';
 import { useNowOnAir } from '../hooks/useNowOnAir';
 import CoverImage from './CoverImage';
 import VolumeControl from './VolumeControl';
+import PresenterStack, { usePresenterSlots } from './PresenterStack';
 
 const ROTATE_MS = 7000;
 
@@ -12,6 +13,8 @@ const PersistentPlayer = () => {
   const { playing, muted, volume, setVolume, toggle, toggleMute } = usePlayer();
   const { show, presenter, track } = useNowOnAir();
   const [view, setView] = useState('track'); // 'track' | 'show'
+  const liveSlots = usePresenterSlots('https://clr.koodh.com/api/rds/grk/presenter-image/');
+  const hasLiveSlots = liveSlots.length > 0;
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -34,18 +37,22 @@ const PersistentPlayer = () => {
             plakken against the card bottom. Placed BEFORE the flex row so
             the play button + text (rendered later in DOM) naturally stack on
             top of any horizontal overlap on the left side of the card. */}
-        {presenter.image && (
+        {(hasLiveSlots || presenter.image) && (
           <div
             className="pointer-events-none absolute -left-3 md:-left-4 bottom-0 w-24 md:w-36 overflow-visible transition-opacity duration-500"
             style={{ height: 'calc(100% + 3.25rem)', opacity: isShowView ? 1 : 0 }}
             data-testid="persistent-player-presenter-cutout"
           >
-            <img
-              src={presenter.image}
-              alt={hostName}
-              draggable={false}
-              className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
-            />
+            {hasLiveSlots ? (
+              <PresenterStack slots={liveSlots} data-testid="persistent-player-presenter-stack" />
+            ) : (
+              <img
+                src={presenter.image}
+                alt={hostName}
+                draggable={false}
+                className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
+              />
+            )}
           </div>
         )}
         <div className="relative z-10 p-3 md:p-5 flex items-center gap-3 md:gap-6">
@@ -59,7 +66,7 @@ const PersistentPlayer = () => {
               >
                 <CoverImage src={track.cover} alt={trackTitle} />
               </div>
-              {!presenter.image && (
+              {!presenter.image && !hasLiveSlots && (
                 <div
                   className="absolute inset-0 transition-opacity duration-500"
                   style={{ opacity: isShowView ? 1 : 0 }}

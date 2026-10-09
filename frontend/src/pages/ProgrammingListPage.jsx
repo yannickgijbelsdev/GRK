@@ -2,8 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { Repeat, ChevronLeft, ChevronRight, RotateCcw, Calendar as CalendarIcon } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import SEO from '../components/SEO';
-import { useDaySchedule } from '../hooks/useSchedule';
+import { useDateSchedule } from '../hooks/useSchedule';
 import { Calendar } from '../components/ui/calendar';
+import PresenterStack, { usePresenterSlots } from '../components/PresenterStack';
 import {
   Popover,
   PopoverTrigger,
@@ -109,6 +110,38 @@ const fmtWeekRange = (monday) => {
   }
 };
 
+const fmtDateIso = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+const ScheduleRowPresenter = ({ show }) => {
+  const slots = usePresenterSlots(
+    show?.id ? `https://clr.koodh.com/api/rds/show/${show.id}/presenter-image/` : null,
+  );
+  const fallbackUrl = show?.presenter_image_url || show?.image || '';
+  if (slots.length === 0 && !fallbackUrl) return null;
+  return (
+    <div
+      className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-28 md:w-40 overflow-hidden"
+      style={{ height: 'calc(100% + 3rem)' }}
+    >
+      {slots.length > 0 ? (
+        <PresenterStack slots={slots} />
+      ) : (
+        <img
+          src={fallbackUrl}
+          alt={show.show_name}
+          draggable={false}
+          className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.18)]"
+        />
+      )}
+    </div>
+  );
+};
+
 const ProgrammingListPage = () => {
   // activeDate is the authoritative state. activeDay is derived from it.
   const [activeDate, setActiveDateRaw] = useState(() => todayMidnight());
@@ -117,7 +150,8 @@ const ProgrammingListPage = () => {
 
   const activeDayId = useMemo(() => dayIdFor(activeDate), [activeDate]);
   const day = WEEKDAYS.find((d) => d.id === activeDayId) || WEEKDAYS[0];
-  const { shows, loading } = useDaySchedule(activeDayId);
+  const activeDateIso = useMemo(() => fmtDateIso(activeDate), [activeDate]);
+  const { shows, loading } = useDateSchedule(activeDateIso, activeDayId);
 
   const weekMonday = useMemo(() => mondayOf(activeDate), [activeDate]);
   const todayOffset = useMemo(() => diffDays(activeDate, todayMidnight()), [activeDate]);
@@ -323,7 +357,6 @@ const ProgrammingListPage = () => {
           ) : (
             <div className="space-y-14 pt-12 md:pt-16">
               {shows.map((s, idx) => {
-                const imgUrl = s.presenter_image_url || s.image || '';
                 return (
                   <div
                     key={`${s.start_time}-${idx}`}
@@ -341,19 +374,7 @@ const ProgrammingListPage = () => {
                         )}
                       </div>
                     </div>
-                    {imgUrl && (
-                      <div
-                        className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-28 md:w-40 overflow-hidden"
-                        style={{ height: 'calc(100% + 3rem)' }}
-                      >
-                        <img
-                          src={imgUrl}
-                          alt={s.show_name}
-                          draggable={false}
-                          className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.18)]"
-                        />
-                      </div>
-                    )}
+                    <ScheduleRowPresenter show={s} />
                   </div>
                 );
               })}

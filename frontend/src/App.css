@@ -542,6 +542,50 @@ html { scroll-behavior: smooth; }
   max-width: none;
 }
 
+/* Presenter stack — up to 3 cutouts side-by-side with overlap. The stack
+   fills its parent container by default; parents that want a single
+   presenter (hero) override the height to 125% so the cutout rises above
+   the container the same way the legacy single-img hero did. */
+.presenter-stack {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.presenter-stack-img {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: 50% 100%;
+  user-select: none;
+  pointer-events: none;
+}
+.presenter-stack[data-count="2"] .presenter-stack-img {
+  height: 92%;
+  margin-inline: -4%;
+}
+.presenter-stack[data-count="3"] .presenter-stack-img {
+  height: 78%;
+  margin-inline: -6%;
+}
+/* Hero-specific lift so the cutouts rise above the container like the
+   single-image hero did. */
+.hero-presenter .presenter-stack {
+  height: 125%;
+  transform: translateY(13%); /* same bottom-nudge as the single-img hero */
+}
+.hero-presenter .presenter-stack[data-count="1"] .presenter-stack-img {
+  /* Legacy single-image hero relied on the subject sitting at ~23.5% of a
+     768×512 landscape PNG. The new per-slot PNGs are 512×512 portraits with
+     the subject centred, so no extra horizontal translate is needed. */
+  object-position: 50% 100%;
+}
+
 
 
 /* ------------------------------------------------------------------------- */

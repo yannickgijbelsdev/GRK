@@ -6,6 +6,7 @@ import { useShowVideo } from '../hooks/useShowVideo';
 import CoverImage from './CoverImage';
 import VinylRecord from './VinylRecord';
 import ShowVideo from './ShowVideo';
+import PresenterStack, { usePresenterSlots } from './PresenterStack';
 import heroRings from '../data/heroRings.json';
 
 const fmtTime = (d) => {
@@ -38,9 +39,16 @@ const Hero = () => {
   const showVideo = useShowVideo();
   const hasVideo = !!showVideo;
 
+  // New multi-presenter slot API: /api/rds/grk/presenter-image/{1,2,3}.png.
+  // Hook resolves which slots currently have content. Falls back to the
+  // legacy single-image path when nothing is populated so the hero keeps
+  // showing *something* during handover windows.
+  const liveSlots = usePresenterSlots('https://clr.koodh.com/api/rds/grk/presenter-image/');
+  const hasLiveSlots = liveSlots.length > 0;
+
   const showName = show || '';
   const hostName = presenter.name || '';
-  const hasPresenterImg = !hasVideo && !!presenter.image;
+  const hasPresenterImg = !hasVideo && (hasLiveSlots || !!presenter.image);
   const showVinyl = !hasVideo && presenter.checked && !hasPresenterImg;
   const trackArtist = track.artist || '';
   const trackTitle = track.title || '';
@@ -119,12 +127,16 @@ const Hero = () => {
       {/* Presenter image — see CSS .hero-presenter for mobile/desktop split. */}
       {hasPresenterImg && (
         <div className="hero-presenter z-[6] pointer-events-none" aria-hidden="true">
-          <img
-            src={presenter.image}
-            alt={hostName}
-            className="select-none drop-shadow-2xl"
-            draggable={false}
-          />
+          {hasLiveSlots ? (
+            <PresenterStack slots={liveSlots} data-testid="hero-presenter-stack" />
+          ) : (
+            <img
+              src={presenter.image}
+              alt={hostName}
+              className="select-none drop-shadow-2xl"
+              draggable={false}
+            />
+          )}
         </div>
       )}
 
