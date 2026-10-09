@@ -20,7 +20,18 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 
+### 2026-02-16 — Live video iframe stopt met refreshen op grk.fm
+- **Oorzaak**: `useShowVideo` haalde geen `embed_url` uit de API-response (die alleen `embed_html` levert) en viel terug op `dangerouslySetInnerHTML`. Elke parent-render maakte een nieuw `{__html}` object → React zag een reference-change → zette de innerHTML opnieuw → iframe-DOM werd gesloopt en opnieuw gebouwd → de live stream reconnectte constant. Scroll-events in `StickyShowVideo` triggerden tientallen re-renders per seconde en dus continu reloaden.
+- **Fix** (`useShowVideo.js`):
+  - Nieuwe helper `extractIframeSrc(html)` parsed de iframe-`src` uit `embed_html` (zowel top-level als geneste `endpoint.embed_html`).
+  - Hook geeft nu alleen een stabiele `embedUrl` terug (plus `title`/`platform`); geen `embedHtml` meer in de return.
+  - `prev` vergelijking vereenvoudigd — zodra `embedUrl` identiek is wordt dezelfde object-ref teruggegeven.
+  - `dayIdNow()` gebruikt `Intl.DateTimeFormat` met `Europe/Brussels` zodat UTC-browsers rond middernacht de juiste dag resolven.
+- **`ShowVideo.jsx` + `StickyShowVideo.jsx`**: `dangerouslySetInnerHTML` fallback verwijderd. Beide componenten renderen altijd een `<iframe src={embedUrl}>` met stabiele string, zodat React de iframe-DOM-node ongemoeid laat tussen renders.
+- Gevalideerd via screenshot tool: Levensloop Genk iframe blijft dezelfde src behouden na 40 scroll-events (~12s stress).
+
 ### 2026-02-16 — Presenter cutout ~30% groter in sticky player + schedule + duo-overlap
+
 - Nieuwe `.presenter-stack--boost` modifier in `App.css`: `transform: translateY(25%) scale(1.3)` met `transform-origin: bottom center`, zodat de voeten blijven plakken aan de onderrand terwijl het hoofd verder bovenuit steekt.
 - `PresenterStack.jsx` accepteert nu een `className` prop voor de container.
 - Toegepast op `PersistentPlayer.jsx` (sticky/floating player) en `ProgrammingListPage.jsx` schedule-rijen.

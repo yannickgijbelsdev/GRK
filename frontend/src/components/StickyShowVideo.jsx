@@ -37,7 +37,7 @@ const StickyShowVideo = () => {
     };
   }, []);
 
-  if (!video) return null;
+  if (!video || !video.embedUrl) return null;
 
   // On wide screens: sit immediately to the right of the (centered, 1024px
   // wide) audio player. Formula: right = 50% − (halfPlayer + gap + videoWidth)
@@ -53,21 +53,14 @@ const StickyShowVideo = () => {
       data-testid="sticky-show-video"
     >
       <div className="sticky-show-video-frame">
-        {video.embedUrl ? (
-          <iframe
-            src={video.embedUrl}
-            title={video.title || 'Livestream'}
-            className="sticky-show-video-iframe"
-            frameBorder="0"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen
-          />
-        ) : (
-          <div
-            className="sticky-show-video-iframe-wrap"
-            dangerouslySetInnerHTML={{ __html: video.embedHtml }}
-          />
-        )}
+        <iframe
+          src={video.embedUrl}
+          title={video.title || 'Livestream'}
+          className="sticky-show-video-iframe"
+          frameBorder="0"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+        />
       </div>
     </div>
   );

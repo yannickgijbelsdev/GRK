@@ -14,11 +14,9 @@ const withMutedParams = (url) => {
  * de huidige show. Verschijnt centraal in de hero op de plek waar normaal de
  * presenter foto / vinyl staat.
  */
-const ShowVideo = ({ embedUrl, embedHtml, title = '' }) => {
-  // Prefer the explicit embed URL so we control sizing/iframe attrs. Only fall
-  // back to the raw embed_html when there is no direct URL.
-  const useRawHtml = !embedUrl && !!embedHtml;
+const ShowVideo = ({ embedUrl, title = '' }) => {
   const src = withMutedParams(embedUrl);
+  if (!src) return null;
   return (
     <div
       className="hero-show-video pointer-events-auto z-[7]"
@@ -32,22 +30,15 @@ const ShowVideo = ({ embedUrl, embedHtml, title = '' }) => {
       }}
     >
       <div className="show-video-frame">
-        {useRawHtml ? (
-          <div
-            className="show-video-iframe-wrap"
-            dangerouslySetInnerHTML={{ __html: embedHtml }}
-          />
-        ) : (
-          <iframe
-            src={src}
-            title={title || 'Livestream'}
-            className="show-video-iframe"
-            frameBorder="0"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen
-            data-testid="show-livestream-iframe"
-          />
-        )}
+        <iframe
+          src={src}
+          title={title || 'Livestream'}
+          className="show-video-iframe"
+          frameBorder="0"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+          data-testid="show-livestream-iframe"
+        />
       </div>
     </div>
   );

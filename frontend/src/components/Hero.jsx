@@ -104,7 +104,6 @@ const Hero = () => {
       {hasVideo && (
         <ShowVideo
           embedUrl={showVideo.embedUrl}
-          embedHtml={showVideo.embedHtml}
           title={showVideo.title || showName}
         />
       )}

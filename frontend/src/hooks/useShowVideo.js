@@ -3,8 +3,29 @@ import { useDaySchedule } from './useSchedule';
 
 const VIDEO_API = 'https://clr.koodh.com/api/videos/public/show';
 
+// Pull the first iframe src out of an embed_html snippet so we can mount a
+// real <iframe src="..."> element (which React diff-compares stably by
+// string) instead of re-setting innerHTML on every parent re-render.
+const extractIframeSrc = (html) => {
+  if (!html || typeof html !== 'string') return '';
+  const m = /<iframe[^>]+src=["']([^"']+)["']/i.exec(html);
+  return m ? m[1] : '';
+};
+
 const DAY_MAP = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
-const dayIdNow = () => DAY_MAP[new Date().getDay()];
+// Resolve the weekday in Europe/Brussels so visitors in UTC (and server-side
+// renders) still see the correct schedule after local midnight.
+const dayIdNow = () => {
+  const weekday = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Brussels',
+    weekday: 'long',
+  }).format(new Date()).toLowerCase();
+  const map = {
+    sunday: 'zondag', monday: 'maandag', tuesday: 'dinsdag', wednesday: 'woensdag',
+    thursday: 'donderdag', friday: 'vrijdag', saturday: 'zaterdag',
+  };
+  return map[weekday] || DAY_MAP[new Date().getDay()];
+};
 
 // Convert "HH:MM" → minutes-since-midnight in the Europe/Brussels timezone.
 const parseHM = (s) => {
@@ -70,19 +91,27 @@ export const useShowVideo = () => {
         if (!r.ok) return; // keep last state on transient failure
         const data = await r.json();
         if (cancelled) return;
-        const url = data?.embed_code || '';
-        const html = data?.embed_html || '';
-        if (!url && !html) { setVideo(null); return; }
+        // The clr.koodh.com response exposes the embed in several shapes.
+        // Prefer the explicit embed_code (direct URL), then an iframe src
+        // extracted from embed_html at either top-level or nested under
+        // `endpoint`. We purposely avoid dangerouslySetInnerHTML so the
+        // iframe DOM node stays stable across re-renders — otherwise every
+        // parent state change would recreate the iframe and the live
+        // stream would reconnect from scratch.
+        const rawUrl = data?.embed_code || '';
+        const htmlTop = data?.embed_html || '';
+        const htmlNested = data?.endpoint?.embed_html || data?.endpoint?.embed_code || '';
+        const url = rawUrl || extractIframeSrc(htmlTop) || extractIframeSrc(htmlNested) || '';
+        if (!url) { setVideo(null); return; }
         setVideo((prev) => {
           // Only replace the video object when something meaningful changed —
           // otherwise React sees the same reference and skips a re-render,
           // which keeps the iframe DOM node stable (no reload on scroll).
-          if (prev && prev.embedUrl === (url || null) && prev.embedHtml === (html || '')) {
+          if (prev && prev.embedUrl === url) {
             return prev;
           }
           return {
-            embedUrl: url || null,
-            embedHtml: html || '',
+            embedUrl: url,
             platform: data?.platform || 'iframe',
             title: data?.show_title || '',
           };
