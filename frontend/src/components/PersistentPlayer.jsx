@@ -29,6 +29,12 @@ const PersistentPlayer = () => {
   const trackTitle = track.title || '';
 
   const isShowView = view === 'show';
+  const hasPresenterImage = hasLiveSlots || !!presenter.image;
+  // When the presenter cutout is visible, widen the first flex slot so the
+  // play button + text shift right. The cover thumbnail stays in place
+  // (opacity-faded in show view) but its slot now matches the presenter
+  // overlay width, guaranteeing no overlap / clipping.
+  const isPresenterOnStage = hasPresenterImage && isShowView;
 
   return (
     <div className="relative max-w-5xl mx-auto px-4 md:px-6">
@@ -39,7 +45,7 @@ const PersistentPlayer = () => {
             top of any horizontal overlap on the left side of the card. */}
         {(hasLiveSlots || presenter.image) && (
           <div
-            className="pointer-events-none absolute -left-3 md:-left-4 bottom-0 w-24 md:w-36 transition-opacity duration-500"
+            className="pointer-events-none absolute -left-3 md:-left-4 bottom-0 w-28 md:w-44 transition-opacity duration-500"
             style={{
               height: 'calc(100% + 3.25rem)',
               /* Clip the bottom edge at the card border so the translateY
@@ -59,8 +65,14 @@ const PersistentPlayer = () => {
           </div>
         )}
         <div className="relative z-10 p-3 md:p-5 flex items-center gap-3 md:gap-6">
-          {/* Cover / Presenter image (cross-faded) */}
-          <div className="relative flex-shrink-0 w-14 h-14 md:w-20 md:h-20">
+          {/* Cover / Presenter image (cross-faded). Width expands in show
+              view so the play button + text slide right and leave room
+              for the full presenter cutout — no overlap, no clipping. */}
+          <div
+            className={`relative flex-shrink-0 h-14 md:h-20 transition-[width] duration-500 ${
+              isPresenterOnStage ? 'w-28 md:w-44' : 'w-14 md:w-20'
+            }`}
+          >
             {/* Rounded square holds the track cover + logo-fallback for presenter-less shows */}
             <div className="absolute inset-0 rounded-xl overflow-hidden">
               <div

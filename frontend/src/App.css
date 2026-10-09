@@ -573,11 +573,16 @@ html { scroll-behavior: smooth; }
 }
 .presenter-stack[data-count="2"] .presenter-stack-img {
   height: 92%;
-  margin-inline: -4%;
+  /* Overlap horizontally so the duo reads as a single composite photo.
+     Each image is pulled ~12.5% of the container width toward its
+     neighbour, so the two cutouts cover about 25% of each other at the
+     seam — close enough to look like one picture, loose enough to keep
+     both faces clearly visible. */
+  margin-inline: -12.5%;
 }
 .presenter-stack[data-count="3"] .presenter-stack-img {
   height: 78%;
-  margin-inline: -6%;
+  margin-inline: -15%;
 }
 /* Hero-specific lift so the cutouts rise above the container like the
    single-image hero did. */

@@ -1,11 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-// Build the weserv-proxied URL for a slot. The raw clr.koodh.com endpoints
-// 302-redirect to object storage that does not advertise permissive CORS
-// headers, so routing through weserv keeps canvas probing + cross-origin
-// usage working.
-const toProxied = (rawUrl) =>
-  `https://images.weserv.nl/?url=${encodeURIComponent(rawUrl.replace(/^https?:\/\//, ''))}`;
+// Build the weserv-proxied URL for a slot with an optional cache-bust
+// token. The raw clr.koodh.com endpoints 302-redirect to object storage
+// that does not advertise permissive CORS headers, so routing through
+// weserv keeps canvas probing + cross-origin usage working. The optional
+// bust token is forwarded upstream (clr.koodh.com ignores it) and makes
+// weserv treat each refresh as a distinct cache key, so a one-time
+// placeholder response never gets stuck in the proxy cache.
+const toProxied = (rawUrl, bust) => {
+  const withBust = bust ? `${rawUrl}${rawUrl.includes('?') ? '&' : '?'}v=${bust}` : rawUrl;
+  return `https://images.weserv.nl/?url=${encodeURIComponent(withBust.replace(/^https?:\/\//, ''))}`;
+};
 
 const probeCache = new Map(); // url → boolean
 const ALPHA_OPAQUE_THRESHOLD = 32;
@@ -86,9 +91,13 @@ export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000 } = {}) => {
       return undefined;
     }
     const mySeq = ++seqRef.current;
-    const urls = [1, 2, 3].map((n) => toProxied(`${baseRawUrl}${n}.png`));
 
     const run = async () => {
+      // Cache-bust token: changes every refresh so weserv doesn't keep
+      // serving an old 1366×808 placeholder once the upstream flipped to
+      // a real cutout.
+      const bust = Math.floor(Date.now() / refreshMs);
+      const urls = [1, 2, 3].map((n) => toProxied(`${baseRawUrl}${n}.png`, bust));
       urls.forEach((u) => probeCache.delete(u)); // force fresh probe
       const results = await Promise.all(urls.map(probeImage));
       if (mySeq !== seqRef.current) return; // stale

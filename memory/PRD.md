@@ -20,12 +20,16 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 
-### 2026-02-16 — Presenter cutout ~30% groter in sticky player + schedule
+### 2026-02-16 — Presenter cutout ~30% groter in sticky player + schedule + duo-overlap
 - Nieuwe `.presenter-stack--boost` modifier in `App.css`: `transform: translateY(25%) scale(1.3)` met `transform-origin: bottom center`, zodat de voeten blijven plakken aan de onderrand terwijl het hoofd verder bovenuit steekt.
 - `PresenterStack.jsx` accepteert nu een `className` prop voor de container.
 - Toegepast op `PersistentPlayer.jsx` (sticky/floating player) en `ProgrammingListPage.jsx` schedule-rijen.
 - `ScheduleRowPresenter` wrapper: `overflow-hidden` → `clipPath: inset(-500px 0 0 0)` zodat top-overflow (het hoofd) zichtbaar is terwijl de onderkant tegen de kaart klemt. Zelfde patroon als sticky player.
-- Hero blijft ongewijzigd (`.hero-presenter` override heeft eigen scale/translate).
+- Sticky player cover-slot wordt breder (`w-28 md:w-44`) zodra het presenterbeeld in beeld is, zodat de play-knop en tekst automatisch naar rechts verschuiven. Geen overlap of clipping meer tussen presenter en knop.
+- Presenter overlay container verbreed naar `w-28 md:w-44` zodat de 1.3× geschaalde cutout past.
+- `usePresenterSlots` cache-bust: elke 60s refresh krijgt een nieuwe `v=` token, zodat weserv geen 1366×808 placeholder blijft serveren wanneer upstream op live cutouts flipt. Hierdoor detecteert de probe nu wél slot 1 + slot 2 als afzonderlijke presentatoren (count=2) in plaats van terug te vallen op de legacy composite JPG.
+- CSS `data-count="2"` overlap afgestemd op ~25% van de buurfoto: `margin-inline: -12.5%` (per zijde), zodat Mike en Hadewig overlappen alsof ze op één foto staan. Count=3 gebruikt `-15%`.
+- Hero blijft ongewijzigd (`.hero-presenter` override heeft eigen scale/translate), maar profiteert ook van de duo-overlap via de gedeelde `.presenter-stack[data-count="2"]` regel.
 - Gevalideerd via screenshot tool op 1920×800 en 390×844.
 
 ## Changelog (recentste eerst)
