@@ -20,6 +20,15 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 
+### 2026-02-16 — Duo/trio in `--contain` modus: elke presenter volledig horizontaal zichtbaar
+- Probleem: in de bewegende player bleef `--contain` elke image op `height: 100%` + `width: auto` zetten (natural aspect) → images waren 172px breed in een 176px container, flex-shrink deed niets, dus elke persoon werd ~62px aan de buitenkant van de container geclipt. User zag "maar half".
+- Fix (`App.css` `.presenter-stack--contain`):
+  - Count=1 blijft `height: 100%, width: auto` zoals voorheen.
+  - Count=2 krijgt expliciete `width: 65%, height: auto, margin-inline: -7.5%` → ~114px wide per image met ~25% overlap, beide volledig horizontaal zichtbaar.
+  - Count=3 krijgt `width: 44%, margin-inline: -5.5%` met zelfde logica.
+  - Alle variants gebruiken `object-fit: contain` + `object-position: 50% 100%` zodat de persoon bottom-aligned staat.
+- Gevalideerd op desktop (1920×800) + mobile (390×844): Bart Valee + Mike Cnudde beide volledig zichtbaar, geen armen/schouders meer afgeknipt.
+
 ### 2026-02-16 — Sticky player duo gebruikt `--contain` i.p.v. `--boost`
 - `PersistentPlayer.jsx`: `className` op de PresenterStack is nu conditioneel — solo presenter krijgt `--boost` (groot, hoofd uit kaart), duo/trio krijgt `--contain` (zelfde evenwichtige stijl als het schema).
 - Oorzaak: `--boost` scale(1.3) × 2 presenters zorgde dat de beelden breder werden dan de 176px container, waardoor Bart's lichaam links buiten de kaart werd geclipt en de twee presenters chaotisch over elkaar vielen.

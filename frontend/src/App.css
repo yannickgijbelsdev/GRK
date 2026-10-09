@@ -614,22 +614,42 @@ html { scroll-behavior: smooth; }
   transform-origin: bottom center;
 }
 
-/* Full-photo mode for the schedule rows: the entire presenter image sits
-   inside the (slightly over-tall) wrapper, feet pinned to the card bottom
-   and head rising above the card. No translate, no scale — object-fit
-   contain + max-width keep the image proportional and un-cropped. */
+/* Full-photo mode for the schedule rows + sticky player duo: the entire
+   presenter image sits inside the (slightly over-tall) wrapper, feet
+   pinned to the card bottom and head rising above the card. No translate,
+   no scale — object-fit contain + explicit widths per slot keep both
+   presenters fully visible horizontally (no cropped shoulders / arms). */
 .presenter-stack--contain {
   align-items: flex-end;
 }
-.presenter-stack--contain .presenter-stack-img,
-.presenter-stack--contain[data-count="2"] .presenter-stack-img,
-.presenter-stack--contain[data-count="3"] .presenter-stack-img {
+.presenter-stack--contain .presenter-stack-img {
   transform: none;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+/* Solo: fill the full container height, keep natural aspect. */
+.presenter-stack--contain[data-count="1"] .presenter-stack-img {
   height: 100%;
   width: auto;
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+}
+/* Duo: each presenter ≈ 65% of container width → ~25% overlap at the seam,
+   both subjects fully visible horizontally. */
+.presenter-stack--contain[data-count="2"] .presenter-stack-img {
+  height: auto;
+  width: 65%;
+  max-width: 65%;
+  max-height: 100%;
+  margin-inline: -7.5%;
+}
+/* Trio: each ≈ 44% of container width → ~25% overlap between adjacent. */
+.presenter-stack--contain[data-count="3"] .presenter-stack-img {
+  height: auto;
+  width: 44%;
+  max-width: 44%;
+  max-height: 100%;
+  margin-inline: -5.5%;
 }
 
 
