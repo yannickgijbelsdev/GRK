@@ -39,8 +39,16 @@ const PersistentPlayer = () => {
             top of any horizontal overlap on the left side of the card. */}
         {(hasLiveSlots || presenter.image) && (
           <div
-            className="pointer-events-none absolute -left-3 md:-left-4 bottom-0 w-24 md:w-36 overflow-visible transition-opacity duration-500"
-            style={{ height: 'calc(100% + 3.25rem)', opacity: isShowView ? 1 : 0 }}
+            className="pointer-events-none absolute -left-3 md:-left-4 bottom-0 w-24 md:w-36 transition-opacity duration-500"
+            style={{
+              height: 'calc(100% + 3.25rem)',
+              /* Clip the bottom edge at the card border so the translateY
+                 on the stack image never shows past the player card, while
+                 the top overflow (head cutout) remains visible via the
+                 generous negative inset above. */
+              clipPath: 'inset(-500px 0 0 0)',
+              opacity: isShowView ? 1 : 0,
+            }}
             data-testid="persistent-player-presenter-cutout"
           >
             <PresenterStack
