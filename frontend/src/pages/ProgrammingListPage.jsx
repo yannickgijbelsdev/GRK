@@ -118,26 +118,18 @@ const fmtDateIso = (date) => {
 };
 
 const ScheduleRowPresenter = ({ show }) => {
-  const slots = usePresenterSlots(
+  const liveSlots = usePresenterSlots(
     show?.id ? `https://clr.koodh.com/api/rds/show/${show.id}/presenter-image/` : null,
   );
   const fallbackUrl = show?.presenter_image_url || show?.image || '';
-  if (slots.length === 0 && !fallbackUrl) return null;
+  const slots = liveSlots.length > 0 ? liveSlots : (fallbackUrl ? [fallbackUrl] : []);
+  if (slots.length === 0) return null;
   return (
     <div
       className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-28 md:w-40 overflow-hidden"
       style={{ height: 'calc(100% + 3rem)' }}
     >
-      {slots.length > 0 ? (
-        <PresenterStack slots={slots} />
-      ) : (
-        <img
-          src={fallbackUrl}
-          alt={show.show_name}
-          draggable={false}
-          className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.18)]"
-        />
-      )}
+      <PresenterStack slots={slots} />
     </div>
   );
 };

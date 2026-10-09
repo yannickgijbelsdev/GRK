@@ -43,16 +43,10 @@ const PersistentPlayer = () => {
             style={{ height: 'calc(100% + 3.25rem)', opacity: isShowView ? 1 : 0 }}
             data-testid="persistent-player-presenter-cutout"
           >
-            {hasLiveSlots ? (
-              <PresenterStack slots={liveSlots} data-testid="persistent-player-presenter-stack" />
-            ) : (
-              <img
-                src={presenter.image}
-                alt={hostName}
-                draggable={false}
-                className="absolute inset-x-0 bottom-0 w-full h-full object-cover object-bottom drop-shadow-[0_4px_10px_rgba(6,42,74,0.25)]"
-              />
-            )}
+            <PresenterStack
+              slots={hasLiveSlots ? liveSlots : [presenter.image]}
+              data-testid="persistent-player-presenter-stack"
+            />
           </div>
         )}
         <div className="relative z-10 p-3 md:p-5 flex items-center gap-3 md:gap-6">

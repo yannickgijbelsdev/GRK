@@ -564,11 +564,12 @@ html { scroll-behavior: smooth; }
   object-position: 50% 100%;
   user-select: none;
   pointer-events: none;
-  /* Shift the whole cutout down so any transparent padding below the
-     subject in the source PNG falls past the container, and the subject's
-     body visually plakken tegen de onderkant van de kaart/banner i.p.v.
-     te zweven. */
-  transform: translateY(10%);
+  /* Source presenter PNGs ship ~12.5 % transparent padding below the
+     subject. Shifting the whole image down by roughly that amount drops
+     the padding outside the container (overflow:hidden clips it) so the
+     subject's hands/hips plakken tegen de onderkant van de kaart/banner.
+     The hero overrides this via its own stack-level translate. */
+  transform: translateY(25%);
 }
 .presenter-stack[data-count="2"] .presenter-stack-img {
   height: 92%;
@@ -582,7 +583,7 @@ html { scroll-behavior: smooth; }
    single-image hero did. */
 .hero-presenter .presenter-stack {
   height: 125%;
-  transform: translateY(13%); /* same bottom-nudge as the single-img hero */
+  transform: translateY(13%);
 }
 .hero-presenter .presenter-stack-img {
   /* Hero already shifts the whole stack via translateY; avoid double-shift. */

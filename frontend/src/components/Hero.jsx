@@ -124,19 +124,14 @@ const Hero = () => {
         </div>
       )}
 
-      {/* Presenter image — see CSS .hero-presenter for mobile/desktop split. */}
+      {/* Presenter image — PresenterStack handles both the new per-slot API
+          and a single-image fallback via a one-entry slots array. */}
       {hasPresenterImg && (
         <div className="hero-presenter z-[6] pointer-events-none" aria-hidden="true">
-          {hasLiveSlots ? (
-            <PresenterStack slots={liveSlots} data-testid="hero-presenter-stack" />
-          ) : (
-            <img
-              src={presenter.image}
-              alt={hostName}
-              className="select-none drop-shadow-2xl"
-              draggable={false}
-            />
-          )}
+          <PresenterStack
+            slots={hasLiveSlots ? liveSlots : [presenter.image]}
+            data-testid="hero-presenter-stack"
+          />
         </div>
       )}
 
