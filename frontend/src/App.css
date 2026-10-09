@@ -614,6 +614,20 @@ html { scroll-behavior: smooth; }
   transform-origin: bottom center;
 }
 
+/* Full-photo mode for the schedule rows: the entire presenter image sits
+   inside the row card, never cropped at the top, bottom or sides. No
+   translate, no scale — object-fit contain centers the subject. */
+.presenter-stack--contain .presenter-stack-img,
+.presenter-stack--contain[data-count="2"] .presenter-stack-img,
+.presenter-stack--contain[data-count="3"] .presenter-stack-img {
+  transform: none;
+  height: 100%;
+  max-height: 100%;
+}
+.presenter-stack--contain {
+  align-items: center;
+}
+
 
 
 /* ------------------------------------------------------------------------- */
