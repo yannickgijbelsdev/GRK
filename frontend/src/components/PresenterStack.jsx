@@ -109,11 +109,15 @@ export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000 } = {}) => {
  * cutout. Container positioning is left to the parent (`.hero-presenter`,
  * player card, schedule row, …).
  */
-const PresenterStack = ({ slots, imgClassName = '', 'data-testid': dataTestId }) => {
+const PresenterStack = ({ slots, className = '', imgClassName = '', 'data-testid': dataTestId }) => {
   const n = slots.length;
   if (!n) return null;
   return (
-    <div className="presenter-stack" data-count={n} data-testid={dataTestId}>
+    <div
+      className={`presenter-stack ${className}`.trim()}
+      data-count={n}
+      data-testid={dataTestId}
+    >
       {slots.map((url, i) => (
         <img
           key={url + i}

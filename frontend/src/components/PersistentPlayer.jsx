@@ -53,6 +53,7 @@ const PersistentPlayer = () => {
           >
             <PresenterStack
               slots={hasLiveSlots ? liveSlots : [presenter.image]}
+              className="presenter-stack--boost"
               data-testid="persistent-player-presenter-stack"
             />
           </div>

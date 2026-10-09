@@ -19,6 +19,15 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - SEO prerender pipeline met 160-char slugs en Nginx try_files
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
+
+### 2026-02-16 — Presenter cutout ~30% groter in sticky player + schedule
+- Nieuwe `.presenter-stack--boost` modifier in `App.css`: `transform: translateY(25%) scale(1.3)` met `transform-origin: bottom center`, zodat de voeten blijven plakken aan de onderrand terwijl het hoofd verder bovenuit steekt.
+- `PresenterStack.jsx` accepteert nu een `className` prop voor de container.
+- Toegepast op `PersistentPlayer.jsx` (sticky/floating player) en `ProgrammingListPage.jsx` schedule-rijen.
+- `ScheduleRowPresenter` wrapper: `overflow-hidden` → `clipPath: inset(-500px 0 0 0)` zodat top-overflow (het hoofd) zichtbaar is terwijl de onderkant tegen de kaart klemt. Zelfde patroon als sticky player.
+- Hero blijft ongewijzigd (`.hero-presenter` override heeft eigen scale/translate).
+- Gevalideerd via screenshot tool op 1920×800 en 390×844.
+
 ## Changelog (recentste eerst)
 ### 2026-02-16 — Regio+ logo transparant + wit
 - Bron PNG had een witte achtergrond (geen alpha) → CSS `brightness(0) invert(1)` maakte alles wit inclusief bg = wit blok.

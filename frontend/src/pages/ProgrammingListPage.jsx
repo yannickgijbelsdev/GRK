@@ -126,10 +126,15 @@ const ScheduleRowPresenter = ({ show }) => {
   if (slots.length === 0) return null;
   return (
     <div
-      className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-28 md:w-40 overflow-hidden"
-      style={{ height: 'calc(100% + 3rem)' }}
+      className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-28 md:w-40"
+      style={{
+        height: 'calc(100% + 3rem)',
+        /* Allow the enlarged head to overflow above the card while keeping
+           the bottom clipped at the card's bottom edge (no feet past page). */
+        clipPath: 'inset(-500px 0 0 0)',
+      }}
     >
-      <PresenterStack slots={slots} />
+      <PresenterStack slots={slots} className="presenter-stack--boost" />
     </div>
   );
 };
