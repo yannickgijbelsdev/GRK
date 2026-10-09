@@ -20,6 +20,12 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 
+### 2026-02-16 — Sticky player duo gebruikt `--contain` i.p.v. `--boost`
+- `PersistentPlayer.jsx`: `className` op de PresenterStack is nu conditioneel — solo presenter krijgt `--boost` (groot, hoofd uit kaart), duo/trio krijgt `--contain` (zelfde evenwichtige stijl als het schema).
+- Oorzaak: `--boost` scale(1.3) × 2 presenters zorgde dat de beelden breder werden dan de 176px container, waardoor Bart's lichaam links buiten de kaart werd geclipt en de twee presenters chaotisch over elkaar vielen.
+- Met `--contain` passen beide proportioneel binnen de container; feet pinnen aan kaart-bodem, hoofd steekt licht uit, geen horizontale clipping.
+- Gevalideerd op desktop (1920×800) + mobile (390×844): Bart Valee + Mike Cnudde duidelijk naast elkaar zichtbaar.
+
 ### 2026-02-16 — Schedule-rij toont volledige presenter-foto (hoofd uitstekend, niets afgekapt)
 - `ScheduleRowPresenter` (`ProgrammingListPage.jsx`): wrapper nu `bottom:0 w-32 md:w-40` met `height: calc(100% + 2.5rem)` zodat de container 40px boven de kaart uitsteekt — hoofd komt eruit — zonder clip-path. Geen top-anchor meer, geen boost.
 - `.presenter-stack--contain` modifier aangepast: `align-items: flex-end` zodat de voeten op de kaart-bodem landen; `transform: none`, `height: 100%`, `width: auto`, `max-width: 100%`, `max-height: 100%`, `object-fit: contain` zodat de hele foto proportioneel in de container past.

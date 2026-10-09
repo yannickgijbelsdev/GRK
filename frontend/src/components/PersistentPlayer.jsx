@@ -59,7 +59,14 @@ const PersistentPlayer = () => {
           >
             <PresenterStack
               slots={hasLiveSlots ? liveSlots : [presenter.image]}
-              className="presenter-stack--boost"
+              className={
+                // Solo presenter → boost (big head sticking up). Duo/trio →
+                // contain so both presenters zijn evenwichtig zichtbaar
+                // zonder dat ze over elkaar/door de kaartrand knallen.
+                (hasLiveSlots ? liveSlots.length : 1) >= 2
+                  ? 'presenter-stack--contain'
+                  : 'presenter-stack--boost'
+              }
               data-testid="persistent-player-presenter-stack"
             />
           </div>
