@@ -523,7 +523,7 @@ html { scroll-behavior: smooth; }
     inset: 2.5rem 0 0 0;
   }
 }
-.hero-presenter img {
+.hero-presenter > img {
   position: absolute;
   bottom: 0;
   /* Image is sized larger than the container (125%) so the subject fills
@@ -564,6 +564,11 @@ html { scroll-behavior: smooth; }
   object-position: 50% 100%;
   user-select: none;
   pointer-events: none;
+  /* Shift the whole cutout down so any transparent padding below the
+     subject in the source PNG falls past the container, and the subject's
+     body visually plakken tegen de onderkant van de kaart/banner i.p.v.
+     te zweven. */
+  transform: translateY(10%);
 }
 .presenter-stack[data-count="2"] .presenter-stack-img {
   height: 92%;
@@ -579,10 +584,16 @@ html { scroll-behavior: smooth; }
   height: 125%;
   transform: translateY(13%); /* same bottom-nudge as the single-img hero */
 }
+.hero-presenter .presenter-stack-img {
+  /* Hero already shifts the whole stack via translateY; avoid double-shift. */
+  transform: none;
+}
+/* 1-presenter special case: center the single cutout horizontally in the
+   hero regardless of flex alignment / aspect ratio. */
+.hero-presenter .presenter-stack[data-count="1"] {
+  justify-content: center;
+}
 .hero-presenter .presenter-stack[data-count="1"] .presenter-stack-img {
-  /* Legacy single-image hero relied on the subject sitting at ~23.5% of a
-     768×512 landscape PNG. The new per-slot PNGs are 512×512 portraits with
-     the subject centred, so no extra horizontal translate is needed. */
   object-position: 50% 100%;
 }
 
