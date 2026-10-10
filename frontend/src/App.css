@@ -520,7 +520,10 @@ html { scroll-behavior: smooth; }
 }
 @media (min-width: 768px) {
   .hero-presenter {
-    inset: 2.5rem 0 0 0;
+    /* Push the presenter area down on desktop so the (solo-boosted)
+       head sits comfortably below the sticky menu bar instead of
+       bumping into it. */
+    inset: 8rem 0 0 0;
   }
 }
 .hero-presenter > img {

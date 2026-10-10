@@ -48,7 +48,11 @@ const Hero = () => {
 
   const showName = show || '';
   const hostName = presenter.name || '';
-  const hasPresenterImg = !hasVideo && (hasLiveSlots || !!presenter.image);
+  // Only render the presenter imagery once the multi-slot probe has
+  // returned real cutouts. The legacy single composite JPG is much
+  // bigger than the overlapped duo layout, so showing it as a fallback
+  // caused a visible "big then small" flash on load.
+  const hasPresenterImg = !hasVideo && hasLiveSlots;
   const showVinyl = !hasVideo && presenter.checked && !hasPresenterImg;
   const trackArtist = track.artist || '';
   const trackTitle = track.title || '';
@@ -128,7 +132,7 @@ const Hero = () => {
       {hasPresenterImg && (
         <div className="hero-presenter z-[6] pointer-events-none" aria-hidden="true">
           <PresenterStack
-            slots={hasLiveSlots ? liveSlots : [presenter.image]}
+            slots={liveSlots}
             data-testid="hero-presenter-stack"
           />
         </div>

@@ -29,7 +29,10 @@ const PersistentPlayer = () => {
   const trackTitle = track.title || '';
 
   const isShowView = view === 'show';
-  const hasPresenterImage = hasLiveSlots || !!presenter.image;
+  // Only count the real multi-slot cutouts as "present". The legacy
+  // single composite JPG makes the sticky player flash big-then-small
+  // on load, so we skip it.
+  const hasPresenterImage = hasLiveSlots;
   // When the presenter cutout is visible, widen the first flex slot so the
   // play button + text shift right. The cover thumbnail stays in place
   // (opacity-faded in show view) but its slot now matches the presenter
@@ -43,7 +46,7 @@ const PersistentPlayer = () => {
             plakken against the card bottom. Placed BEFORE the flex row so
             the play button + text (rendered later in DOM) naturally stack on
             top of any horizontal overlap on the left side of the card. */}
-        {(hasLiveSlots || presenter.image) && (
+        {hasLiveSlots && (
           <div
             className="pointer-events-none absolute -left-3 md:-left-4 bottom-0 w-28 md:w-44 transition-opacity duration-500"
             style={{
@@ -58,12 +61,12 @@ const PersistentPlayer = () => {
             data-testid="persistent-player-presenter-cutout"
           >
             <PresenterStack
-              slots={hasLiveSlots ? liveSlots : [presenter.image]}
+              slots={liveSlots}
               className={
                 // Solo presenter → boost (big head sticking up). Duo/trio →
                 // contain so both presenters zijn evenwichtig zichtbaar
                 // zonder dat ze over elkaar/door de kaartrand knallen.
-                (hasLiveSlots ? liveSlots.length : 1) >= 2
+                liveSlots.length >= 2
                   ? 'presenter-stack--contain'
                   : 'presenter-stack--boost'
               }

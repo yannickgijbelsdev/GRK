@@ -131,7 +131,7 @@ const ScheduleRowPresenter = ({ show }) => {
     // so nothing is cropped.
     <div
       className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-36 md:w-56"
-      style={{ height: 'calc(100% + 3rem)' }}
+      style={{ height: 'calc(100% + 5rem)' }}
       aria-hidden="true"
     >
       <PresenterStack slots={slots} className="presenter-stack--contain" />
