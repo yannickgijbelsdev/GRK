@@ -588,9 +588,12 @@ html { scroll-behavior: smooth; }
   margin-inline: -15%;
 }
 /* Hero-specific lift so the cutouts rise above the container like the
-   single-image hero did. */
+   single-image hero did. Height stays slightly larger than the wrapper
+   so the subject reads as oversized, but is capped at 115% to keep the
+   top of the head safely inside the clip region (anything over ~115%
+   would push hair above the parent top and get cut off by overflow). */
 .hero-presenter .presenter-stack {
-  height: 125%;
+  height: 115%;
   transform: translateY(13%);
 }
 .hero-presenter .presenter-stack-img {
