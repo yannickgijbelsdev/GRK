@@ -627,20 +627,20 @@ html { scroll-behavior: smooth; }
     transform: none;
   }
   .hero-presenter .presenter-stack[data-count="2"] .presenter-stack-img {
-    width: 62%;
-    max-width: 62%;
+    width: 80%;
+    max-width: 80%;
     height: auto;
     max-height: 100%;
-    margin-inline: -15.5%;
+    margin-inline: -20%;
     object-fit: contain;
     object-position: 50% 100%;
   }
   .hero-presenter .presenter-stack[data-count="3"] .presenter-stack-img {
-    width: 44%;
-    max-width: 44%;
+    width: 56%;
+    max-width: 56%;
     height: auto;
     max-height: 100%;
-    margin-inline: -11%;
+    margin-inline: -14%;
     object-fit: contain;
     object-position: 50% 100%;
   }
