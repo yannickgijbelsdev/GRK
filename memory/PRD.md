@@ -20,6 +20,12 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 
+### 2026-02-16 — Mobile hero groter + schedule heads sticken meer uit
+- Mobile hero duo: `width: 62% + margin-inline: -15.5%` (van 42%+-10.5%) → images van 242×242 in plaats van 164×164, veel beter zichtbaar en matcht desktop qua schouder-overlap (~50%).
+- Mobile hero trio: `width: 44%, margin: -11%`.
+- `ScheduleRowPresenter` wrapper: height `calc(100% + 2.5rem)` → `calc(100% + 5rem)` (40 → 80px extensie boven de kaart). Solo presenter heads steken nu ~60px uit boven de kaart, consistent met de sticky player / hero.
+- Gevalideerd op mobile hero (390×844) en schedule desktop (1920×800).
+
 ### 2026-02-16 — Hero duo: schouder-overlap (~35%), consistent op mobile en desktop
 - Desktop margin verhoogd: `clamp(-7rem, -11%, -1.75rem)` → ~34% overlap, Bart en Mike raken elkaars schouders.
 - Mobile: nieuwe media query `max-width: 767px` die images cap op `width: 48%` + `height: auto` + `max-height: 92%` + `margin-inline: -8%` → ~33% overlap met ~187px brede images die passen in het 390px hero-vak.

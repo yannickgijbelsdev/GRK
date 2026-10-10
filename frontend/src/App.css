@@ -614,29 +614,33 @@ html { scroll-behavior: smooth; }
 }
 /* Mobile hero: cap each presenter at half the container width so the
    natural-aspect PNG does not render far wider than the stack and leak
-   outside the hero. Same ~35% shoulder overlap as desktop. */
+   outside the hero. Same ~50% shoulder overlap as desktop. Images stay
+   bottom-anchored tegen de hero-rand (zoals desktop), niet gecentreerd. */
 @media (max-width: 767px) {
   .hero-presenter .presenter-stack[data-count="2"],
   .hero-presenter .presenter-stack[data-count="3"] {
-    /* With smaller images, bottom-anchoring hides them behind the audio
-       player card. Center-align so they stay inside the visible hero. */
-    align-items: center;
+    /* The desktop stack is 125% tall with a 13% downward translate so
+       the oversized duo cutouts fill the hero. On mobile the images are
+       much smaller, so that translate pushes them below the visible
+       hero. Reset to a pure bottom-anchored layout. */
+    height: 100%;
+    transform: none;
   }
   .hero-presenter .presenter-stack[data-count="2"] .presenter-stack-img {
-    width: 48%;
-    max-width: 48%;
+    width: 62%;
+    max-width: 62%;
     height: auto;
-    max-height: 92%;
-    margin-inline: -12%;
+    max-height: 100%;
+    margin-inline: -15.5%;
     object-fit: contain;
     object-position: 50% 100%;
   }
   .hero-presenter .presenter-stack[data-count="3"] .presenter-stack-img {
-    width: 36%;
-    max-width: 36%;
+    width: 44%;
+    max-width: 44%;
     height: auto;
-    max-height: 78%;
-    margin-inline: -9%;
+    max-height: 100%;
+    margin-inline: -11%;
     object-fit: contain;
     object-position: 50% 100%;
   }
@@ -673,22 +677,22 @@ html { scroll-behavior: smooth; }
   max-width: 100%;
   max-height: 100%;
 }
-/* Duo: each presenter ≈ 65% of container width → ~25% overlap at the seam,
+/* Duo: each presenter ≈ 65% of container width → ~50% shoulder overlap,
    both subjects fully visible horizontally. */
 .presenter-stack--contain[data-count="2"] .presenter-stack-img {
   height: auto;
   width: 65%;
   max-width: 65%;
   max-height: 100%;
-  margin-inline: -7.5%;
+  margin-inline: -16%;
 }
-/* Trio: each ≈ 44% of container width → ~25% overlap between adjacent. */
+/* Trio: each ≈ 44% of container width → ~50% overlap between adjacent. */
 .presenter-stack--contain[data-count="3"] .presenter-stack-img {
   height: auto;
   width: 44%;
   max-width: 44%;
   max-height: 100%;
-  margin-inline: -5.5%;
+  margin-inline: -11%;
 }
 
 

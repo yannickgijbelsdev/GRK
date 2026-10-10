@@ -126,11 +126,12 @@ const ScheduleRowPresenter = ({ show }) => {
   if (slots.length === 0) return null;
   return (
     // Container is taller than the card so the presenter head can rise
-    // above the card, while the image bottom (feet) still sits exactly on
-    // the card's bottom edge. No clip-path, so nothing is cropped.
+    // above the card like in the sticky player / hero, while the image
+    // bottom (feet) still sits on the card's bottom edge. No clip-path,
+    // so nothing is cropped.
     <div
       className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-32 md:w-40"
-      style={{ height: 'calc(100% + 2.5rem)' }}
+      style={{ height: 'calc(100% + 5rem)' }}
       aria-hidden="true"
     >
       <PresenterStack slots={slots} className="presenter-stack--contain" />
