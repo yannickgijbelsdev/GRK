@@ -607,10 +607,10 @@ html { scroll-behavior: smooth; }
    overlap to a sane pixel range so the duo always overlaps about the
    shoulders (~35%), regardless of viewport. */
 .hero-presenter .presenter-stack[data-count="2"] .presenter-stack-img {
-  margin-inline: clamp(-7rem, -11%, -1.75rem);
+  margin-inline: clamp(-10rem, -15%, -2.5rem);
 }
 .hero-presenter .presenter-stack[data-count="3"] .presenter-stack-img {
-  margin-inline: clamp(-8rem, -12%, -2rem);
+  margin-inline: clamp(-11rem, -16%, -2.75rem);
 }
 /* Mobile hero: cap each presenter at half the container width so the
    natural-aspect PNG does not render far wider than the stack and leak
@@ -627,7 +627,7 @@ html { scroll-behavior: smooth; }
     max-width: 48%;
     height: auto;
     max-height: 92%;
-    margin-inline: -8%;
+    margin-inline: -12%;
     object-fit: contain;
     object-position: 50% 100%;
   }
@@ -636,7 +636,7 @@ html { scroll-behavior: smooth; }
     max-width: 36%;
     height: auto;
     max-height: 78%;
-    margin-inline: -6%;
+    margin-inline: -9%;
     object-fit: contain;
     object-position: 50% 100%;
   }
