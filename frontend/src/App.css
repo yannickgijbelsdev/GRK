@@ -602,6 +602,16 @@ html { scroll-behavior: smooth; }
 .hero-presenter .presenter-stack[data-count="1"] .presenter-stack-img {
   object-position: 50% 100%;
 }
+/* On wide hero containers the base percent-based margin would blow up
+   (−12.5% of 1920 = 240px/side, i.e. ~75% visual overlap). Clamp the
+   overlap to a sane pixel range so the duo always has roughly the same
+   ~25% overlap we have in the schedule rows, regardless of viewport. */
+.hero-presenter .presenter-stack[data-count="2"] .presenter-stack-img {
+  margin-inline: clamp(-5rem, -8%, -1.25rem);
+}
+.hero-presenter .presenter-stack[data-count="3"] .presenter-stack-img {
+  margin-inline: clamp(-6rem, -9%, -1.5rem);
+}
 
 /* ~30% larger cutout for sticky player + schedule rows. Scales from the
    bottom center so de voeten blijven plakken aan de onderkant van de kaart
