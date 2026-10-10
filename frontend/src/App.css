@@ -604,13 +604,42 @@ html { scroll-behavior: smooth; }
 }
 /* On wide hero containers the base percent-based margin would blow up
    (−12.5% of 1920 = 240px/side, i.e. ~75% visual overlap). Clamp the
-   overlap to a sane pixel range so the duo always has roughly the same
-   ~25% overlap we have in the schedule rows, regardless of viewport. */
+   overlap to a sane pixel range so the duo always overlaps about the
+   shoulders (~35%), regardless of viewport. */
 .hero-presenter .presenter-stack[data-count="2"] .presenter-stack-img {
-  margin-inline: clamp(-5rem, -8%, -1.25rem);
+  margin-inline: clamp(-7rem, -11%, -1.75rem);
 }
 .hero-presenter .presenter-stack[data-count="3"] .presenter-stack-img {
-  margin-inline: clamp(-6rem, -9%, -1.5rem);
+  margin-inline: clamp(-8rem, -12%, -2rem);
+}
+/* Mobile hero: cap each presenter at half the container width so the
+   natural-aspect PNG does not render far wider than the stack and leak
+   outside the hero. Same ~35% shoulder overlap as desktop. */
+@media (max-width: 767px) {
+  .hero-presenter .presenter-stack[data-count="2"],
+  .hero-presenter .presenter-stack[data-count="3"] {
+    /* With smaller images, bottom-anchoring hides them behind the audio
+       player card. Center-align so they stay inside the visible hero. */
+    align-items: center;
+  }
+  .hero-presenter .presenter-stack[data-count="2"] .presenter-stack-img {
+    width: 48%;
+    max-width: 48%;
+    height: auto;
+    max-height: 92%;
+    margin-inline: -8%;
+    object-fit: contain;
+    object-position: 50% 100%;
+  }
+  .hero-presenter .presenter-stack[data-count="3"] .presenter-stack-img {
+    width: 36%;
+    max-width: 36%;
+    height: auto;
+    max-height: 78%;
+    margin-inline: -6%;
+    object-fit: contain;
+    object-position: 50% 100%;
+  }
 }
 
 /* ~30% larger cutout for sticky player + schedule rows. Scales from the

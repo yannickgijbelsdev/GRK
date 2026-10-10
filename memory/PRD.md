@@ -20,7 +20,12 @@ Pixel-perfecte replica van de NPO Blend applicatie, herbrand voor de radiozender
 - Share endpoints per categorie voor Facebook/Twitter OG-cards
 
 
-### 2026-02-16 — Hero duo: consistente ~25% overlap op grote schermen
+### 2026-02-16 — Hero duo: schouder-overlap (~35%), consistent op mobile en desktop
+- Desktop margin verhoogd: `clamp(-7rem, -11%, -1.75rem)` → ~34% overlap, Bart en Mike raken elkaars schouders.
+- Mobile: nieuwe media query `max-width: 767px` die images cap op `width: 48%` + `height: auto` + `max-height: 92%` + `margin-inline: -8%` → ~33% overlap met ~187px brede images die passen in het 390px hero-vak.
+- Mobile `align-items: center` zodat de kleinere images niet verdwijnen onder de audio-player (bottom-align was de default; feet onder de visible hero rand).
+- Trio idem voor count=3 (desktop + mobile).
+- Gevalideerd op 1920×800 en 390×844: Bart Valee + Mike Cnudde met consistente shoulder overlap in beide viewports.
 - Probleem: op 1920px breed scherm staan de 2 presenters in elkaar. De base `.presenter-stack[data-count="2"]` gebruikt `margin-inline: -12.5%` relatief t.o.v. parent → op 1920 wide stack is dat -240px per zijde = -480px overlap op images van 644px = **75% overlap**. Op het schema geeft dezelfde regel ~27% overlap omdat de container maar 160px breed is.
 - Fix (`App.css`): hero-specifieke `margin-inline: clamp(-5rem, -8%, -1.25rem)` voor data-count=2 en `clamp(-6rem, -9%, -1.5rem)` voor data-count=3. Op desktop clipt dit naar -80px per zijde → ~25% overlap, consistent met het schema.
 - Gevalideerd op 1920×800: Bart Valee + Mike Cnudde met duidelijke scheiding en ~25% overlap, geen "in elkaar" meer.
