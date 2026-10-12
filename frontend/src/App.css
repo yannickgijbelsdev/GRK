@@ -690,7 +690,7 @@ html { scroll-behavior: smooth; }
     justify-content: flex-end;
   }
   .presenter-stack--contain .presenter-stack-img {
-    transform: scale(2);
+    transform: scale(1.5);
     transform-origin: 100% 100%;
   }
 }

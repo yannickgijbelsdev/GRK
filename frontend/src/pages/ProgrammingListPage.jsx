@@ -136,7 +136,7 @@ const ScheduleRowPresenter = ({ show }) => {
     // smaller slot (w-24) so the show name + presenter name have room
     // to breathe; desktop keeps the big w-56 presence.
     <div
-      className="pointer-events-none absolute right-2 md:right-6 bottom-0 w-24 md:w-56"
+      className="pointer-events-none absolute right-2 md:right-6 bottom-0 w-32 md:w-56"
       style={{ height: 'calc(100% + 5rem)' }}
       aria-hidden="true"
     >
@@ -366,7 +366,7 @@ const ProgrammingListPage = () => {
                     data-testid="schedule-row"
                     className="relative bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-[#e4ecf5] min-h-[110px]"
                   >
-                    <div className="flex items-stretch gap-3 md:gap-6 p-4 md:p-5 pr-24 md:pr-44">
+                    <div className="flex items-stretch gap-3 md:gap-6 p-4 md:p-5 pr-32 md:pr-44">
                       {/* Desktop: time as a dedicated left column.
                           Mobile hides this and shows a compact label
                           above the show name instead so the show name
