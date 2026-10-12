@@ -6,18 +6,18 @@ import React, { useEffect, useRef, useState } from 'react';
 // the probe is done the browser serves the <img> element straight from
 // its disk cache (zero extra network round-trip for the visible image).
 //
-// `padHorizontal` requests a slightly wider canvas (11:9 ratio) from
-// weserv with transparent fill, so the subject lands on a transparent
-// ~11% band on each side — generous enough that even Koodh PNGs where
-// the subject's hand sits flush at column 0 still read with visible
-// breathing room on screen.
+// `padHorizontal` requests a wider 12:9 canvas from weserv with
+// transparent fill, so the subject lands on a transparent ~12.5% band
+// on each side — generous enough that even Koodh PNGs where the
+// subject's hand sits flush at column 0 (e.g. Hadewig) still read with
+// clear breathing room on screen.
 const toProxied = (rawUrl, bust, width, padHorizontal = false) => {
   const withBust = bust ? `${rawUrl}${rawUrl.includes('?') ? '&' : '?'}v=${bust}` : rawUrl;
   const base = `https://images.weserv.nl/?url=${encodeURIComponent(withBust.replace(/^https?:\/\//, ''))}`;
   if (!width) return base;
   if (!padHorizontal) return `${base}&w=${width}`;
   const canvasH = width;
-  const canvasW = Math.round(width * 11 / 9);
+  const canvasW = Math.round(width * 12 / 9);
   return `${base}&w=${canvasW}&h=${canvasH}&fit=contain&cbg=none`;
 };
 
