@@ -138,10 +138,19 @@ const Hero = () => {
         </div>
       )}
 
-      <div className="relative z-10 h-full max-w-4xl mx-auto px-6 md:px-8 pt-24 md:pt-28">
-        <div className="relative h-full flex flex-col justify-start sm:justify-center pt-[2cm] sm:pt-[1cm] z-20" style={{ maxWidth: '480px' }}>
-          {!hasVideo && (
-            <>
+      {/* Show title + presenter name — absolutely anchored to the bottom
+          of the hero so the vertical distance to the "Zonet gedraaid"
+          peek is identical on every viewport. 4.5rem covers the sticky
+          player card + its 24px peek, then 5cm of breathing room keeps
+          the title clear of the presenter's face regardless of hero
+          height. Only rendered when no livestream video is active. */}
+      {!hasVideo && (
+        <div
+          className="absolute inset-x-0 z-20 px-6 md:px-8 pointer-events-none"
+          style={{ bottom: 'calc(4.5rem + 5cm)' }}
+        >
+          <div className="max-w-4xl mx-auto">
+            <div style={{ maxWidth: '480px' }}>
               <h1
                 className="text-white font-black tracking-tight leading-[0.95] break-words drop-shadow-[0_2px_20px_rgba(0,0,0,0.45)]"
                 style={{ fontSize: 'clamp(2.6rem, 6vw, 4.25rem)' }}
@@ -153,10 +162,10 @@ const Hero = () => {
                   met {hostName}
                 </p>
               )}
-            </>
-          )}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 z-30 px-4 w-full max-w-fit">
         <div className="relative w-full max-w-md mx-auto group">
