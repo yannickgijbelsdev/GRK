@@ -118,7 +118,7 @@ const fmtDateIso = (date) => {
 };
 
 const ScheduleRowPresenter = ({ show }) => {
-  // Schedule rows show the presenter in a ~150-220px wide slot, so 384w
+  // Schedule rows show the presenter in a ~100-220px wide slot, so 384w
   // via weserv is plenty crisp on retina while being ~5× smaller than
   // the raw PNG — and critical for perceived snappiness: the probe
   // thumbnail *is* the display asset, so once probing finishes the <img>
@@ -132,10 +132,11 @@ const ScheduleRowPresenter = ({ show }) => {
   return (
     // Container is taller than the card so the presenter head can rise
     // above the card like in the sticky player / hero, while the image
-    // bottom (feet) still sits on the card's bottom edge. No clip-path,
-    // so nothing is cropped.
+    // bottom (feet) still sits on the card's bottom edge. Mobile uses a
+    // smaller slot (w-24) so the show name + presenter name have room
+    // to breathe; desktop keeps the big w-56 presence.
     <div
-      className="pointer-events-none absolute right-3 md:right-6 bottom-0 w-36 md:w-56"
+      className="pointer-events-none absolute right-2 md:right-6 bottom-0 w-24 md:w-56"
       style={{ height: 'calc(100% + 5rem)' }}
       aria-hidden="true"
     >
@@ -363,16 +364,23 @@ const ProgrammingListPage = () => {
                   <div
                     key={`${s.start_time}-${idx}`}
                     data-testid="schedule-row"
-                    className="relative bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-[#e4ecf5] min-h-[90px] md:min-h-[110px]"
+                    className="relative bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-[#e4ecf5] min-h-[110px]"
                   >
-                    <div className="flex items-center gap-4 md:gap-6 p-4 md:p-5 pr-28 md:pr-44">
-                      <div className="flex-shrink-0 w-24 md:w-32 text-[#4a6480] font-semibold text-sm md:text-base tabular-nums">
+                    <div className="flex items-stretch gap-3 md:gap-6 p-4 md:p-5 pr-24 md:pr-44">
+                      {/* Desktop: time as a dedicated left column.
+                          Mobile hides this and shows a compact label
+                          above the show name instead so the show name
+                          itself has the full card width to breathe. */}
+                      <div className="hidden md:flex flex-shrink-0 w-32 items-center text-[#4a6480] font-semibold text-base tabular-nums">
                         {fmtTime(s.start_time)} - {fmtTime(s.end_time)}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[#062a4a] text-lg md:text-xl font-bold leading-tight truncate">{s.show_name}</div>
+                      <div className="flex-1 min-w-0 flex flex-col justify-center">
+                        <div className="md:hidden text-[11px] uppercase tracking-widest font-semibold text-[#2a5d99] tabular-nums mb-1">
+                          {fmtTime(s.start_time)} – {fmtTime(s.end_time)}
+                        </div>
+                        <div className="text-[#062a4a] text-lg md:text-xl font-bold leading-tight break-words">{s.show_name}</div>
                         {s.presenter_names && (
-                          <div className="text-[#4a6480] text-sm md:text-base mt-0.5 truncate">met {s.presenter_names}</div>
+                          <div className="text-[#4a6480] text-sm md:text-base mt-0.5 break-words">met {s.presenter_names}</div>
                         )}
                       </div>
                     </div>

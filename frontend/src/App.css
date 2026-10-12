@@ -676,11 +676,15 @@ html { scroll-behavior: smooth; }
   object-fit: contain;
   object-position: 50% 100%;
 }
-/* Solo: fill the full container height, keep natural aspect. */
+/* Solo: fill the full container height, keep natural aspect. We cap
+   width/height at ~86% so the cutout keeps a visible horizontal margin
+   on each side — some Koodh source PNGs crop the subject's hand right
+   at the pixel edge, so without this breathing room an outstretched
+   hand sits flush against (and visually clipped by) the row card. */
 .presenter-stack--contain[data-count="1"] .presenter-stack-img {
-  height: 100%;
-  width: auto;
-  max-width: 100%;
+  height: auto;
+  width: 86%;
+  max-width: 86%;
   max-height: 100%;
 }
 /* Duo: each presenter ≈ 65% of container width → ~50% shoulder overlap,
