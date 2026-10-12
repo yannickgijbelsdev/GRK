@@ -678,51 +678,44 @@ html { scroll-behavior: smooth; }
 }
 /* On mobile the schedule slot is only ~96px wide, so the solo cutout
    renders at ~83×83 — shorter than the row card itself, which keeps the
-   head trapped inside the card. Scale the img up from its bottom-right
-   corner so the head clearly rises above the row like on desktop,
-   without pushing the image past the card's right edge. The right-anchor
+   head trapped inside the card. Scale every presenter img up from its
+   bottom-right corner so the head clearly rises above the row like on
+   desktop, no matter how many presenters the show has. The right-anchor
    justify (flex-end) + overflow: visible lets the extra height expand
-   upward only; horizontal overflow stays to the left of the slot but
-   lands on transparent padding of the PNG so it doesn't hit the show
-   name text. */
+   upward; horizontal overflow stays to the left of the slot but lands on
+   transparent padding of the PNG so it doesn't hit the show name text. */
 @media (max-width: 767px) {
   .presenter-stack--contain {
     overflow: visible;
     justify-content: flex-end;
   }
-  .presenter-stack--contain[data-count="1"] .presenter-stack-img {
+  .presenter-stack--contain .presenter-stack-img {
     transform: scale(1.8);
     transform-origin: 100% 100%;
   }
 }
 
-/* Solo: fill the full container height, keep natural aspect. We cap
-   width/height at ~86% so the cutout keeps a visible horizontal margin
-   on each side — some Koodh source PNGs crop the subject's hand right
-   at the pixel edge, so without this breathing room an outstretched
-   hand sits flush against (and visually clipped by) the row card. */
-.presenter-stack--contain[data-count="1"] .presenter-stack-img {
+/* Every presenter — whether the show has 1, 2 or 3 of them — is rendered
+   at the same ~86% width so each head reads just as big as a solo
+   cutout. For 2 and 3 we only add negative inline margins so the
+   subjects visibly overlap (shoulders tucked behind the one in front)
+   while every head still clearly rises above the row card. */
+.presenter-stack--contain .presenter-stack-img {
   height: auto;
   width: 86%;
   max-width: 86%;
   max-height: 100%;
 }
-/* Duo: each presenter ≈ 65% of container width → ~50% shoulder overlap,
-   both subjects fully visible horizontally. */
+/* Duo: strong negative margin pulls two full-size cutouts together into
+   roughly the same horizontal footprint as a solo, with both heads
+   clearly visible above the card. */
 .presenter-stack--contain[data-count="2"] .presenter-stack-img {
-  height: auto;
-  width: 65%;
-  max-width: 65%;
-  max-height: 100%;
-  margin-inline: -16%;
+  margin-inline: -30%;
 }
-/* Trio: each ≈ 44% of container width → ~50% overlap between adjacent. */
+/* Trio: slightly tighter overlap so all three heads line up without the
+   outer two spilling further than the card edge on desktop. */
 .presenter-stack--contain[data-count="3"] .presenter-stack-img {
-  height: auto;
-  width: 44%;
-  max-width: 44%;
-  max-height: 100%;
-  margin-inline: -11%;
+  margin-inline: -34%;
 }
 
 
