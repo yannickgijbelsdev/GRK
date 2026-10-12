@@ -7,19 +7,26 @@ import React, { useEffect, useRef, useState } from 'react';
 // bust token is forwarded upstream (clr.koodh.com ignores it) and makes
 // weserv treat each refresh as a distinct cache key, so a one-time
 // placeholder response never gets stuck in the proxy cache.
-const toProxied = (rawUrl, bust) => {
+//
+// `width` lets callers ask weserv for a resized variant (keeps aspect
+// ratio because no height is supplied). The probe path uses a 64px wide
+// thumbnail — ~1-3 KB regardless of upstream size — while the display
+// path uses 768px, which is sharp enough on retina for both the hero
+// and schedule rows but ~5× smaller than the raw 1366×808 PNGs.
+const PROBE_WIDTH = 64;
+const DISPLAY_WIDTH = 768;
+const toProxied = (rawUrl, bust, width) => {
   const withBust = bust ? `${rawUrl}${rawUrl.includes('?') ? '&' : '?'}v=${bust}` : rawUrl;
-  return `https://images.weserv.nl/?url=${encodeURIComponent(withBust.replace(/^https?:\/\//, ''))}`;
+  const base = `https://images.weserv.nl/?url=${encodeURIComponent(withBust.replace(/^https?:\/\//, ''))}`;
+  return width ? `${base}&w=${width}` : base;
 };
 
 const probeCache = new Map(); // url → boolean
 const ALPHA_OPAQUE_THRESHOLD = 32;
-const OPAQUE_PIXEL_RATIO_MIN = 0.02;
-// The API returns a 1366×808 near-transparent placeholder for empty slots.
-// Any image whose natural dimensions match that signature AND has little
-// opaque content is treated as blank.
-const BLANK_W = 1366;
-const BLANK_H = 808;
+// Blank placeholder slots render as a near-transparent image. A real
+// presenter cutout fills easily >15% of its pixels; the empty slot stays
+// well under 2%. Sampling at 64×~38 is enough to tell them apart.
+const OPAQUE_PIXEL_RATIO_MIN = 0.05;
 
 const probeImage = (url) =>
   new Promise((resolve) => {
@@ -37,34 +44,27 @@ const probeImage = (url) =>
       try {
         const w = img.naturalWidth;
         const h = img.naturalHeight;
-        if (!w || !h || (w < 32 && h < 32)) {
+        if (!w || !h) {
           probeCache.set(url, false);
           return resolve(false);
         }
-        // Fast reject: images at the known blank placeholder resolution
-        // are overwhelmingly empty.
-        if (w === BLANK_W && h === BLANK_H) {
-          // Still verify with a pixel sample to allow future variations.
-          const scale = 64 / Math.max(w, h);
-          const cw = Math.max(1, Math.round(w * scale));
-          const ch = Math.max(1, Math.round(h * scale));
-          const canvas = document.createElement('canvas');
-          canvas.width = cw;
-          canvas.height = ch;
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
-          ctx.drawImage(img, 0, 0, cw, ch);
-          const { data } = ctx.getImageData(0, 0, cw, ch);
-          let opaque = 0;
-          for (let i = 3; i < data.length; i += 4) {
-            if (data[i] > ALPHA_OPAQUE_THRESHOLD) opaque++;
-          }
-          const ratio = opaque / (data.length / 4);
-          const ok = ratio >= OPAQUE_PIXEL_RATIO_MIN;
-          probeCache.set(url, ok);
-          return resolve(ok);
+        // Sample alpha channel at the thumbnail's own size (no up/down
+        // scaling needed because the probe URL already asks weserv for a
+        // 64-wide thumbnail). This runs in microseconds.
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0);
+        const { data } = ctx.getImageData(0, 0, w, h);
+        let opaque = 0;
+        for (let i = 3; i < data.length; i += 4) {
+          if (data[i] > ALPHA_OPAQUE_THRESHOLD) opaque++;
         }
-        probeCache.set(url, true);
-        resolve(true);
+        const ratio = opaque / (data.length / 4);
+        const ok = ratio >= OPAQUE_PIXEL_RATIO_MIN;
+        probeCache.set(url, ok);
+        resolve(ok);
       } catch {
         probeCache.set(url, false);
         resolve(false);
@@ -97,11 +97,19 @@ export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000 } = {}) => {
       // serving an old 1366×808 placeholder once the upstream flipped to
       // a real cutout.
       const bust = Math.floor(Date.now() / refreshMs);
-      const urls = [1, 2, 3].map((n) => toProxied(`${baseRawUrl}${n}.png`, bust));
-      urls.forEach((u) => probeCache.delete(u)); // force fresh probe
-      const results = await Promise.all(urls.map(probeImage));
+      const rawUrls = [1, 2, 3].map((n) => `${baseRawUrl}${n}.png`);
+      // Tiny thumbnails for the probe pass — a few KB each so the
+      // schedule page doesn't block on 30 full-size downloads just to
+      // decide which slots are populated.
+      const probeUrls = rawUrls.map((u) => toProxied(u, bust, PROBE_WIDTH));
+      // Display URLs are at a middle size (768w) — crisp on retina for
+      // the hero / schedule / sticky player, but still ~5× smaller than
+      // the raw PNGs.
+      const displayUrls = rawUrls.map((u) => toProxied(u, bust, DISPLAY_WIDTH));
+      probeUrls.forEach((u) => probeCache.delete(u)); // force fresh probe
+      const results = await Promise.all(probeUrls.map(probeImage));
       if (mySeq !== seqRef.current) return; // stale
-      setSlots(urls.filter((_, i) => results[i]));
+      setSlots(displayUrls.filter((_, i) => results[i]));
     };
     run();
     const id = setInterval(run, refreshMs);
