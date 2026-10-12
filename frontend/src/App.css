@@ -676,6 +676,26 @@ html { scroll-behavior: smooth; }
   object-fit: contain;
   object-position: 50% 100%;
 }
+/* On mobile the schedule slot is only ~96px wide, so the solo cutout
+   renders at ~83×83 — shorter than the row card itself, which keeps the
+   head trapped inside the card. Scale the img up from its bottom-right
+   corner so the head clearly rises above the row like on desktop,
+   without pushing the image past the card's right edge. The right-anchor
+   justify (flex-end) + overflow: visible lets the extra height expand
+   upward only; horizontal overflow stays to the left of the slot but
+   lands on transparent padding of the PNG so it doesn't hit the show
+   name text. */
+@media (max-width: 767px) {
+  .presenter-stack--contain {
+    overflow: visible;
+    justify-content: flex-end;
+  }
+  .presenter-stack--contain[data-count="1"] .presenter-stack-img {
+    transform: scale(1.5);
+    transform-origin: 100% 100%;
+  }
+}
+
 /* Solo: fill the full container height, keep natural aspect. We cap
    width/height at ~86% so the cutout keeps a visible horizontal margin
    on each side — some Koodh source PNGs crop the subject's hand right
