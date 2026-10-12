@@ -691,7 +691,7 @@ html { scroll-behavior: smooth; }
     justify-content: flex-end;
   }
   .presenter-stack--contain[data-count="1"] .presenter-stack-img {
-    transform: scale(1.5);
+    transform: scale(1.8);
     transform-origin: 100% 100%;
   }
 }

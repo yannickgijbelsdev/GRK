@@ -126,7 +126,7 @@ const ScheduleRowPresenter = ({ show }) => {
   // (larger) download.
   const liveSlots = usePresenterSlots(
     show?.id ? `https://clr.koodh.com/api/rds/show/${show.id}/presenter-image/` : null,
-    { width: 384 },
+    { width: 384, padHorizontal: true },
   );
   if (liveSlots.length === 0) return null;
   return (

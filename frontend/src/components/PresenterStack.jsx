@@ -5,10 +5,19 @@ import React, { useEffect, useRef, useState } from 'react';
 // same URL is used for the alpha-ratio probe AND for display, so once
 // the probe is done the browser serves the <img> element straight from
 // its disk cache (zero extra network round-trip for the visible image).
-const toProxied = (rawUrl, bust, width) => {
+//
+// `padHorizontal` requests a slightly wider canvas (10:9 ratio) from
+// weserv with transparent fill, so the subject lands on a transparent
+// ~5% band on each side — crucial for Koodh PNGs that crop outstretched
+// hands flush against the pixel edge.
+const toProxied = (rawUrl, bust, width, padHorizontal = false) => {
   const withBust = bust ? `${rawUrl}${rawUrl.includes('?') ? '&' : '?'}v=${bust}` : rawUrl;
   const base = `https://images.weserv.nl/?url=${encodeURIComponent(withBust.replace(/^https?:\/\//, ''))}`;
-  return width ? `${base}&w=${width}` : base;
+  if (!width) return base;
+  if (!padHorizontal) return `${base}&w=${width}`;
+  const canvasH = width;
+  const canvasW = Math.round(width * 10 / 9);
+  return `${base}&w=${canvasW}&h=${canvasH}&fit=contain&cbg=none`;
 };
 
 const probeCache = new Map(); // url → boolean
@@ -73,7 +82,7 @@ const probeImage = (url) =>
  *   `https://clr.koodh.com/api/rds/grk/presenter-image/` or
  *   `https://clr.koodh.com/api/rds/show/{id}/presenter-image/`.
  */
-export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000, width = 768 } = {}) => {
+export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000, width = 768, padHorizontal = false } = {}) => {
   const [slots, setSlots] = useState([]);
   const seqRef = useRef(0);
 
@@ -91,7 +100,7 @@ export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000, width = 768 }
       // for display, so once the probe is cached in the browser the
       // visible <img> renders instantly without a second request.
       const bust = Math.floor(Date.now() / refreshMs);
-      const urls = [1, 2, 3].map((n) => toProxied(`${baseRawUrl}${n}.png`, bust, width));
+      const urls = [1, 2, 3].map((n) => toProxied(`${baseRawUrl}${n}.png`, bust, width, padHorizontal));
       urls.forEach((u) => probeCache.delete(u)); // force fresh probe
       const results = await Promise.all(urls.map(probeImage));
       if (mySeq !== seqRef.current) return; // stale
@@ -100,7 +109,7 @@ export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000, width = 768 }
     run();
     const id = setInterval(run, refreshMs);
     return () => clearInterval(id);
-  }, [baseRawUrl, refreshMs, width]);
+  }, [baseRawUrl, refreshMs, width, padHorizontal]);
 
   return slots;
 };
