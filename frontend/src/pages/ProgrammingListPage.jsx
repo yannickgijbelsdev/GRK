@@ -137,7 +137,7 @@ const ScheduleRowPresenter = ({ show }) => {
     // to breathe; desktop keeps the big w-56 presence.
     <div
       className="pointer-events-none absolute right-2 md:right-6 bottom-0 w-32 md:w-56"
-      style={{ height: 'calc(100% + 5rem)' }}
+      style={{ height: 'calc(100% + 5rem)', transform: 'translateX(1cm)' }}
       aria-hidden="true"
     >
       <PresenterStack slots={liveSlots} className="presenter-stack--contain" />
@@ -332,11 +332,6 @@ const ProgrammingListPage = () => {
               <ChevronRight size={20} />
             </button>
           </div>
-          {showRecurringHint && (
-            <p className="-mt-6 mb-8 text-[#4a6480] text-sm md:text-base text-center">
-              Dit is onze vaste weekprogrammatie — de shows keren wekelijks op deze uren terug.
-            </p>
-          )}
 
           {/* Schedule cards */}
           {loading && shows.length === 0 ? (
