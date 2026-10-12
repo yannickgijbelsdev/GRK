@@ -147,7 +147,7 @@ const Hero = () => {
       {!hasVideo && (
         <div
           className="absolute inset-x-0 z-20 px-6 md:px-8 pointer-events-none"
-          style={{ bottom: 'calc(4.5rem + 5cm)' }}
+          style={{ bottom: 'calc(4.5rem + 2cm)' }}
         >
           <div className="max-w-4xl mx-auto">
             <div style={{ maxWidth: '480px' }}>
