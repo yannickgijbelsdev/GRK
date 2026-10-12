@@ -676,21 +676,24 @@ html { scroll-behavior: smooth; }
   object-fit: contain;
   object-position: 50% 100%;
 }
-/* On mobile the schedule slot is only ~96px wide, so the solo cutout
-   renders at ~83×83 — shorter than the row card itself, which keeps the
-   head trapped inside the card. Scale every presenter img up from its
-   bottom-right corner so the head clearly rises above the row like on
-   desktop, no matter how many presenters the show has. The right-anchor
-   justify (flex-end) + overflow: visible lets the extra height expand
-   upward; horizontal overflow stays to the left of the slot but lands on
-   transparent padding of the PNG so it doesn't hit the show name text. */
+/* Scale every presenter img up from its bottom-right corner so the
+   head clearly rises above the row card. Desktop uses a modest 1.2x
+   bump; mobile needs a stronger 1.9x because the slot itself is much
+   narrower. The right-anchor justify (flex-end) + overflow: visible
+   lets the extra height expand upward; horizontal overflow stays to
+   the left of the slot but lands on transparent padding of the PNG so
+   it doesn't hit the show name text. */
+.presenter-stack--contain {
+  overflow: visible;
+  justify-content: flex-end;
+}
+.presenter-stack--contain .presenter-stack-img {
+  transform: scale(1.2);
+  transform-origin: 100% 100%;
+}
 @media (max-width: 767px) {
-  .presenter-stack--contain {
-    overflow: visible;
-    justify-content: flex-end;
-  }
   .presenter-stack--contain .presenter-stack-img {
-    transform: scale(1.7);
+    transform: scale(1.9);
     transform-origin: 100% 100%;
   }
 }
