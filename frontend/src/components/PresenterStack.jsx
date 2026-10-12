@@ -1,20 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 // Build the weserv-proxied URL for a slot with an optional cache-bust
-// token. The raw clr.koodh.com endpoints 302-redirect to object storage
-// that does not advertise permissive CORS headers, so routing through
-// weserv keeps canvas probing + cross-origin usage working. The optional
-// bust token is forwarded upstream (clr.koodh.com ignores it) and makes
-// weserv treat each refresh as a distinct cache key, so a one-time
-// placeholder response never gets stuck in the proxy cache.
-//
-// `width` lets callers ask weserv for a resized variant (keeps aspect
-// ratio because no height is supplied). The probe path uses a 64px wide
-// thumbnail — ~1-3 KB regardless of upstream size — while the display
-// path uses 768px, which is sharp enough on retina for both the hero
-// and schedule rows but ~5× smaller than the raw 1366×808 PNGs.
-const PROBE_WIDTH = 64;
-const DISPLAY_WIDTH = 768;
+// token and an explicit `width`. We send **one** request per slot — the
+// same URL is used for the alpha-ratio probe AND for display, so once
+// the probe is done the browser serves the <img> element straight from
+// its disk cache (zero extra network round-trip for the visible image).
 const toProxied = (rawUrl, bust, width) => {
   const withBust = bust ? `${rawUrl}${rawUrl.includes('?') ? '&' : '?'}v=${bust}` : rawUrl;
   const base = `https://images.weserv.nl/?url=${encodeURIComponent(withBust.replace(/^https?:\/\//, ''))}`;
@@ -25,7 +15,7 @@ const probeCache = new Map(); // url → boolean
 const ALPHA_OPAQUE_THRESHOLD = 32;
 // Blank placeholder slots render as a near-transparent image. A real
 // presenter cutout fills easily >15% of its pixels; the empty slot stays
-// well under 2%. Sampling at 64×~38 is enough to tell them apart.
+// well under 2%. The 5% midpoint cleanly separates the two.
 const OPAQUE_PIXEL_RATIO_MIN = 0.05;
 
 const probeImage = (url) =>
@@ -48,15 +38,17 @@ const probeImage = (url) =>
           probeCache.set(url, false);
           return resolve(false);
         }
-        // Sample alpha channel at the thumbnail's own size (no up/down
-        // scaling needed because the probe URL already asks weserv for a
-        // 64-wide thumbnail). This runs in microseconds.
+        // Downsample to at most 64px wide for the alpha sample — fast
+        // enough to run in microseconds even on mobile Safari.
+        const scale = Math.min(1, 64 / Math.max(w, h));
+        const cw = Math.max(1, Math.round(w * scale));
+        const ch = Math.max(1, Math.round(h * scale));
         const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
+        canvas.width = cw;
+        canvas.height = ch;
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        ctx.drawImage(img, 0, 0);
-        const { data } = ctx.getImageData(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, cw, ch);
+        const { data } = ctx.getImageData(0, 0, cw, ch);
         let opaque = 0;
         for (let i = 3; i < data.length; i += 4) {
           if (data[i] > ALPHA_OPAQUE_THRESHOLD) opaque++;
@@ -81,7 +73,7 @@ const probeImage = (url) =>
  *   `https://clr.koodh.com/api/rds/grk/presenter-image/` or
  *   `https://clr.koodh.com/api/rds/show/{id}/presenter-image/`.
  */
-export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000 } = {}) => {
+export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000, width = 768 } = {}) => {
   const [slots, setSlots] = useState([]);
   const seqRef = useRef(0);
 
@@ -95,26 +87,20 @@ export const usePresenterSlots = (baseRawUrl, { refreshMs = 60000 } = {}) => {
     const run = async () => {
       // Cache-bust token: changes every refresh so weserv doesn't keep
       // serving an old 1366×808 placeholder once the upstream flipped to
-      // a real cutout.
+      // a real cutout. The resulting URL is used *both* for probing and
+      // for display, so once the probe is cached in the browser the
+      // visible <img> renders instantly without a second request.
       const bust = Math.floor(Date.now() / refreshMs);
-      const rawUrls = [1, 2, 3].map((n) => `${baseRawUrl}${n}.png`);
-      // Tiny thumbnails for the probe pass — a few KB each so the
-      // schedule page doesn't block on 30 full-size downloads just to
-      // decide which slots are populated.
-      const probeUrls = rawUrls.map((u) => toProxied(u, bust, PROBE_WIDTH));
-      // Display URLs are at a middle size (768w) — crisp on retina for
-      // the hero / schedule / sticky player, but still ~5× smaller than
-      // the raw PNGs.
-      const displayUrls = rawUrls.map((u) => toProxied(u, bust, DISPLAY_WIDTH));
-      probeUrls.forEach((u) => probeCache.delete(u)); // force fresh probe
-      const results = await Promise.all(probeUrls.map(probeImage));
+      const urls = [1, 2, 3].map((n) => toProxied(`${baseRawUrl}${n}.png`, bust, width));
+      urls.forEach((u) => probeCache.delete(u)); // force fresh probe
+      const results = await Promise.all(urls.map(probeImage));
       if (mySeq !== seqRef.current) return; // stale
-      setSlots(displayUrls.filter((_, i) => results[i]));
+      setSlots(urls.filter((_, i) => results[i]));
     };
     run();
     const id = setInterval(run, refreshMs);
     return () => clearInterval(id);
-  }, [baseRawUrl, refreshMs]);
+  }, [baseRawUrl, refreshMs, width]);
 
   return slots;
 };
@@ -141,6 +127,11 @@ const PresenterStack = ({ slots, className = '', imgClassName = '', 'data-testid
           src={url}
           alt=""
           draggable={false}
+          decoding="async"
+          /* Match the probe's CORS mode so the browser can reuse the
+             cached response from the alpha-ratio probe instead of
+             issuing a second network request. */
+          crossOrigin="anonymous"
           className={`presenter-stack-img ${imgClassName}`}
         />
       ))}

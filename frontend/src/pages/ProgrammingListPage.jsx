@@ -118,12 +118,17 @@ const fmtDateIso = (date) => {
 };
 
 const ScheduleRowPresenter = ({ show }) => {
+  // Schedule rows show the presenter in a ~150-220px wide slot, so 384w
+  // via weserv is plenty crisp on retina while being ~5× smaller than
+  // the raw PNG — and critical for perceived snappiness: the probe
+  // thumbnail *is* the display asset, so once probing finishes the <img>
+  // renders instantly from browser cache instead of waiting on a second
+  // (larger) download.
   const liveSlots = usePresenterSlots(
     show?.id ? `https://clr.koodh.com/api/rds/show/${show.id}/presenter-image/` : null,
+    { width: 384 },
   );
-  const fallbackUrl = show?.presenter_image_url || show?.image || '';
-  const slots = liveSlots.length > 0 ? liveSlots : (fallbackUrl ? [fallbackUrl] : []);
-  if (slots.length === 0) return null;
+  if (liveSlots.length === 0) return null;
   return (
     // Container is taller than the card so the presenter head can rise
     // above the card like in the sticky player / hero, while the image
@@ -134,7 +139,7 @@ const ScheduleRowPresenter = ({ show }) => {
       style={{ height: 'calc(100% + 5rem)' }}
       aria-hidden="true"
     >
-      <PresenterStack slots={slots} className="presenter-stack--contain" />
+      <PresenterStack slots={liveSlots} className="presenter-stack--contain" />
     </div>
   );
 };
