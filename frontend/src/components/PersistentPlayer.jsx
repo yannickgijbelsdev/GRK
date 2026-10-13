@@ -15,12 +15,44 @@ const PersistentPlayer = () => {
   const [view, setView] = useState('track'); // 'track' | 'show'
   const liveSlots = usePresenterSlots('https://clr.koodh.com/api/rds/grk/presenter-image/');
   const hasLiveSlots = liveSlots.length > 0;
+  // On mobile the info row collapses while the page is being scrolled —
+  // only the controls strip remains visible — then slides back once
+  // scrolling settles. Debounced to 180 ms so inertial scrolls don't
+  // flicker. `isMobile` gates the behaviour to narrow viewports only.
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia('(max-width: 767px)').matches
+      : false,
+  );
 
   useEffect(() => {
     const id = setInterval(() => {
       setView((v) => (v === 'track' ? 'show' : 'track'));
     }, ROTATE_MS);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (!window.matchMedia) return undefined;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
+    let timeout;
+    const onScroll = () => {
+      setIsScrolling(true);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setIsScrolling(false), 180);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(timeout);
+    };
   }, []);
 
   const showName = show || '';
@@ -38,6 +70,7 @@ const PersistentPlayer = () => {
   // (opacity-faded in show view) but its slot now matches the presenter
   // overlay width, guaranteeing no overlap / clipping.
   const isPresenterOnStage = hasPresenterImage && isShowView;
+  const collapsedOnMobile = isMobile && isScrolling;
 
   return (
     <div className="relative max-w-5xl mx-auto px-4 md:px-6">
@@ -59,7 +92,7 @@ const PersistentPlayer = () => {
                  the top overflow (head cutout) remains visible via the
                  generous negative inset above. */
               clipPath: 'inset(-500px 0 0 0)',
-              opacity: isShowView ? 1 : 0,
+              opacity: isShowView && !collapsedOnMobile ? 1 : 0,
             }}
             data-testid="persistent-player-presenter-cutout"
           >
@@ -78,7 +111,12 @@ const PersistentPlayer = () => {
           </div>
         )}
         <div className="relative z-10 p-3 md:p-5">
-          <div className="flex items-center gap-3 md:gap-6">
+          <div
+            className={`transition-[max-height,opacity,margin] duration-300 ease-out overflow-hidden md:!max-h-none md:!opacity-100 md:!mb-0 ${
+              collapsedOnMobile ? 'max-h-0 opacity-0 -mb-3' : 'max-h-24 opacity-100'
+            }`}
+          >
+            <div className="flex items-center gap-3 md:gap-6">
             {/* Cover / Presenter image (cross-faded). Width expands in show
                 view so the play button + text slide right and leave room
                 for the full presenter cutout — no overlap, no clipping. */}
@@ -167,13 +205,18 @@ const PersistentPlayer = () => {
             <div className="hidden md:block">
               <VolumeControl value={volume} onChange={setVolume} muted={muted} onToggleMute={toggleMute} />
             </div>
+            </div>
           </div>
 
           {/* Mobile-only controls row — big tappable play button on the
               left, playlist + volume on the right. Pulled below the info
               row so the show name + presenter name have the full card
               width above and never get cramped. */}
-          <div className="flex md:hidden items-center justify-between gap-3 mt-3 pt-3 border-t border-[#e4ecf5]">
+          <div
+            className={`flex md:hidden items-center justify-between gap-3 transition-[margin,padding,border-color] duration-300 ${
+              collapsedOnMobile ? 'mt-0 pt-0 border-t-0 border-transparent' : 'mt-3 pt-3 border-t border-[#e4ecf5]'
+            }`}
+          >
             <button
               onClick={toggle}
               aria-label={playing ? 'Pauzeren' : 'Afspelen'}
