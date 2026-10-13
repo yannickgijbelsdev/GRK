@@ -74,89 +74,125 @@ const PersistentPlayer = () => {
             />
           </div>
         )}
-        <div className="relative z-10 p-3 md:p-5 flex items-center gap-3 md:gap-6">
-          {/* Cover / Presenter image (cross-faded). Width expands in show
-              view so the play button + text slide right and leave room
-              for the full presenter cutout — no overlap, no clipping. */}
-          <div
-            className={`relative flex-shrink-0 h-14 md:h-20 transition-[width] duration-500 ${
-              isPresenterOnStage ? 'w-28 md:w-44' : 'w-14 md:w-20'
-            }`}
-          >
-            {/* Rounded square holds the track cover + logo-fallback for presenter-less shows */}
-            <div className="absolute inset-0 rounded-xl overflow-hidden">
-              <div
-                className="absolute inset-0 transition-opacity duration-500"
-                style={{ opacity: isShowView ? 0 : 1 }}
-              >
-                <CoverImage src={track.cover} alt={trackTitle} />
-              </div>
-              {!presenter.image && !hasLiveSlots && (
+        <div className="relative z-10 p-3 md:p-5">
+          <div className="flex items-center gap-3 md:gap-6">
+            {/* Cover / Presenter image (cross-faded). Width expands in show
+                view so the play button + text slide right and leave room
+                for the full presenter cutout — no overlap, no clipping. */}
+            <div
+              className={`relative flex-shrink-0 h-14 md:h-20 transition-[width] duration-500 ${
+                isPresenterOnStage ? 'w-28 md:w-44' : 'w-14 md:w-20'
+              }`}
+            >
+              {/* Rounded square holds the track cover + logo-fallback for presenter-less shows */}
+              <div className="absolute inset-0 rounded-xl overflow-hidden">
                 <div
                   className="absolute inset-0 transition-opacity duration-500"
-                  style={{ opacity: isShowView ? 1 : 0 }}
+                  style={{ opacity: isShowView ? 0 : 1 }}
                 >
-                  <CoverImage src="" alt={hostName} />
+                  <CoverImage src={track.cover} alt={trackTitle} />
                 </div>
-              )}
+                {!presenter.image && !hasLiveSlots && (
+                  <div
+                    className="absolute inset-0 transition-opacity duration-500"
+                    style={{ opacity: isShowView ? 1 : 0 }}
+                  >
+                    <CoverImage src="" alt={hostName} />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Desktop-only play button sits inline. On mobile the controls
+                live in a dedicated second row below so the text has the full
+                card width to breathe. */}
+            <button
+              onClick={toggle}
+              aria-label={playing ? 'Pauzeren' : 'Afspelen'}
+              data-testid="persistent-player-play-btn"
+              className="hidden md:flex flex-shrink-0 w-16 h-16 rounded-full items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-200"
+              style={{ background: 'linear-gradient(135deg,#2a5d99 0%,#4b8fcc 100%)' }}
+            >
+              {playing ? <Pause size={22} fill="white" /> : <Play size={22} fill="white" className="ml-1" />}
+            </button>
+
+            {/* Text content (cross-faded) */}
+            <div className="relative flex-1 min-w-0 overflow-hidden" style={{ minHeight: '64px' }}>
+              {/* Track view */}
+              <div
+                className="absolute inset-0 flex flex-col justify-center transition-opacity duration-500"
+                style={{ opacity: isShowView ? 0 : 1, pointerEvents: isShowView ? 'none' : 'auto' }}
+              >
+                <div className="text-[10px] md:text-[11px] uppercase tracking-wider font-semibold text-[#2a5d99] leading-none">
+                  Nu speelt
+                </div>
+                <div className="text-[#062a4a] text-sm md:text-lg font-bold leading-tight truncate mt-1">
+                  {trackTitle}
+                </div>
+                <div className="text-[#4a6480] text-[11px] md:text-sm leading-tight truncate mt-0.5">
+                  {trackArtist}
+                </div>
+              </div>
+              {/* Show / presenter view */}
+              <div
+                className="absolute inset-0 flex flex-col justify-center transition-opacity duration-500"
+                style={{ opacity: isShowView ? 1 : 0, pointerEvents: isShowView ? 'auto' : 'none' }}
+              >
+                <div className="text-[10px] md:text-[11px] uppercase tracking-wider font-semibold text-[#2a5d99] leading-none">
+                  Nu op de radio
+                </div>
+                <div className="text-[#062a4a] text-sm md:text-lg font-bold leading-tight truncate mt-1">
+                  {showName}
+                </div>
+                <div className="text-[#4a6480] text-[11px] md:text-sm leading-tight truncate mt-0.5">
+                  {hostName ? `met ${hostName}` : '\u00A0'}
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop-only playlist + volume stay inline on the right */}
+            <Link
+              to="/gedraaid"
+              aria-label="Laatste gedraaide nummers"
+              title="Laatste gedraaide nummers"
+              data-testid="persistent-player-history-link"
+              className="hidden md:flex flex-shrink-0 w-10 h-10 rounded-full items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition"
+            >
+              <ListMusic size={20} />
+            </Link>
+
+            <div className="hidden md:block">
+              <VolumeControl value={volume} onChange={setVolume} muted={muted} onToggleMute={toggleMute} />
             </div>
           </div>
 
-        <button
-          onClick={toggle}
-          aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-          data-testid="persistent-player-play-btn"
-          className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-200"
-          style={{ background: 'linear-gradient(135deg,#2a5d99 0%,#4b8fcc 100%)' }}
-        >
-          {playing ? <Pause size={22} fill="white" /> : <Play size={22} fill="white" className="ml-1" />}
-        </button>
-
-        {/* Text content (cross-faded) */}
-        <div className="relative flex-1 min-w-0 overflow-hidden" style={{ minHeight: '64px' }}>
-          {/* Track view */}
-          <div
-            className="absolute inset-0 flex flex-col justify-center transition-opacity duration-500"
-            style={{ opacity: isShowView ? 0 : 1, pointerEvents: isShowView ? 'none' : 'auto' }}
-          >
-            <div className="text-[10px] md:text-[11px] uppercase tracking-wider font-semibold text-[#2a5d99] leading-none">
-              Nu speelt
-            </div>
-            <div className="text-[#062a4a] text-sm md:text-lg font-bold leading-tight truncate mt-1">
-              {trackTitle}
-            </div>
-            <div className="text-[#4a6480] text-[11px] md:text-sm leading-tight truncate mt-0.5">
-              {trackArtist}
-            </div>
-          </div>
-          {/* Show / presenter view */}
-          <div
-            className="absolute inset-0 flex flex-col justify-center transition-opacity duration-500"
-            style={{ opacity: isShowView ? 1 : 0, pointerEvents: isShowView ? 'auto' : 'none' }}
-          >
-            <div className="text-[10px] md:text-[11px] uppercase tracking-wider font-semibold text-[#2a5d99] leading-none">
-              Nu op de radio
-            </div>
-            <div className="text-[#062a4a] text-sm md:text-lg font-bold leading-tight truncate mt-1">
-              {showName}
-            </div>
-            <div className="text-[#4a6480] text-[11px] md:text-sm leading-tight truncate mt-0.5">
-              {hostName ? `met ${hostName}` : '\u00A0'}
+          {/* Mobile-only controls row — big tappable play button on the
+              left, playlist + volume on the right. Pulled below the info
+              row so the show name + presenter name have the full card
+              width above and never get cramped. */}
+          <div className="flex md:hidden items-center justify-between gap-3 mt-3 pt-3 border-t border-[#e4ecf5]">
+            <button
+              onClick={toggle}
+              aria-label={playing ? 'Pauzeren' : 'Afspelen'}
+              data-testid="persistent-player-play-btn-mobile"
+              className="flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-200"
+              style={{ background: 'linear-gradient(135deg,#2a5d99 0%,#4b8fcc 100%)' }}
+            >
+              {playing ? <Pause size={22} fill="white" /> : <Play size={22} fill="white" className="ml-1" />}
+            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                to="/gedraaid"
+                aria-label="Laatste gedraaide nummers"
+                title="Laatste gedraaide nummers"
+                data-testid="persistent-player-history-link-mobile"
+                className="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition"
+              >
+                <ListMusic size={22} />
+              </Link>
+              <VolumeControl value={volume} onChange={setVolume} muted={muted} onToggleMute={toggleMute} />
             </div>
           </div>
-        </div>
-
-          <Link
-            to="/gedraaid"
-            aria-label="Laatste gedraaide nummers"
-            title="Laatste gedraaide nummers"
-            data-testid="persistent-player-history-link"
-            className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[#2a5d99] hover:bg-[#e4ecf5] transition"
-          >
-            <ListMusic size={20} />
-          </Link>
-
-          <VolumeControl value={volume} onChange={setVolume} muted={muted} onToggleMute={toggleMute} />
         </div>
       </div>
     </div>
