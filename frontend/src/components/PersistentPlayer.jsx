@@ -45,12 +45,15 @@ const PersistentPlayer = () => {
         {/* Presenter cutout — anchored to the card's bottom edge so the feet
             plakken against the card bottom. Placed BEFORE the flex row so
             the play button + text (rendered later in DOM) naturally stack on
-            top of any horizontal overlap on the left side of the card. */}
+            top of any horizontal overlap on the left side of the card.
+            On mobile the sticky player splits into an info row + a
+            controls row, so the cutout bottom is lifted to the border
+            between the two rows (via `bottom-[5rem]`) and its height is
+            capped so the subject never spills into the controls strip. */}
         {hasLiveSlots && (
           <div
-            className="pointer-events-none absolute -left-3 md:-left-4 bottom-0 w-28 md:w-44 transition-opacity duration-500"
+            className="pointer-events-none absolute -left-3 md:-left-4 w-28 md:w-44 transition-opacity duration-500 bottom-[5rem] md:bottom-0 h-[8.25rem] md:h-[calc(100%+3.25rem)]"
             style={{
-              height: 'calc(100% + 3.25rem)',
               /* Clip the bottom edge at the card border so the translateY
                  on the stack image never shows past the player card, while
                  the top overflow (head cutout) remains visible via the
